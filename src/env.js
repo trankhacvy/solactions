@@ -38,6 +38,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_FE_BASE_URL: z.string(),
+    NEXT_PUBLIC_RPC_URL: z.string(),
   },
 
   /**
@@ -58,6 +59,8 @@ export const env = createEnv({
     //helius
     HELIUS_API_KEY: process.env.HELIUS_API_KEY,
     HELIUS_WEBHOOK_ID: process.env.HELIUS_WEBHOOK_ID,
+    // rpc
+    NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

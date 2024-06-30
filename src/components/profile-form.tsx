@@ -21,7 +21,6 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import slugify from "slugify";
 
-import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/navigation";
 import { FormTokenSelect } from "./ui/form-token-select";
 import { tokenList } from "@/config/tokens";
@@ -29,6 +28,7 @@ import { SelectUser, Token } from "@/types";
 import Link from "next/link";
 import { Routes } from "@/config/routes";
 import { getDonationLink } from "@/utils/links";
+import { revalidateUser } from "@/app/actions/revalidate";
 
 export const ProfileSchema = z.object({
   avatar: z.string().trim().min(3, "Image is required").nullish(),
@@ -57,6 +57,8 @@ export const ProfileSchema = z.object({
 });
 
 export default function ProfileForm({ user }: { user: SelectUser }) {
+  const tprcUtils = api.useUtils();
+
   const {
     register,
     handleSubmit,
@@ -80,7 +82,12 @@ export default function ProfileForm({ user }: { user: SelectUser }) {
   const router = useRouter();
 
   const { mutate, isPending } = api.user.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async (data) => {
+      if (data) {
+        await tprcUtils.user.getBySlug.invalidate({ slug: data.slug });
+      }
+      revalidateUser();
+
       router.replace(Routes.ADMIN);
     },
     onError: (error) => {

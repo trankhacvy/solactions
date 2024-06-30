@@ -4,6 +4,7 @@ import React from "react";
 import { Box } from "@mui/system";
 import { Logo } from "../ui/logo";
 import { HEADER } from "@/config/header";
+import ConnectWalletButton from "../connect-wallet";
 
 export function Header(): JSX.Element {
   return (
@@ -30,7 +31,7 @@ export function Header(): JSX.Element {
       >
         <Logo />
         <Box flex={1} />
-        <Button>Login</Button>
+        <ConnectWalletButton />
       </Toolbar>
     </AppBar>
   );

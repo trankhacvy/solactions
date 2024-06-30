@@ -48,7 +48,7 @@ export const GET = async (req: Request, context: { params: Params }) => {
       links: {
         actions: [
           ...donateOptions.map((option) => ({
-            label: `Send ${option} ${user.acceptToken?.symbol}`,
+            label: `${option} ${user.acceptToken?.symbol}`,
             href: `${baseHref}?amount=${option}${user.acceptToken?.isNative ? "" : `&token=${user.acceptToken?.address}`}`,
           })),
           {

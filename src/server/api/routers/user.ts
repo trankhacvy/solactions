@@ -29,13 +29,16 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(schema.updateUserSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db
+      const [model] = await ctx.db
         .update(schema.users)
         .set({
           ...input,
           acceptToken: input.acceptToken as Token,
         })
-        .where(eq(schema.users.id, ctx.session.user.id));
+        .where(eq(schema.users.id, ctx.session.user.id))
+        .returning();
+
+      return model;
     }),
 
   getById: publicProcedure
