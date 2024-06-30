@@ -165,7 +165,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
-        message: `Send ${amount} SOL to ${receiver.toBase58()}`,
+        message: `Send ${amount} ${token.symbol} to ${receiver.toBase58()}. ${receiverUser.thankMessage}`,
       },
     });
 

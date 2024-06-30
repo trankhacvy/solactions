@@ -1,7 +1,7 @@
 require("@solana/wallet-adapter-react-ui/styles.css");
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
+import { Poppins } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import Providers from "./providers";
@@ -9,13 +9,21 @@ import { getServerAuthSession } from "@/server/auth";
 import { AppConfig } from "@/config/constants";
 import { Metadata } from "next";
 
+const font = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: AppConfig.title,
   description: AppConfig.description,
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: process.env.VERCEL_URL
     ? new URL(`https://solactions.fun/`)
-    : new URL(`http://localhost:${process.env.PORT || 3000}`),
+    : // : new URL(`http://localhost:${process.env.PORT || 3000}`)
+      new URL(
+        `https://ef21-2405-4802-90b5-a5e0-3098-b553-7753-6881.ngrok-free.app`,
+      ),
   openGraph: {
     images: [
       "https://ohgiavehhugheqqpoysy.supabase.co/storage/v1/object/public/3links/assets/og-image.jpg",
@@ -44,7 +52,7 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
 
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={`${font.className}`}>
       <body>
         <TRPCReactProvider>
           <Providers session={session}>{children}</Providers>
