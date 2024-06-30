@@ -1,17 +1,10 @@
 import ProfileForm from "@/components/profile-form";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import {  Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { notFound } from "next/navigation";
 
-export default async function NewProfile() {
-  const session = await getServerAuthSession();
-
-  const user = await api.user.getById({ id: session?.user.id! });
-
-  if (!user) {
-    return notFound();
-  }
+export default function Donations() {
 
   return (
     <Stack
@@ -31,7 +24,7 @@ export default async function NewProfile() {
       >
         <Typography variant="h4">Edit profile</Typography>
       </Stack>
-      <ProfileForm user={user} />
+      {/* <ProfileForm user={user} /> */}
     </Stack>
   );
 }

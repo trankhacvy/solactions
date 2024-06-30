@@ -50,6 +50,20 @@
       "when": 1719574263214,
       "tag": "0006_update-user-table",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1719686625314,
+      "tag": "0007_cooing_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1719725725145,
+      "tag": "0008_update-transaction-table",
+      "breakpoints": true
     }
   ]
 }

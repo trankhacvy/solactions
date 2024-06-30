@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
-import { ArrowRightIcon } from "lucide-react";
+import { Cta } from "./auth-button";
 
 export function JoinNow(): JSX.Element {
   return (
@@ -37,7 +37,7 @@ export function JoinNow(): JSX.Element {
           Stacks is a production-ready library of stackable content blocks built
           in React Native.
         </Typography> */}
-        <Button endIcon={<ArrowRightIcon />}>Try it now</Button>
+        <Cta title="Try it now" />
       </Container>
     </Box>
   );

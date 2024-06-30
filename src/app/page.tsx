@@ -11,7 +11,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Features />
-      <Features2 />
+      {/* <Features2 /> */}
       <JoinNow />
       <Footer />
     </>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Stack, Box, Container, Typography } from "@mui/material";
-import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
+import { Cta } from "./auth-button";
 
 export function Hero() {
   return (
@@ -44,17 +43,10 @@ export function Hero() {
         </Box>
 
         <Stack mt={4} direction="row" gap={2}>
-          <Button
-            LinkComponent={Link}
-            href="http://app.localhost:3000"
-            endIcon={<ArrowRightIcon />}
-            size="large"
-          >
-            Try for free
-          </Button>
+          <Cta title="Try for free" />
         </Stack>
 
-        <Box
+        <Stack
           mt={{
             xs: 10,
             lg: 17,
@@ -65,9 +57,27 @@ export function Hero() {
             md: 360,
             lg: 650,
           }}
-          bgcolor="primary.main"
+          px={{ xs: 3 }}
+          justifyContent="center"
           borderRadius={5}
-        />
+          sx={{
+            backgroundImage: "url(/hero-bg.svg)",
+            backgroundSize: "80px 80px",
+            backgroundPosition: "1px",
+            backgroundColor: "rgb(12 12 12)",
+          }}
+        >
+          <Box
+            component="img"
+            src="/banner.png"
+            alt="logo"
+            sx={{
+              height: { xs: 268, md: 312, lg: 602 },
+              width: "auto",
+              objectFit: "contain",
+            }}
+          />
+        </Stack>
       </Container>
     </Box>
   );

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Box, Stack, Typography } from "@mui/material";
 import { YourLink } from "@/components/admin/your-link";
 import { MoreActions } from "@/components/admin/more-actions";
+import { DonationTable } from "@/components/admin/donation-table";
 
 export default async function AdminPage() {
   const session = await getServerAuthSession();
@@ -33,6 +34,7 @@ export default async function AdminPage() {
           <YourLink user={user} />
         </Box>
         <MoreActions />
+        <DonationTable />
       </Stack>
       <PreviewCard user={user} />
     </Stack>

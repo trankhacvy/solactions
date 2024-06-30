@@ -26,6 +26,9 @@ export const env = createEnv({
     // supabase
     SUPABASE_DB_URL: z.string().url(),
     SUPABASE_SERVICE_ROLE: z.string(),
+    // helius
+    HELIUS_API_KEY: z.string(),
+    HELIUS_WEBHOOK_ID: z.string(),
   },
 
   /**
@@ -52,6 +55,9 @@ export const env = createEnv({
     // supabase
     SUPABASE_DB_URL: process.env.SUPABASE_DB_URL,
     SUPABASE_SERVICE_ROLE: process.env.SUPABASE_SERVICE_ROLE,
+    //helius
+    HELIUS_API_KEY: process.env.HELIUS_API_KEY,
+    HELIUS_WEBHOOK_ID: process.env.HELIUS_WEBHOOK_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -1,6 +1,7 @@
-import { donateOptions } from "@/config/tokens";
-import { buildTransferSolTx } from "@/lib/transactions";
+import { donateOptions, tokenList } from "@/config/tokens";
+import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
+import { SelectUser, Token } from "@/types";
 import {
   ActionPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -9,14 +10,7 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 
-import {
-  clusterApiUrl,
-  Connection,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-} from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 const DEFAULT_SOL_AMOUNT: number = 0.001;
 
@@ -55,11 +49,11 @@ export const GET = async (req: Request, context: { params: Params }) => {
         actions: [
           ...donateOptions.map((option) => ({
             label: `Send ${option} ${user.acceptToken?.symbol}`,
-            href: `${baseHref}?amount=${"1"}`,
+            href: `${baseHref}?amount=${option}${user.acceptToken?.isNative ? "" : `&token=${user.acceptToken?.address}`}`,
           })),
           {
             label: "Donate",
-            href: `${baseHref}?amount={amount}`,
+            href: `${baseHref}?amount={amount}${user.acceptToken?.isNative ? "" : `&token=${user.acceptToken?.address}`}`,
             parameters: [
               {
                 name: "amount",
@@ -91,14 +85,30 @@ export const OPTIONS = GET;
 export const POST = async (req: Request, context: { params: Params }) => {
   try {
     const requestUrl = new URL(req.url);
-    console.log("post requestUrl", requestUrl);
-    const { amount } = validatedQueryParams(requestUrl);
 
-    console.log("amount", amount);
+    const { amount, token } = validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
 
-    console.log("post body", body);
+    let receiverUser: SelectUser | undefined;
+    try {
+      receiverUser = await api.user.getBySlug({
+        slug: context.params.slug,
+      });
+
+      if (!receiverUser) {
+        return new Response('Invalid "receiver" provided', {
+          status: 400,
+          headers: ACTIONS_CORS_HEADERS,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      return new Response('Invalid "receiver" provided', {
+        status: 400,
+        headers: ACTIONS_CORS_HEADERS,
+      });
+    }
 
     // validate the client provided input
     let account: PublicKey;
@@ -114,17 +124,13 @@ export const POST = async (req: Request, context: { params: Params }) => {
     // validate the client provided input
     let receiver: PublicKey;
     try {
-      receiver = new PublicKey(context.params.slug);
+      receiver = new PublicKey(receiverUser.wallet);
     } catch (err) {
       return new Response('Invalid "receiver" provided', {
         status: 400,
         headers: ACTIONS_CORS_HEADERS,
       });
     }
-
-    const connection = new Connection(
-      process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"),
-    );
 
     // ensure the receiving account will be rent exempt
     // const minimumBalance = await connection.getMinimumBalanceForRentExemption(
@@ -135,15 +141,44 @@ export const POST = async (req: Request, context: { params: Params }) => {
     //   throw `account may not be rent exempt: ${receiver.toBase58()}`;
     // }
 
-    const transaction = await buildTransferSolTx(account, receiver, amount);
+    const reference = Keypair.generate();
+
+    let transaction;
+
+    if (token.isNative) {
+      transaction = await buildTransferSolTx(
+        account,
+        receiver,
+        reference.publicKey,
+        amount,
+      );
+    } else {
+      transaction = await buildTransferSplTx(
+        account,
+        receiver,
+        new PublicKey(token.address),
+        reference.publicKey,
+        amount * 10 ** token.decimals,
+      );
+    }
 
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
         message: `Send ${amount} SOL to ${receiver.toBase58()}`,
       },
-      // note: no additional signers are needed
-      // signers: [],
+    });
+
+    // console.dir(transaction, { depth: null });
+
+    // insert to db
+    await api.donation.createNew({
+      userId: receiverUser.id,
+      sender: account.toBase58(),
+      receiver: receiver.toBase58(),
+      amount: String(amount),
+      reference: reference.publicKey.toBase58(),
+      currency: token.address,
     });
 
     return Response.json(payload, {
@@ -173,7 +208,19 @@ function validatedQueryParams(requestUrl: URL) {
     throw "Invalid input query parameter: amount";
   }
 
+  let token: Token | undefined;
+
+  try {
+    if (requestUrl.searchParams.get("token")) {
+      const address = requestUrl.searchParams.get("token");
+      token = tokenList.find((t) => t.address === address);
+    }
+  } catch (err) {
+    throw "Invalid input query parameter: amount";
+  }
+
   return {
     amount,
+    token: token || tokenList[0]!,
   };
 }

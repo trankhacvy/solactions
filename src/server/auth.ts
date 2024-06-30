@@ -6,6 +6,7 @@ import { drizzleDb } from "./db";
 import * as schema from "@/db/schema";
 import { generatePublicId } from "@/utils/nano-id";
 import { SelectUser } from "@/types";
+import { appendAddress } from "@/lib/helius";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -60,6 +61,8 @@ export const authOptions: NextAuthOptions = {
                 slug: id,
               })
               .returning();
+
+            await appendAddress(wallet);
 
             return results[0] as unknown as SelectUser;
           }

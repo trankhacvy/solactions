@@ -1,11 +1,12 @@
 import { Token } from "@/types";
+import { NATIVE_MINT } from "@solana/spl-token";
 
 export const tokenList: Token[] = [
   {
     name: "Solana",
     symbol: "SOL",
     isNative: true,
-    address: "",
+    address: NATIVE_MINT.toBase58(),
     decimals: 9,
     icon: "https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756",
   },

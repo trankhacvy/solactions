@@ -5,12 +5,11 @@ import {
   Box,
   Container,
   Typography,
-  Button,
   Card,
   CardContent,
   Grid,
 } from "@mui/material";
-import { ArrowRightIcon } from "lucide-react";
+import { Cta } from "./auth-button";
 
 export function Features(): JSX.Element {
   return (
@@ -40,37 +39,39 @@ export function Features(): JSX.Element {
         <Grid container py={8} spacing={3}>
           <Grid item xs={12} lg={4}>
             <FeatureItem
-              icon="/no-code.png"
+              icon="/donation-action.avif"
               title="No Code"
               description="All you need is an internet connection. We'll take care of the rest."
             />
           </Grid>
           <Grid item xs={12} lg={4}>
             <FeatureItem
-              icon="/analytic.png"
+              icon={[
+                "/donation-action.avif",
+                "/sale-action.avif",
+                "/vote-action.avif",
+              ]}
               title="Multiple actions"
               description="Create donation, tip, poll, and buy NFT actions in just few clicks."
             />
           </Grid>
           <Grid item xs={12} lg={4}>
             <FeatureItem
-              icon="/saving.png"
+              icon="/analytic.avif"
               title="Analytics"
               description="Record all on-chain interactions. Know your most valuable supporters."
             />
           </Grid>
         </Grid>
 
-        <Button endIcon={<ArrowRightIcon />} size="large" variant="contained">
-          Create your first action
-        </Button>
+        <Cta title="Create your first action" />
       </Container>
     </Box>
   );
 }
 
 type FeatureItemProps = {
-  icon: string;
+  icon: string | string[];
   title: string;
   description: string;
 };
@@ -91,11 +92,41 @@ function FeatureItem({
           textAlign: "center",
         }}
       >
-        <Box
-          component="img"
-          src={icon}
-          sx={{ objectFit: "cover", mb: 4, height: 240, width: "auto" }}
-        />
+        {typeof icon === "string" ? (
+          <Box
+            component="img"
+            src={icon}
+            sx={{ objectFit: "cover", mb: 4, height: 240, width: "auto" }}
+          />
+        ) : (
+          <Box
+            sx={{
+              mb: 4,
+              width: "100%",
+              height: 240,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {icon.map((i, idx) => (
+              <Box
+                component="img"
+                src={i}
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  left: "50%",
+                  objectFit: "cover",
+                  height: 240,
+                  width: "auto",
+                  transform: `translateX(-${25 * (idx + 1)}%) rotate(${(idx - 1) * -20}deg)`,
+                  transformOrigin: "bottom center",
+                  zIndex: idx === 1 ? 999 : 1,
+                }}
+              />
+            ))}
+          </Box>
+        )}
         <Typography
           variant="h6"
           component="h3"
