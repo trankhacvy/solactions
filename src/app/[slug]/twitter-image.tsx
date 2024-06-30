@@ -2,14 +2,13 @@ import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 
-// export const runtime = "edge";
 export const runtime = process.env.VERCEL ? "edge" : "node";
 
 export const alt = "SolActions";
 
 export const size = {
-  width: 1200,
-  height: 630,
+  width: 800,
+  height: 418,
 };
 
 export const contentType = "image/png";

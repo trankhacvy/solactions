@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://ohgiavehhugheqqpoysy.supabase.co/storage/v1/object/public/3links/assets/og-image.jpg",
-        width: 1200,
-        height: 630,
+        width: 800,
+        height: 418,
       },
     ],
   },
