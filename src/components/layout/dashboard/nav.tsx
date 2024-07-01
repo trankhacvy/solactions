@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import { NAV } from "@/config/header";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
-import { HeartHandshakeIcon, HomeIcon, SettingsIcon } from "lucide-react";
+import { HeartHandshakeIcon, HomeIcon } from "lucide-react";
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -143,14 +143,14 @@ const navConfig = [
     path: Routes.ADMIN,
     icon: <HomeIcon />,
   },
-  // {
-  //   title: "Donations",
-  //   path: Routes.ADMIN_DONATIONS,
-  //   icon: <HeartHandshakeIcon />,
-  // },
   {
-    title: "Settings",
-    path: Routes.ADMIN_SETTINGS,
-    icon: <SettingsIcon />,
+    title: "Donations",
+    path: Routes.ADMIN_DONATIONS,
+    icon: <HeartHandshakeIcon />,
   },
+  // {
+  //   title: "Settings",
+  //   path: Routes.ADMIN_SETTINGS,
+  //   icon: <SettingsIcon />,
+  // },
 ];

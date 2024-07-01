@@ -20,10 +20,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: process.env.VERCEL_URL
     ? new URL(`https://solactions.fun/`)
-    : // : new URL(`http://localhost:${process.env.PORT || 3000}`)
-      new URL(
-        `https://ef21-2405-4802-90b5-a5e0-3098-b553-7753-6881.ngrok-free.app`,
-      ),
+    : new URL(`http://localhost:${process.env.PORT || 3000}`),
   openGraph: {
     images: [
       "https://ohgiavehhugheqqpoysy.supabase.co/storage/v1/object/public/3links/assets/og-image.jpg",

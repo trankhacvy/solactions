@@ -6,20 +6,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import {
-  Badge,
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Link, Skeleton, Stack, Typography } from "@mui/material";
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getExplorerUrl } from "@/lib/explorer";
+import { truncateWallet } from "@/lib/wallet";
+import { tokenList } from "@/config/tokens";
+import { formatDateByPattern } from "@/lib/format-date";
+import { twitterLink } from "@/utils/twitter";
+import { getDonationLink } from "@/utils/links";
+import { SelectUser } from "@/types";
 
 export function DonationTable() {
   const { data: session } = useSession();
@@ -34,80 +30,88 @@ export function DonationTable() {
       },
     );
 
+  if (donations.length === 0 && !isLoading) {
+    return <EmptyUI user={session?.user} />;
+  }
+
   return (
-    <Box>
-      <Typography mb={2} variant="h6">
-        Donations
-      </Typography>
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Donator</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {donations.map((donation) => (
+    <TableContainer>
+      <Table sx={{ minWidth: 650 }} aria-label="Donations table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Donator</TableCell>
+            <TableCell>Amount</TableCell>
+            <TableCell align="right">Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {isLoading &&
+            Array.from({ length: 2 }).map((_, idx) => (
               <TableRow
-                key={donation.id}
+                key={idx}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {donation.sender}
+                  <Skeleton width="100%" height={24} />
                 </TableCell>
-                <TableCell align="right">{donation.amount}</TableCell>
+                <TableCell>
+                  <Skeleton width="100%" height={24} />
+                </TableCell>
                 <TableCell align="right">
-                  {donation.createdAt?.toLocaleDateString()}
+                  <Skeleton width="100%" height={24} />
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+
+          {donations.map((donation) => (
+            <TableRow
+              key={donation.id}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                <Link
+                  target="_blank"
+                  rel="noopener"
+                  href={getExplorerUrl("mainnet", donation.sender)}
+                >
+                  {truncateWallet(donation.sender, 16, true)}
+                </Link>
+              </TableCell>
+              <TableCell>
+                {donation.amount} {(donation.currency ?? tokenList[0])?.symbol}
+              </TableCell>
+              <TableCell align="right">
+                {formatDateByPattern(
+                  donation.createdAt!,
+                  "hh:mm:A DD MMM YYYY",
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
-function ActionOption({
-  title,
-  subtitle,
-  enable,
-}: {
-  title: string;
-  subtitle: string;
-  enable: boolean;
-}) {
+function EmptyUI({ user }: { user?: SelectUser }) {
+  if (!user) return null;
+
   return (
-    <Card>
-      <CardActionArea disabled>
-        <CardContent component={Stack} gap={1}>
-          <Stack flexDirection="row" gap={1}>
-            <Typography fontWeight="fontWeightSemiBold">{title}</Typography>
-            <Chip label="Soon" color="info" size="small" />
-          </Stack>
-          <Typography color="text.secondary">{subtitle}</Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <Stack alignItems="center">
+      <Typography mb={2} fontWeight="fontWeightSemiBold" color="text.secondary">
+        No donation yet
+      </Typography>
+      <a
+        href={twitterLink(getDonationLink(user?.slug), {
+          title: "Donate me on ",
+          hashtags: ["solactions", "actions", "blinks", "opos"],
+        })}
+        target="_blank"
+        rel="noopener"
+      >
+        <Button>Shill your link</Button>
+      </a>
+    </Stack>
   );
 }
-
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];

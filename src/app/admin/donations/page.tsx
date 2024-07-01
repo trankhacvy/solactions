@@ -1,3 +1,4 @@
+import { DonationTable } from "@/components/admin/donation-table";
 import ProfileForm from "@/components/profile-form";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -5,7 +6,6 @@ import { Stack, Typography } from "@mui/material";
 import { notFound } from "next/navigation";
 
 export default function Donations() {
-
   return (
     <Stack
       width="100%"
@@ -22,9 +22,9 @@ export default function Donations() {
         justifyContent="space-between"
         mb={5}
       >
-        <Typography variant="h4">Edit profile</Typography>
+        <Typography variant="h4">Donations</Typography>
       </Stack>
-      {/* <ProfileForm user={user} /> */}
+      <DonationTable />
     </Stack>
   );
 }

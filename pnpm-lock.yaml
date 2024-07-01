@@ -74,6 +74,9 @@ dependencies:
   bs58:
     specifier: ^6.0.0
     version: 6.0.0
+  dayjs:
+    specifier: ^1.11.11
+    version: 1.11.11
   drizzle-orm:
     specifier: ^0.31.2
     version: 0.31.2(@types/react@18.2.57)(postgres@3.4.4)(react@18.3.0)

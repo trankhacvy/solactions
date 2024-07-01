@@ -18,7 +18,15 @@ import { createTheme } from "@mui/material/styles";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import theme from "@/config/theme";
+
+import * as dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday";
+import relativeTime from "dayjs/plugin/relativeTime";
+
 import { env } from "@/env";
+
+dayjs.extend(isToday);
+dayjs.extend(relativeTime);
 
 export default function Providers({
   children,
