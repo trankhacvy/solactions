@@ -7,4 +7,6 @@ export const Routes = {
   ADMIN_DONATIONS: "/admin/donations",
   ADMIN_SETTINGS: "/admin/settings",
   ADMIN_EDIT: "/admin/edit",
+  ADMIN_TIPLINKS: "/admin/tiplink",
+  ADMIN_NEW_TIPLINKS: "/admin/tiplink/create",
 };

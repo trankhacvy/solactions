@@ -63,7 +63,7 @@ export function Header(): JSX.Element {
         </Stack>
         <Box flex={1} />
 
-        {status !== "authenticated" && (
+        {(status !== "authenticated" || !!wallet.connected) && (
           <Button
             onClick={async () => {
               try {
@@ -99,13 +99,13 @@ export function Header(): JSX.Element {
           </Button>
         )}
 
-        {status === "authenticated" && (
+        {status === "authenticated" && wallet.connected && (
           <Link href={Routes.NEW}>
             <Button>Create profile</Button>
           </Link>
         )}
 
-        {status === "authenticated" && (
+        {status === "authenticated" && wallet.connected && (
           <Button
             onClick={() => {
               signOut();

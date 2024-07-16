@@ -35,7 +35,8 @@ enum ProcessStatus {
 export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
   const theme = useTheme();
 
-  const { connected, publicKey, sendTransaction } = useWallet();
+  const { connected, publicKey, signTransaction, sendTransaction } =
+    useWallet();
   const { setVisible } = useWalletModal();
 
   const [status, setStatus] = useState<ProcessStatus>(ProcessStatus.IDLE);
@@ -108,20 +109,39 @@ export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
                     return;
                   }
                   try {
-                    setStatus(ProcessStatus.PROCESSING);
+                    alert("xxx");
+                    // setStatus(ProcessStatus.PROCESSING);
 
-                    const response = await fetcher<ActionPostResponse>(
-                      acc.href,
-                      {
-                        method: "POST",
-                        body: JSON.stringify({
-                          account: publicKey!.toBase58(),
-                        }),
-                      },
-                    );
+                    // const response = await fetcher<ActionPostResponse>(
+                    //   acc.href,
+                    //   {
+                    //     method: "POST",
+                    //     body: JSON.stringify({
+                    //       account: publicKey!.toBase58(),
+                    //     }),
+                    //   },
+                    // );
 
-                    const tx = Transaction.from(
-                      Buffer.from(response.transaction, "base64"),
+                    // const tx = Transaction.from(
+                    //   Buffer.from(response.transaction, "base64"),
+                    // );
+
+                    // const connection = new Connection(clusterApiUrl("devnet"));
+
+                    // const signature = await sendTransaction(tx, connection);
+
+                    // await connection.confirmTransaction(signature, "confirmed");
+
+                    // setStatus(ProcessStatus.SUCCESS);
+
+                    // setTimeout(() => {
+                    //   setStatus(ProcessStatus.IDLE);
+                    // }, 1500);
+
+                    const encodedTx = 'AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVkZDzPBPQFrsKuruNUfdTHRS5pcMzLKxSNCmbNqTBC9Dsdu1T87BNYQwG4NYJe+lyca92X7Seo3EUttlhQtMDAgAGC0iU7FvC/vu62sVvaz02tZ/bz6mpHVBNhXkeSaJkfXMkOK9qmr3JAwiZZmcR26NBu7NiHXUYODqD20TNcm3P7D1TR+pWn5ZGA8aFvrwr59EweCN7Hss+SCwSWf7N/OPJj1GB/WjDeUWLHvCSf9sYH5UxyjKPBhq+tzSZE2gxbPiPDHARkzo0js9VJDTWKXBIL2hzq8KtrSYxTn85UeO64GcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwtqCYXlzhrq8mEyvvhhNTOfGeIyz37PhBiUwnXHZv4jJclj04kifG7PRApFI4NgwtaE5na/xCEBI572Nvp+FkLcGWx49F8RTidUn9rBMPNWLhscxqg/bVJttG8A/gpRgan1RcZLFxRIYzJTD1K8X9Y2u4Im6H9ROPb2YoAAAAABt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkScOAQmLlFrsSM8xwcnAi9O9lg6t5sExcdU57/a0tCBQYFAgABNAAAAABgTRYAAAAAAFIAAAAAAAAABt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkKAgEJQwAASJTsW8L++7raxW9rPTa1n9vPqakdUE2FeR5JomR9cyQBSJTsW8L++7raxW9rPTa1n9vPqakdUE2FeR5JomR9cyQHBwADBgEFCgkACgMBAwAJBwEAAAAAAAAACAYCAQAAAAWjASEGAAAAR01CICMyAwAAAEdNQmAAAABodHRwczovL2Jyb3duLWxveWFsLXN0b2F0LTczNC5teXBpbmF0YS5jbG91ZC9pcGZzL1FtUjVUeXgzTXZwaUNLdGpUVkM0d1Z6UmlncHVqQ3Y5Ym52UUtVNFpNUXpONU5YAgEBAAAASJTsW8L++7raxW9rPTa1n9vPqakdUE2FeR5JomR9cyQBZAAAAQAICAQBAAAAAgoFChEBAQAAAAAAAAA='
+
+                     const tx = Transaction.from(
+                      Buffer.from(encodedTx, "base64"),
                     );
 
                     const connection = new Connection(clusterApiUrl("devnet"));
@@ -130,11 +150,6 @@ export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
 
                     await connection.confirmTransaction(signature, "confirmed");
 
-                    setStatus(ProcessStatus.SUCCESS);
-
-                    setTimeout(() => {
-                      setStatus(ProcessStatus.IDLE);
-                    }, 1500);
                   } catch (error) {
                     setStatus(ProcessStatus.FAILED);
                     console.error(error);

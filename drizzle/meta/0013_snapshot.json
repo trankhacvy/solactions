@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "id": "e982d835-b404-401e-98ee-96952bb51f5e",
   "prevId": "9e461c01-3c2d-4f7b-934a-b9f1d6d13dec",
   "version": "7",
@@ -328,6 +329,13 @@
       },
       "uniqueConstraints": {}
     },
+=======
+  "id": "cbeec4f5-0611-4150-820f-3a274eefb1bd",
+  "prevId": "484de383-7764-48df-8a5f-0c45ff77ed3a",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+>>>>>>> aa7f08f (tiplink)
     "public.donationTransactions": {
       "name": "donationTransactions",
       "schema": "",
@@ -338,11 +346,19 @@
           "primaryKey": true,
           "notNull": true
         },
+<<<<<<< HEAD
         "user_id": {
           "name": "user_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+=======
+        "userId": {
+          "name": "userId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+>>>>>>> aa7f08f (tiplink)
         },
         "status": {
           "name": "status",
@@ -411,6 +427,273 @@
         }
       }
     },
+<<<<<<< HEAD
+=======
+    "public.nftCampaigns": {
+      "name": "nftCampaigns",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'New NFT Campaign'"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'New NFT Campaign'"
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'PROCESSING'"
+        },
+        "sender": {
+          "name": "sender",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver": {
+          "name": "receiver",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reference": {
+          "name": "reference",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{\"name\":\"Solana\",\"symbol\":\"SOL\",\"isNative\":true,\"address\":\"So11111111111111111111111111111111111111112\",\"decimals\":9,\"icon\":\"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756\"}'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "nftCampaigns_reference_unique": {
+          "name": "nftCampaigns_reference_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "reference"
+          ]
+        }
+      }
+    },
+    "public.tipLinkClaims": {
+      "name": "tipLinkClaims",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tiplinkId": {
+          "name": "tiplinkId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "claimant": {
+          "name": "claimant",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thankMessage": {
+          "name": "thankMessage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Thank you for your donation; you made my day. <3'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "tipLinkClaims_tiplinkId_tipLinks_id_fk": {
+          "name": "tipLinkClaims_tiplinkId_tipLinks_id_fk",
+          "tableFrom": "tipLinkClaims",
+          "tableTo": "tipLinks",
+          "columnsFrom": [
+            "tiplinkId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.tipLinks": {
+      "name": "tipLinks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Tiplink'"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{\"name\":\"Solana\",\"symbol\":\"SOL\",\"isNative\":true,\"address\":\"So11111111111111111111111111111111111111112\",\"decimals\":9,\"icon\":\"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756\"}'::jsonb"
+        },
+        "multiple": {
+          "name": "multiple",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "claimable": {
+          "name": "claimable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "wallet": {
+          "name": "wallet",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "numOfClaims": {
+          "name": "numOfClaims",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 2
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "tipLinks_userId_users_id_fk": {
+          "name": "tipLinks_userId_users_id_fk",
+          "tableFrom": "tipLinks",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+>>>>>>> aa7f08f (tiplink)
     "public.users": {
       "name": "users",
       "schema": "",
@@ -459,15 +742,25 @@
           "notNull": false,
           "default": "'I use solactions.fun to connect with people.'"
         },
+<<<<<<< HEAD
         "accepted_token": {
           "name": "accepted_token",
+=======
+        "acceptToken": {
+          "name": "acceptToken",
+>>>>>>> aa7f08f (tiplink)
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false,
           "default": "'{\"name\":\"Solana\",\"symbol\":\"SOL\",\"isNative\":true,\"address\":\"So11111111111111111111111111111111111111112\",\"decimals\":9,\"icon\":\"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756\"}'::jsonb"
         },
+<<<<<<< HEAD
         "thanks_message": {
           "name": "thanks_message",
+=======
+        "thankMessage": {
+          "name": "thankMessage",
+>>>>>>> aa7f08f (tiplink)
           "type": "text",
           "primaryKey": false,
           "notNull": false,

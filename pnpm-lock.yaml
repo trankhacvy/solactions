@@ -35,9 +35,12 @@ dependencies:
   '@mui/system':
     specifier: ^5.15.20
     version: 5.15.20(@emotion/react@11.11.4)(@emotion/styled@11.11.5)(@types/react@18.2.57)(react@18.3.0)
+  '@pythnetwork/price-service-client':
+    specifier: ^1.9.0
+    version: 1.9.0
   '@solana/actions':
-    specifier: ^1.0.2
-    version: 1.0.2(fastestsmallesttextencoderdecoder@1.0.22)
+    specifier: ^1.1.1
+    version: 1.1.1(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/spl-token':
     specifier: ^0.4.7
     version: 0.4.7(@solana/web3.js@1.93.2)(fastestsmallesttextencoderdecoder@1.0.22)
@@ -65,8 +68,12 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.39.0
     version: 5.39.0(react@18.3.0)
+  '@tiplink/api':
+    specifier: ^0.2.5
+    version: 0.2.5(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1)
   '@trpc/client':
     specifier: next
+<<<<<<< HEAD
     version: 11.0.0-rc.466(@trpc/server@11.0.0-rc.466)
   '@trpc/react-query':
     specifier: next
@@ -74,6 +81,15 @@ dependencies:
   '@trpc/server':
     specifier: next
     version: 11.0.0-rc.466
+=======
+    version: 11.0.0-rc.452(@trpc/server@11.0.0-rc.452)
+  '@trpc/react-query':
+    specifier: next
+    version: 11.0.0-rc.452(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.452)(@trpc/server@11.0.0-rc.452)(react-dom@18.3.0)(react@18.3.0)
+  '@trpc/server':
+    specifier: next
+    version: 11.0.0-rc.452
+>>>>>>> aa7f08f (tiplink)
   bs58:
     specifier: ^6.0.0
     version: 6.0.0
@@ -1751,6 +1767,64 @@ packages:
       '@babel/helper-string-parser': 7.24.7
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
+    dev: false
+
+  /@base_ui/react@1.0.0-alpha.1(@types/react@18.2.57)(react-dom@18.3.0)(react@18.3.0):
+    resolution: {integrity: sha512-8vSVg5p0/JaHm8YfQ9MuTobwgRV/9CBg6NLmW4Novm8zgYyKguKr7rRlDZp5E3D68/t3hDZZ4igTUssqCNRfpA==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.24.7
+      '@floating-ui/react-dom': 2.1.1(react-dom@18.3.0)(react@18.3.0)
+      '@mui/types': 7.2.14(@types/react@18.2.57)
+      '@mui/utils': 5.15.20(@types/react@18.2.57)(react@18.3.0)
+      '@popperjs/core': 2.11.8
+      '@types/react': 18.2.57
+      clsx: 2.1.1
+      prop-types: 15.8.1
+      react: 18.3.0
+      react-dom: 18.3.0(react@18.3.0)
+    dev: false
+
+  /@coral-xyz/anchor@0.29.0:
+    resolution: {integrity: sha512-eny6QNG0WOwqV0zQ7cs/b1tIuzZGmP7U7EcH+ogt4Gdbl8HDmIYVMh/9aTmYZPaFWjtUaI8qSn73uYEXWfATdA==}
+    engines: {node: '>=11'}
+    dependencies:
+      '@coral-xyz/borsh': 0.29.0(@solana/web3.js@1.93.2)
+      '@noble/hashes': 1.4.0
+      '@solana/web3.js': 1.93.2
+      bn.js: 5.2.1
+      bs58: 4.0.1
+      buffer-layout: 1.2.2
+      camelcase: 6.3.0
+      cross-fetch: 3.1.8
+      crypto-hash: 1.3.0
+      eventemitter3: 4.0.7
+      pako: 2.1.0
+      snake-case: 3.0.4
+      superstruct: 0.15.5
+      toml: 3.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@coral-xyz/borsh@0.29.0(@solana/web3.js@1.93.2):
+    resolution: {integrity: sha512-s7VFVa3a0oqpkuRloWVPdCK7hMbAMY270geZOGfCnaqexrP5dTIpbEHL33req6IYPPJ0hYa71cdvJ1h6V55/oQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@solana/web3.js': ^1.68.0
+    dependencies:
+      '@solana/web3.js': 1.93.2
+      bn.js: 5.2.1
+      buffer-layout: 1.2.2
     dev: false
 
   /@emotion/babel-plugin@11.11.0:
@@ -3883,6 +3957,29 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
+  /@pythnetwork/price-service-client@1.9.0:
+    resolution: {integrity: sha512-SLm3IFcfmy9iMqHeT4Ih6qMNZhJEefY14T9yTlpsH2D/FE5+BaGGnfcexUifVlfH6M7mwRC4hEFdNvZ6ebZjJg==}
+    deprecated: This package is deprecated and is no longer maintained. Please use @pythnetwork/hermes-client instead.
+    dependencies:
+      '@pythnetwork/price-service-sdk': 1.7.1
+      '@types/ws': 8.5.10
+      axios: 1.7.2
+      axios-retry: 3.9.1
+      isomorphic-ws: 4.0.1(ws@8.17.1)
+      ts-log: 2.2.5
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
+    dev: false
+
+  /@pythnetwork/price-service-sdk@1.7.1:
+    resolution: {integrity: sha512-xr2boVXTyv1KUt/c6llUTfbv2jpud99pWlMJbFaHGUBoygQsByuy7WbjIJKZ+0Blg1itLZl0Lp/pJGGg8SdJoQ==}
+    dependencies:
+      bn.js: 5.2.1
+    dev: false
+
   /@randlabs/communication-bridge@1.0.1:
     resolution: {integrity: sha512-CzS0U8IFfXNK7QaJFE4pjbxDGfPjbXBEsEaCn9FN15F+ouSAEUQkva3Gl66hrkBZOGexKFEWMwUHIDKpZ2hfVg==}
     dev: false
@@ -4400,8 +4497,8 @@ packages:
       - react-native
     dev: false
 
-  /@solana/actions@1.0.2(fastestsmallesttextencoderdecoder@1.0.22):
-    resolution: {integrity: sha512-jgE1lyusoTdMyvxHbKRRQ7/TfOVaHEqIiBk/OcEzuzp0IXE5MwInzWPiTUAzEJcBcjKgv71++xlV+5YZHLaVBA==}
+  /@solana/actions@1.1.1(fastestsmallesttextencoderdecoder@1.0.22):
+    resolution: {integrity: sha512-QS9Bf6IPjHXMr3UMh1aeSEWL9sdVq6gtyOv6RK9IU3bh6W07uPr15OyWVOVBZwgNLD+nzWBfeJWo//bk1vpj/w==}
     engines: {node: '>=16'}
     dependencies:
       '@solana/qr-code-styling': 1.6.0
@@ -5555,6 +5652,28 @@ packages:
       react: 18.3.0
     dev: false
 
+  /@tiplink/api@0.2.5(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1):
+    resolution: {integrity: sha512-6XKaQ3v4F17jY5fVJO/XwJnj9UAUDbVY27kK3Cn6k9pnrfyitOypNWtFQ8JSuEfmyv4MBWmnVVc2+786k8j5BQ==}
+    dependencies:
+      '@coral-xyz/anchor': 0.29.0
+      '@solana/spl-token': 0.3.11(@solana/web3.js@1.93.2)(fastestsmallesttextencoderdecoder@1.0.22)
+      '@solana/web3.js': 1.93.2
+      bs58: 5.0.0
+      libsodium: 0.7.13
+      libsodium-wrappers-sumo: 0.7.13
+      nanoid: 3.3.7
+      sodium-plus: 0.9.0(sodium-native@3.4.1)
+      tweetnacl: 1.0.3
+      tweetnacl-util: 0.15.1
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - fastestsmallesttextencoderdecoder
+      - sodium-native
+      - utf-8-validate
+    dev: false
+
   /@toruslabs/base-controllers@2.9.0(@babel/runtime@7.24.7):
     resolution: {integrity: sha512-rKc+bR4QB/wdbH0CxLZC5e2PUZcIgkr9yY7TMd3oIffDklaYBnsuC5ES2/rgK1aRUDRWz+qWbTwLqsY6PlT37Q==}
     peerDependencies:
@@ -5984,6 +6103,7 @@ packages:
       wif: 4.0.0
     dev: false
 
+<<<<<<< HEAD
   /@trpc/client@11.0.0-rc.466(@trpc/server@11.0.0-rc.466):
     resolution: {integrity: sha512-8nEYgDPvTrXzn00FgLEOU/BHtH89LVQ0JTiW2efa4wW2XIrj3Nv/QKCRkNXV6yu7VSefwU+p2PulUL6TjNlzAg==}
     peerDependencies:
@@ -5998,18 +6118,44 @@ packages:
       '@tanstack/react-query': ^5.49.2
       '@trpc/client': 11.0.0-rc.466+1e8344ea7
       '@trpc/server': 11.0.0-rc.466+1e8344ea7
+=======
+  /@trpc/client@11.0.0-rc.452(@trpc/server@11.0.0-rc.452):
+    resolution: {integrity: sha512-QAabLHbaqVAc4FOkC5QbDMRy2mEZk+mYdVjAOdeqjIwQ4jUJ/m0Dx6gEM99I7ASnT1TAuPGy6WwIWJixma6QWg==}
+    peerDependencies:
+      '@trpc/server': 11.0.0-rc.452+8f18c400c
+    dependencies:
+      '@trpc/server': 11.0.0-rc.452
+    dev: false
+
+  /@trpc/react-query@11.0.0-rc.452(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.452)(@trpc/server@11.0.0-rc.452)(react-dom@18.3.0)(react@18.3.0):
+    resolution: {integrity: sha512-R8OhL9YNtMTbE8m7F+0Y+LsWsvXwIz0nuzyxrAiGSzrs8WdiUf4CEnAHoD1SAi+pS1TAc8p1hGWCcyyD0fXB/g==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.49.2
+      '@trpc/client': 11.0.0-rc.452+8f18c400c
+      '@trpc/server': 11.0.0-rc.452+8f18c400c
+>>>>>>> aa7f08f (tiplink)
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
     dependencies:
       '@tanstack/react-query': 5.39.0(react@18.3.0)
+<<<<<<< HEAD
       '@trpc/client': 11.0.0-rc.466(@trpc/server@11.0.0-rc.466)
       '@trpc/server': 11.0.0-rc.466
+=======
+      '@trpc/client': 11.0.0-rc.452(@trpc/server@11.0.0-rc.452)
+      '@trpc/server': 11.0.0-rc.452
+>>>>>>> aa7f08f (tiplink)
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
     dev: false
 
+<<<<<<< HEAD
   /@trpc/server@11.0.0-rc.466:
     resolution: {integrity: sha512-/40QZXyZCc3HvgJbQ2+IqCGm4m+fJs7q7gMp6nLiuPB3FIJJeV0r+w1M/NGcG5avbCJ3A5Qy45s4N1glcMv1ug==}
+=======
+  /@trpc/server@11.0.0-rc.452:
+    resolution: {integrity: sha512-sqZ2Nmh9hD/xuW5x/9tLoa7N1k/99B0eCDoVdbVtnMQZ0gH79vlLQXrbIPg6BZxu/h1i/jyHWXBmFMqN2JZ6xw==}
+>>>>>>> aa7f08f (tiplink)
     dev: false
 
   /@types/connect@3.4.38:
@@ -7168,6 +7314,13 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /axios-retry@3.9.1:
+    resolution: {integrity: sha512-8PJDLJv7qTTMMwdnbMvrLYuvB47M81wRtxQmEdV5w4rgbTXTt+vtPkXwajOfOdSyv/wZICJOC+/UhXH4aQ/R+w==}
+    dependencies:
+      '@babel/runtime': 7.24.7
+      is-retry-allowed: 2.2.0
+    dev: false
+
   /axios@0.27.2:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
@@ -7538,6 +7691,11 @@ packages:
 
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
+
+  /buffer-layout@1.2.2:
+    resolution: {integrity: sha512-kWSuLN694+KTk8SrYvCqwP2WcgQjoRCiF5b4QDvkkz8EmgD+aWAIceGFKMIAdmF/pH+vpgNV3d3kAKorcdAmWA==}
+    engines: {node: '>=4.5'}
+    dev: false
 
   /buffer-xor@1.0.3:
     resolution: {integrity: sha512-571s0T7nZWK6vB67HI5dyUF7wXiNcfaPPPTl6zYCNApANjIvYJTg7hlud/+cJpdAhS7dVzqMLmfhfHR3rAcOjQ==}
@@ -8050,6 +8208,11 @@ packages:
       randomfill: 1.0.4
     dev: false
 
+  /crypto-hash@1.3.0:
+    resolution: {integrity: sha512-lyAZ0EMyjDkVvz8WOeVnuCPvKVBXcMv1l5SVqO1yC7PzTwrD/pPje/BIRbWhMoPe436U+Y2nD7f5bFx0kt+Sbg==}
+    engines: {node: '>=8'}
+    dev: false
+
   /crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
     dev: false
@@ -8326,6 +8489,13 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.7
       csstype: 3.1.3
+    dev: false
+
+  /dot-case@3.0.4:
+    resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.6.3
     dev: false
 
   /draggabilly@3.0.0:
@@ -10089,6 +10259,11 @@ packages:
       has-tostringtag: 1.0.2
     dev: true
 
+  /is-retry-allowed@2.2.0:
+    resolution: {integrity: sha512-XVm7LOeLpTW4jV19QSH38vkswxoLud8sQ57YwJVTPWdiaI9I8keEhGFpBlslyVsgdQy4Opg8QOLb8YRgsyZiQg==}
+    engines: {node: '>=10'}
+    dev: false
+
   /is-set@2.0.3:
     resolution: {integrity: sha512-iPAjerrse27/ygGLxw+EBR9agv9Y6uLeYVJMu+QNCoouJ1/1ri0mGrcWpfCqFZuzzx3WjtwxG098X+n4OuRkPg==}
     engines: {node: '>= 0.4'}
@@ -10130,6 +10305,10 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       which-typed-array: 1.1.15
+
+  /is-typedarray@1.0.0:
+    resolution: {integrity: sha512-cyA56iCMHAh5CdzjJIa4aohJyeO1YbwLi3Jc35MmRU6poroFjIGZzUzupGiRPOjgHg9TLu43xbpwXk523fMxKA==}
+    dev: false
 
   /is-unicode-supported@0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
@@ -10216,6 +10395,14 @@ packages:
       ws: '*'
     dependencies:
       ws: 7.5.10
+    dev: false
+
+  /isomorphic-ws@4.0.1(ws@8.17.1):
+    resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
+    peerDependencies:
+      ws: '*'
+    dependencies:
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     dev: false
 
   /iterator.prototype@1.1.2:
@@ -10600,6 +10787,26 @@ packages:
       type-check: 0.4.0
     dev: true
 
+  /libsodium-sumo@0.7.13:
+    resolution: {integrity: sha512-zTGdLu4b9zSNLfovImpBCbdAA4xkpkZbMnSQjP8HShyOutnGjRHmSOKlsylh1okao6QhLiz7nG98EGn+04cZjQ==}
+    dev: false
+
+  /libsodium-wrappers-sumo@0.7.13:
+    resolution: {integrity: sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==}
+    dependencies:
+      libsodium-sumo: 0.7.13
+    dev: false
+
+  /libsodium-wrappers@0.7.13:
+    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
+    dependencies:
+      libsodium: 0.7.13
+    dev: false
+
+  /libsodium@0.7.13:
+    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+    dev: false
+
   /lighthouse-logger@1.4.2:
     resolution: {integrity: sha512-gPWxznF6TKmUHrOQjlVo2UbaL2EJ71mb2CCeRs/2qBpi4L/g4LUVc9+3lKQ6DTUZwJswfM7ainGrLO1+fOqa2g==}
     dependencies:
@@ -10727,6 +10934,12 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
+
+  /lower-case@2.0.2:
+    resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
+    dependencies:
+      tslib: 2.6.3
+    dev: false
 
   /lru-cache@10.2.2:
     resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
@@ -11292,6 +11505,13 @@ packages:
       - babel-plugin-macros
     dev: false
 
+  /no-case@3.0.4:
+    resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
+    dependencies:
+      lower-case: 2.0.2
+      tslib: 2.6.3
+    dev: false
+
   /nocache@3.0.4:
     resolution: {integrity: sha512-WDD0bdg9mbq6F4mRxEYcPWwfA1vxd0mrvKOyxI7Xj/atfRHVeutzuWByG//jfm4uPzp0y4Kj051EORCBSQMycw==}
     engines: {node: '>=12.0.0'}
@@ -11650,6 +11870,10 @@ packages:
     resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
     dev: true
 
+  /pako@2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+    dev: false
+
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -11810,6 +12034,12 @@ packages:
   /pngjs@3.4.0:
     resolution: {integrity: sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==}
     engines: {node: '>=4.0.0'}
+    dev: false
+
+  /poly1305-js@0.4.4:
+    resolution: {integrity: sha512-5B6/S+vg5AOr66wJDkh5LOpU/F3EKANDy4VXKsNZLXea1uCy6CiOWOZ3VhcC0nYdhE7vJUMcLxqcVlrv2g/+Rg==}
+    dependencies:
+      big-integer: 1.6.52
     dev: false
 
   /possible-typed-array-names@1.0.0:
@@ -12938,6 +13168,13 @@ packages:
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
     dev: false
 
+  /snake-case@3.0.4:
+    resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
+    dependencies:
+      dot-case: 3.0.4
+      tslib: 2.6.3
+    dev: false
+
   /socket.io-client@4.7.5:
     resolution: {integrity: sha512-sJ/tqHOCe7Z50JCBCXrsY3I2k03iOiUe+tj1OmKeD2lXPiGH/RUCdTZFoqVyN7l1MnpIzPrGtLcijffmeouNlQ==}
     engines: {node: '>=10.0.0'}
@@ -12979,6 +13216,26 @@ packages:
     dependencies:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
+    dev: false
+
+  /sodium-native@3.4.1:
+    resolution: {integrity: sha512-PaNN/roiFWzVVTL6OqjzYct38NSXewdl2wz8SRB51Br/MLIJPrbM3XexhVWkq7D3UWMysfrhKVf1v1phZq6MeQ==}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.8.1
+    dev: false
+
+  /sodium-plus@0.9.0(sodium-native@3.4.1):
+    resolution: {integrity: sha512-WWKxrd81qDL7C1A10yxNmZ135yovEZuIRnZ/BIf/FcajYBupbKbPdgzwlusPHLVxkMDDamcarq9PxxRBUSqpCw==}
+    peerDependencies:
+      sodium-native: ^3.2.0
+    dependencies:
+      buffer: 5.7.1
+      libsodium-wrappers: 0.7.13
+      poly1305-js: 0.4.4
+      sodium-native: 3.4.1
+      typedarray-to-buffer: 3.1.5
+      xsalsa20: 1.2.0
     dev: false
 
   /sonic-boom@2.8.0:
@@ -13276,6 +13533,10 @@ packages:
       copy-anything: 3.0.5
     dev: false
 
+  /superstruct@0.15.5:
+    resolution: {integrity: sha512-4AOeU+P5UuE/4nOUkmcQdW5y7i9ndt1cQd/3iUe+LTz3RxESf/W/5lg4B74HbDMMv8PHnPnGCQFH45kBcrQYoQ==}
+    dev: false
+
   /superstruct@1.0.4:
     resolution: {integrity: sha512-7JpaAoX2NGyoFlI9NBh66BQXGONc+uE+MRS5i2iOBKuS4e+ccgMDjATgZldkah+33DakBxDHiss9kvUcGAO8UQ==}
     engines: {node: '>=14.0.0'}
@@ -13468,6 +13729,10 @@ packages:
     engines: {node: '>=0.6'}
     dev: false
 
+  /toml@3.0.0:
+    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+    dev: false
+
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
@@ -13484,6 +13749,10 @@ packages:
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
+
+  /ts-log@2.2.5:
+    resolution: {integrity: sha512-PGcnJoTBnVGy6yYNFxWVNkdcAuAMstvutN9MgDJIV6L0oG8fB+ZNNy1T+wJzah8RPGor1mZuPQkVfXNDpy9eHA==}
+    dev: false
 
   /ts-mixer@6.0.4:
     resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
@@ -13504,6 +13773,10 @@ packages:
 
   /tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
+    dev: false
+
+  /tweetnacl-util@0.15.1:
+    resolution: {integrity: sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==}
     dev: false
 
   /tweetnacl@1.0.3:
@@ -13580,6 +13853,12 @@ packages:
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
     dev: true
+
+  /typedarray-to-buffer@3.1.5:
+    resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
+    dependencies:
+      is-typedarray: 1.0.0
+    dev: false
 
   /typeforce@1.18.0:
     resolution: {integrity: sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==}
@@ -14060,6 +14339,10 @@ packages:
   /xmlhttprequest-ssl@2.0.0:
     resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}
     engines: {node: '>=0.4.0'}
+    dev: false
+
+  /xsalsa20@1.2.0:
+    resolution: {integrity: sha512-FIr/DEeoHfj7ftfylnoFt3rAIRoWXpx2AoDfrT2qD2wtp7Dp+COajvs/Icb7uHqRW9m60f5iXZwdsJJO3kvb7w==}
     dev: false
 
   /xtend@4.0.2:

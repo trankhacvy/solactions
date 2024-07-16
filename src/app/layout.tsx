@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   metadataBase: process.env.VERCEL_URL
     ? new URL(`https://solactions.fun/`)
     : new URL(`http://localhost:${process.env.PORT || 3000}`),
+
   openGraph: {
     images: [
       "https://ohgiavehhugheqqpoysy.supabase.co/storage/v1/object/public/3links/assets/og-image.jpg",

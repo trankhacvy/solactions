@@ -24,7 +24,6 @@ export const buildTransferSolTx = async (
   const connection = getConnection();
 
   const transaction = new Transaction();
-  transaction.feePayer = feePayer;
 
   const ix = SystemProgram.transfer({
     fromPubkey: feePayer,
@@ -36,6 +35,12 @@ export const buildTransferSolTx = async (
     pubkey: reference,
     isSigner: false,
     isWritable: false,
+  });
+
+  ix.keys.push({
+    pubkey: receiver,
+    isSigner: true,
+    isWritable: true,
   });
 
   transaction.add(ix);
@@ -62,7 +67,11 @@ export const buildTransferSplTx = async (
   // TODO: verify token account
   const sourceAccount = getAssociatedTokenAddressSync(mint, sender);
 
+  console.log("sourceAccount", sourceAccount.toBase58());
+
   const destAccount = getAssociatedTokenAddressSync(mint, receiver);
+
+  console.log("destAccount", destAccount.toBase58());
 
   const transaction = new Transaction();
   transaction.feePayer = sender;
