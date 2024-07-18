@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-export const revalidateUser = () => {
+export const revalidateDonationProfile = () => {
   revalidatePath(`/admin`);
   revalidatePath(`/admin/edit`);
   revalidatePath(`/admin/settings`);

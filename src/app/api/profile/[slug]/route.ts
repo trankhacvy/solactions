@@ -1,7 +1,7 @@
-import { donateOptions, tokenList } from "@/config/tokens";
+import { tokenList } from "@/config/tokens";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
-import { SelectUser, Token } from "@/types";
+import { SelectDonationProfile, Token } from "@/types";
 import {
   ActionPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -22,9 +22,9 @@ export const GET = async (req: Request, context: { params: Params }) => {
   try {
     const requestUrl = new URL(req.url);
 
-    const user = await api.user.getBySlug({ slug: context.params.slug });
+    const profile = await api.donation.getBySlug({ slug: context.params.slug });
 
-    if (!user) {
+    if (!profile) {
       return Response.json(
         {
           error: true,
@@ -36,24 +36,24 @@ export const GET = async (req: Request, context: { params: Params }) => {
     }
 
     const baseHref = new URL(
-      `/api/profile/${user.slug}`,
+      `/api/profile/${profile.slug}`,
       requestUrl.origin,
     ).toString();
 
     const payload: ActionGetResponse = {
-      title: user.name ?? "",
-      icon: user.avatar ?? "",
-      description: user.bio ?? "",
+      title: profile.name ?? "",
+      icon: profile.image ?? "",
+      description: profile.bio ?? "",
       label: "Transfer",
       links: {
         actions: [
-          ...donateOptions.map((option) => ({
-            label: `${option} ${user.acceptToken?.symbol}`,
-            href: `${baseHref}?amount=${option}${user.acceptToken?.isNative ? "" : `&token=${user.acceptToken?.address}`}`,
+          ...profile.amountOptions.map((option) => ({
+            label: `${option} ${profile.acceptToken?.symbol}`,
+            href: `${baseHref}?amount=${option}${profile.acceptToken?.isNative ? "" : `&token=${profile.acceptToken?.address}`}`,
           })),
           {
             label: "Donate",
-            href: `${baseHref}?amount={amount}${user.acceptToken?.isNative ? "" : `&token=${user.acceptToken?.address}`}`,
+            href: `${baseHref}?amount={amount}${profile.acceptToken?.isNative ? "" : `&token=${profile.acceptToken?.address}`}`,
             parameters: [
               {
                 name: "amount",
@@ -90,13 +90,13 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     const body: ActionPostRequest = await req.json();
 
-    let receiverUser: SelectUser | undefined;
+    let profile: SelectDonationProfile | undefined;
     try {
-      receiverUser = await api.user.getBySlug({
+      profile = await api.donation.getBySlug({
         slug: context.params.slug,
       });
 
-      if (!receiverUser) {
+      if (!profile) {
         return new Response('Invalid "receiver" provided', {
           status: 400,
           headers: ACTIONS_CORS_HEADERS,
@@ -124,22 +124,13 @@ export const POST = async (req: Request, context: { params: Params }) => {
     // validate the client provided input
     let receiver: PublicKey;
     try {
-      receiver = new PublicKey(receiverUser.wallet);
+      receiver = new PublicKey(profile.wallet);
     } catch (err) {
       return new Response('Invalid "receiver" provided', {
         status: 400,
         headers: ACTIONS_CORS_HEADERS,
       });
     }
-
-    // ensure the receiving account will be rent exempt
-    // const minimumBalance = await connection.getMinimumBalanceForRentExemption(
-    //   0, // note: simple accounts that just store native SOL have `0` bytes of data
-    // );
-
-    // if (amount * LAMPORTS_PER_SOL < minimumBalance) {
-    //   throw `account may not be rent exempt: ${receiver.toBase58()}`;
-    // }
 
     const reference = Keypair.generate();
 
@@ -165,15 +156,13 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
-        message: `Send ${amount} ${token.symbol} to ${receiver.toBase58()}. ${receiverUser.thankMessage}`,
+        message: `Send ${amount} ${token.symbol} to ${receiver.toBase58()}. ${profile.thankMessage}`,
       },
     });
 
-    // console.dir(transaction, { depth: null });
-
     // insert to db
-    await api.donation.createNew({
-      userId: receiverUser.id,
+    api.donationTransaction.create({
+      profileId: profile.id,
       sender: account.toBase58(),
       receiver: receiver.toBase58(),
       amount: String(amount),

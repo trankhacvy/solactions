@@ -41,78 +41,34 @@ export type Body = Array<{
 
 export async function POST(req: NextRequest) {
   const body: Body = await req.json();
-  // console.dir(body, { depth: null });
+
+  console.dir(body, { depth: null });
 
   if (body && body.length > 0) {
     const transaction = body[0]!;
     if (transaction.type === "TRANSFER" && !transaction.transactionError) {
-      const nativeTranfer = transaction.nativeTransfers?.[0];
-      const tokenTranfer = transaction.tokenTransfers?.[0];
+      const accountKeys = transaction.accountData
+        .filter((data) => data.nativeBalanceChange === 0)
+        .map((acc) => acc.account);
 
-      if (nativeTranfer) {
-        const sender = nativeTranfer.fromUserAccount;
-        const receiver = nativeTranfer.toUserAccount;
+      console.log("accountKeys", accountKeys);
 
-        const accountKeys = transaction.accountData
-          .map((acc) => acc.account)
-          .filter((acc) => acc !== sender && acc !== receiver);
-
-        const donations = await api.donation.getPendingTransaction({
-          receiver,
+      const transactions =
+        await api.transaction.getPendingTransactionByReference({
           addresses: accountKeys,
         });
 
-        if (donations.length > 0) {
-          await Promise.all(
-            donations.map((donation) =>
-              api.donation.updateByReference({
-                status: "SUCCESS",
-                reference: donation.reference,
-              }),
-            ),
-          );
+      console.log("transactions", transactions);
 
-          return NextResponse.json({ success: true });
-        }
-      }
-
-      if (tokenTranfer) {
-        const sender = tokenTranfer.fromUserAccount;
-        const senderTokenAccount = tokenTranfer.fromTokenAccount;
-
-        const receiver = tokenTranfer.toUserAccount;
-        const receiverTokenAccount = tokenTranfer.toTokenAccount;
-
-        const accountKeys = transaction.accountData
-          .map((acc) => acc.account)
-          .filter(
-            (acc) =>
-              ![
-                sender,
-                receiver,
-                senderTokenAccount,
-                receiverTokenAccount,
-                tokenTranfer.mint,
-              ].includes(acc),
-          );
-
-        const donations = await api.donation.getPendingTransaction({
-          receiver,
-          addresses: accountKeys,
-        });
-
-        if (donations.length > 0) {
-          await Promise.all(
-            donations.map((donation) =>
-              api.donation.updateByReference({
-                status: "SUCCESS",
-                reference: donation.reference,
-              }),
-            ),
-          );
-
-          return NextResponse.json({ success: true });
-        }
+      if (transactions.length > 0) {
+        await Promise.all(
+          transactions.map((tx) =>
+            api.transaction.updateByReference({
+              status: "SUCCESS",
+              reference: tx.reference,
+            }),
+          ),
+        );
       }
     }
   }

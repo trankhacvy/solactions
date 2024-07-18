@@ -41,6 +41,21 @@ export const userRouter = createTRPCRouter({
       return model;
     }),
 
+  updateV2: protectedProcedure
+    .input(schema.updateUserSchema)
+    .mutation(async ({ ctx, input }) => {
+      const [model] = await ctx.db
+        .update(schema.users)
+        .set({
+          ...input,
+          acceptToken: input.acceptToken as Token,
+        })
+        .where(eq(schema.users.id, ctx.session.user.id))
+        .returning();
+
+      return model;
+    }),
+
   getById: publicProcedure
     .input(
       z.object({

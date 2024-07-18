@@ -23,7 +23,6 @@ export function Header(): JSX.Element {
     <AppBar
       position="sticky"
       sx={{
-        // boxShadow: "none",
         height: {
           xs: HEADER.H_MOBILE,
           lg: HEADER.H_DESKTOP,

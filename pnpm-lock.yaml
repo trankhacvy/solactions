@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@auth/drizzle-adapter':
+    specifier: ^1.4.1
+    version: 1.4.1
   '@emotion/cache':
     specifier: ^11.11.0
     version: 11.11.0
@@ -64,13 +67,13 @@ dependencies:
     version: 5.39.0(react@18.3.0)
   '@trpc/client':
     specifier: next
-    version: 11.0.0-rc.433(@trpc/server@11.0.0-rc.433)
+    version: 11.0.0-rc.465(@trpc/server@11.0.0-rc.465)
   '@trpc/react-query':
     specifier: next
-    version: 11.0.0-rc.433(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.433)(@trpc/server@11.0.0-rc.433)(react-dom@18.3.0)(react@18.3.0)
+    version: 11.0.0-rc.465(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.465)(@trpc/server@11.0.0-rc.465)(react-dom@18.3.0)(react@18.3.0)
   '@trpc/server':
     specifier: next
-    version: 11.0.0-rc.433
+    version: 11.0.0-rc.465
   bs58:
     specifier: ^6.0.0
     version: 6.0.0
@@ -79,7 +82,7 @@ dependencies:
     version: 1.11.11
   drizzle-orm:
     specifier: ^0.31.2
-    version: 0.31.2(@types/react@18.2.57)(postgres@3.4.4)(react@18.3.0)
+    version: 0.31.2(@types/react@18.2.57)(postgres@3.3.5)(react@18.3.0)
   drizzle-zod:
     specifier: ^0.5.1
     version: 0.5.1(drizzle-orm@0.31.2)(zod@3.23.3)
@@ -99,11 +102,11 @@ dependencies:
     specifier: ^14.2.4
     version: 14.2.4(@babel/core@7.24.7)(react-dom@18.3.0)(react@18.3.0)
   next-auth:
-    specifier: ^4.24.6
+    specifier: ^4.24.4
     version: 4.24.7(next@14.2.4)(react-dom@18.3.0)(react@18.3.0)
   postgres:
-    specifier: ^3.4.4
-    version: 3.4.4
+    specifier: 3.3.5
+    version: 3.3.5
   react:
     specifier: ^18.3.0
     version: 18.3.0
@@ -192,6 +195,39 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+    dev: false
+
+  /@auth/core@0.34.1:
+    resolution: {integrity: sha512-tuYU2VIbI8rFbkSwP710LmybB2FXJsPN7j3sjRVfN9SXVQBK2ej6LdewQaofpBGp4Mk+cC2UeiGNH0or4tgaeA==}
+    peerDependencies:
+      '@simplewebauthn/browser': ^9.0.1
+      '@simplewebauthn/server': ^9.0.2
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      '@simplewebauthn/browser':
+        optional: true
+      '@simplewebauthn/server':
+        optional: true
+      nodemailer:
+        optional: true
+    dependencies:
+      '@panva/hkdf': 1.2.0
+      '@types/cookie': 0.6.0
+      cookie: 0.6.0
+      jose: 5.6.3
+      oauth4webapi: 2.11.1
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
+    dev: false
+
+  /@auth/drizzle-adapter@1.4.1:
+    resolution: {integrity: sha512-pUC8D0jfANDvThH1CrcUXmjZyF98ccVMY3iEZUQzUTr0U1csuppvRoz5JccOLzjv3tu+Nb9Qd6SvrmmsnuYgSw==}
+    dependencies:
+      '@auth/core': 0.34.1
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
     dev: false
 
   /@babel/code-frame@7.24.7:
@@ -5983,38 +6019,42 @@ packages:
       wif: 4.0.0
     dev: false
 
-  /@trpc/client@11.0.0-rc.433(@trpc/server@11.0.0-rc.433):
-    resolution: {integrity: sha512-QEPk14HGP4GK/88v7ORChN2GYbaP+LlCJMQHPRFogaVzapSbiE6C6PN+vNTn8soD28SuPOu+lRzuJszLIuhIPA==}
+  /@trpc/client@11.0.0-rc.465(@trpc/server@11.0.0-rc.465):
+    resolution: {integrity: sha512-SIXn9l8NRp+qoTKkLs30JOQnQ3IWFai7I/M/s/61GOoSctRnQSvq8Bp2nzgm/+/W32bhMYBK86MoOiBKpgW0Yg==}
     peerDependencies:
-      '@trpc/server': 11.0.0-rc.433+014d1c839
+      '@trpc/server': 11.0.0-rc.465+461733492
     dependencies:
-      '@trpc/server': 11.0.0-rc.433
+      '@trpc/server': 11.0.0-rc.465
     dev: false
 
-  /@trpc/react-query@11.0.0-rc.433(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.433)(@trpc/server@11.0.0-rc.433)(react-dom@18.3.0)(react@18.3.0):
-    resolution: {integrity: sha512-MXe9C7gq5eId6Uz30M24D11D1zc/As91WVhKZS8i3yb+VERxvRmhfWyGRn7BJvhCApZ/8eKlsKbWq48SrATlhg==}
+  /@trpc/react-query@11.0.0-rc.465(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.465)(@trpc/server@11.0.0-rc.465)(react-dom@18.3.0)(react@18.3.0):
+    resolution: {integrity: sha512-l3ArScRQ0F7HSn2dCyM5LF3p553zZFPlEZbbZ+qAJBAHuK29j+8bRV3HXrmJvk4b9NUkVyHrWvN8diXxDE6RZA==}
     peerDependencies:
-      '@tanstack/react-query': ^5.40.0
-      '@trpc/client': 11.0.0-rc.433+014d1c839
-      '@trpc/server': 11.0.0-rc.433+014d1c839
+      '@tanstack/react-query': ^5.49.2
+      '@trpc/client': 11.0.0-rc.465+461733492
+      '@trpc/server': 11.0.0-rc.465+461733492
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
     dependencies:
       '@tanstack/react-query': 5.39.0(react@18.3.0)
-      '@trpc/client': 11.0.0-rc.433(@trpc/server@11.0.0-rc.433)
-      '@trpc/server': 11.0.0-rc.433
+      '@trpc/client': 11.0.0-rc.465(@trpc/server@11.0.0-rc.465)
+      '@trpc/server': 11.0.0-rc.465
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
     dev: false
 
-  /@trpc/server@11.0.0-rc.433:
-    resolution: {integrity: sha512-Zfafmbcv9HS/MBhW4O1JSw0b5Dnvm5PkwPviy64hyG9vRoCDPOLYyxRQD7TBdcWecITvjcQjmcdIGjQyNBVNJw==}
+  /@trpc/server@11.0.0-rc.465:
+    resolution: {integrity: sha512-810SGzWuUvA+qQvTU8t3IzU7gOPFwXVjczyOlQTI4MkUG1aphrX6IscaybuC1qreg6M7g8LjrOhD1Kiq0Mx8pw==}
     dev: false
 
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
       '@types/node': 20.11.20
+    dev: false
+
+  /@types/cookie@0.6.0:
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: false
 
   /@types/debug@4.1.12:
@@ -7907,6 +7947,11 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
   /copy-anything@3.0.5:
     resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
     engines: {node: '>=12.13'}
@@ -8336,7 +8381,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.31.2(@types/react@18.2.57)(postgres@3.4.4)(react@18.3.0):
+  /drizzle-orm@0.31.2(@types/react@18.2.57)(postgres@3.3.5)(react@18.3.0):
     resolution: {integrity: sha512-QnenevbnnAzmbNzQwbhklvIYrDE8YER8K7kSrAWQSV1YvFCdSQPzj+jzqRdTSsV2cDqSpQ0NXGyL1G9I43LDLg==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -8420,7 +8465,7 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.2.57
-      postgres: 3.4.4
+      postgres: 3.3.5
       react: 18.3.0
     dev: false
 
@@ -8430,7 +8475,7 @@ packages:
       drizzle-orm: '>=0.23.13'
       zod: '*'
     dependencies:
-      drizzle-orm: 0.31.2(@types/react@18.2.57)(postgres@3.4.4)(react@18.3.0)
+      drizzle-orm: 0.31.2(@types/react@18.2.57)(postgres@3.3.5)(react@18.3.0)
       zod: 3.23.3
     dev: false
 
@@ -10347,8 +10392,12 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: false
 
-  /jose@4.15.7:
-    resolution: {integrity: sha512-L7ioP+JAuZe8v+T5+zVI9Tx8LtU8BL7NxkyDFVMv+Qr3JW0jSoYDedLtodaXwfqMpeCyx4WXFNyu9tJt4WvC1A==}
+  /jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
+    dev: false
+
+  /jose@5.6.3:
+    resolution: {integrity: sha512-1Jh//hEEwMhNYPDDLwXHa2ePWgWiFNNUadVmguAAw2IJ6sj9mNxV5tGXJNqlMkJAybF6Lgw1mISDxTePP/187g==}
     dev: false
 
   /js-base64@3.7.7:
@@ -11225,12 +11274,12 @@ packages:
       '@babel/runtime': 7.24.7
       '@panva/hkdf': 1.2.0
       cookie: 0.5.0
-      jose: 4.15.7
+      jose: 4.15.9
       next: 14.2.4(@babel/core@7.24.7)(react-dom@18.3.0)(react@18.3.0)
       oauth: 0.9.15
       openid-client: 5.6.5
-      preact: 10.22.0
-      preact-render-to-string: 5.2.6(preact@10.22.0)
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
       uuid: 8.3.2
@@ -11375,6 +11424,10 @@ packages:
 
   /nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
+    dev: false
+
+  /oauth4webapi@2.11.1:
+    resolution: {integrity: sha512-aNzOnL98bL6izG97zgnZs1PFEyO4WDVRhz2Pd066NPak44w5ESLRCYmJIyey8avSBPOMtBjhF3ZDDm7bIb7UOg==}
     dev: false
 
   /oauth@0.9.15:
@@ -11552,7 +11605,7 @@ packages:
   /openid-client@5.6.5:
     resolution: {integrity: sha512-5P4qO9nGJzB5PI0LFlhj4Dzg3m4odt0qsJTfyEtZyOlkgpILwEioOhVVJOrS1iVH494S4Ee5OCjjg6Bf5WOj3w==}
     dependencies:
-      jose: 4.15.7
+      jose: 4.15.9
       lru-cache: 6.0.0
       object-hash: 2.2.0
       oidc-token-hash: 5.0.3
@@ -11877,22 +11930,21 @@ packages:
       source-map-js: 1.2.0
     dev: true
 
-  /postgres@3.4.4:
-    resolution: {integrity: sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==}
-    engines: {node: '>=12'}
+  /postgres@3.3.5:
+    resolution: {integrity: sha512-+JD93VELV9gHkqpV5gdL5/70HdGtEw4/XE1S4BC8f1mcPmdib3K5XsKVbnR1XcAyC41zOnifJ+9YRKxdIsXiUw==}
     dev: false
 
-  /preact-render-to-string@5.2.6(preact@10.22.0):
-    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
+  /preact-render-to-string@5.2.3(preact@10.11.3):
+    resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.22.0
+      preact: 10.11.3
       pretty-format: 3.8.0
     dev: false
 
-  /preact@10.22.0:
-    resolution: {integrity: sha512-RRurnSjJPj4rp5K6XoP45Ui33ncb7e4H7WiOHVpjbkvqvA3U+N8Z6Qbo0AE6leGYBV66n8EhEaFixvIu3SkxFw==}
+  /preact@10.11.3:
+    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
     dev: false
 
   /preact@10.4.1:

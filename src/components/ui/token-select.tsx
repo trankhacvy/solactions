@@ -33,7 +33,7 @@ export const TokenSelect = React.forwardRef<
       {...props}
       renderOption={(props, option) => {
         return (
-          <ListItem {...props}>
+          <ListItem key={option.address} {...props}>
             <ListItemAvatar sx={{ minWidth: "auto" }}>
               <Avatar
                 src={option.icon}

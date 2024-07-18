@@ -29,6 +29,9 @@ export const env = createEnv({
     // helius
     HELIUS_API_KEY: z.string(),
     HELIUS_WEBHOOK_ID: z.string(),
+    // twitter
+    TWITTER_CLIENT_ID: z.string(),
+    TWITTER_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -60,7 +63,10 @@ export const env = createEnv({
     HELIUS_API_KEY: process.env.HELIUS_API_KEY,
     HELIUS_WEBHOOK_ID: process.env.HELIUS_WEBHOOK_ID,
     // rpc
-    NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL
+    NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL,
+    // twitter
+    TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID,
+    TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

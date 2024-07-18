@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 
-import { SelectUser } from "@/types";
+import { SelectDonationProfile } from "@/types";
 import {
   CardHeader,
   Chip,
@@ -16,14 +16,13 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { Routes } from "@/config/routes";
-import { env } from "@/env";
 import { CheckIcon, CopyIcon, TwitterIcon } from "lucide-react";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { useState } from "react";
 import { getDonationLink } from "@/utils/links";
 import { twitterLink } from "@/utils/twitter";
 
-export function YourLink({ user }: { user: SelectUser }) {
+export function YourLink({ profile }: { profile: SelectDonationProfile }) {
   const theme = useTheme();
 
   const [copying, setCopying] = useState(false);
@@ -38,7 +37,7 @@ export function YourLink({ user }: { user: SelectUser }) {
           label={
             <Stack flexDirection="row" alignItems="center" gap={2}>
               <MLink sx={{ color: "white" }} underline="none">
-                {getDonationLink(user.slug)}
+                {getDonationLink(profile.slug)}
               </MLink>
               <IconButton
                 sx={{ color: "white" }}
@@ -46,7 +45,7 @@ export function YourLink({ user }: { user: SelectUser }) {
                 aria-label="Copy"
                 onClick={async () => {
                   setCopying(true);
-                  copy(getDonationLink(user.slug));
+                  copy(getDonationLink(profile.slug));
                   setTimeout(() => {
                     setCopying(false);
                   }, 1500);
@@ -66,7 +65,7 @@ export function YourLink({ user }: { user: SelectUser }) {
           <Button variant="outlined">Edit</Button>
         </Link>
         <a
-          href={twitterLink(getDonationLink(user.slug), {
+          href={twitterLink(getDonationLink(profile.slug), {
             title: "Donate me on ",
             hashtags: ["solactions", "actions", "blinks", "opos"],
           })}

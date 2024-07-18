@@ -1,0 +1,1 @@
+ALTER TABLE "donation_profile" ADD COLUMN "image" text;

@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 
 import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
-import { SelectUser } from "@/types";
+import { SelectDonationProfile } from "@/types";
 import { alpha } from "@mui/system";
 import {
   Box,
@@ -25,9 +25,6 @@ import { Connection, Transaction, clusterApiUrl } from "@solana/web3.js";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
-// const SOFT_LIMIT_BUTTONS = 10;
-// const SOFT_LIMIT_INPUTS = 3;
-
 enum ProcessStatus {
   IDLE,
   PROCESSING,
@@ -35,7 +32,7 @@ enum ProcessStatus {
   FAILED,
 }
 
-export function ProfileCard({ user }: { user: SelectUser }) {
+export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
   const theme = useTheme();
 
   const { connected, publicKey, sendTransaction } = useWallet();
@@ -44,8 +41,8 @@ export function ProfileCard({ user }: { user: SelectUser }) {
   const [status, setStatus] = useState<ProcessStatus>(ProcessStatus.IDLE);
 
   const { data, isFetching } = useQuery({
-    queryKey: ["action", user.slug],
-    queryFn: () => fetcher<ActionGetResponse>(`/api/profile/${user.slug}`),
+    queryKey: ["action", profile.slug],
+    queryFn: () => fetcher<ActionGetResponse>(`/api/profile/${profile.slug}`),
     refetchOnWindowFocus: false,
   });
 
@@ -64,8 +61,8 @@ export function ProfileCard({ user }: { user: SelectUser }) {
       <Box p={2}>
         <CardMedia
           component="img"
-          image={user.avatar ?? ""}
-          alt={user.name ?? ""}
+          image={profile.image ?? ""}
+          alt={profile.name ?? ""}
           sx={{
             aspectRatio: "1/1",
             bgcolor: alpha(theme.palette.grey["500"], 0.24),
@@ -82,10 +79,10 @@ export function ProfileCard({ user }: { user: SelectUser }) {
         }}
       >
         <Typography gutterBottom variant="h5" component="div">
-          {user.name}
+          {profile.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {user.bio}
+          {profile.bio}
         </Typography>
       </CardContent>
 

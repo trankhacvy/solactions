@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Stack, Box, Container, Typography } from "@mui/material";
-import { Cta } from "./auth-button";
+import { Cta } from "./buttons";
 
 export function Hero() {
   return (

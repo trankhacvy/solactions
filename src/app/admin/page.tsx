@@ -9,9 +9,9 @@ import { MoreActions } from "@/components/admin/more-actions";
 export default async function AdminPage() {
   const session = await getServerAuthSession();
 
-  const user = await api.user.getById({ id: session?.user.id! });
+  const profile = await api.donation.me();
 
-  if (!user) {
+  if (!profile) {
     return notFound();
   }
 
@@ -28,13 +28,13 @@ export default async function AdminPage() {
       >
         <Box>
           <Typography mb={2} variant="h4">
-            Hello, {user.name} 👋
+            Hello, {session?.user.name} 👋
           </Typography>
-          <YourLink user={user} />
+          <YourLink profile={profile} />
         </Box>
         <MoreActions />
       </Stack>
-      <PreviewCard user={user} />
+      <PreviewCard profile={profile} />
     </Stack>
   );
 }

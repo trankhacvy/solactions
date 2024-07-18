@@ -1,15 +1,6 @@
 import { tokenList } from "@/config/tokens";
 import { Token } from "@/types";
-import { relations } from "drizzle-orm";
-import {
-  pgTable,
-  text,
-  varchar,
-  timestamp,
-  numeric,
-  jsonb,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const users = pgTable("users", {
@@ -22,8 +13,8 @@ export const users = pgTable("users", {
   bio: text("bio").default("I use solactions.fun to connect with people."),
 
   // donation
-  acceptToken: jsonb("acceptToken").$type<Token>().default(tokenList[0]!),
-  thankMessage: text("thankMessage").default(
+  acceptToken: jsonb("accepted_token").$type<Token>().default(tokenList[0]!),
+  thankMessage: text("thanks_message").default(
     "Thank you for your donation; you made my day. <3",
   ),
 
@@ -37,33 +28,20 @@ export const updateUserSchema = createUserSchema.partial();
 
 export const selectUserSchema = createSelectSchema(users);
 
-export const TransactionStatus = pgEnum("status", [
-  "PROCESSING",
-  "SUCCESS",
-  "FAILED",
-]);
+// export const donationTransactions = pgTable("donationTransactions", {
+//   id: varchar("id").primaryKey(),
+//   userId: varchar("user_id").notNull(),
+//   status: TransactionStatus("status").default("PROCESSING"),
+//   sender: varchar("sender").notNull(),
+//   receiver: varchar("receiver").notNull(),
+//   amount: numeric("amount").notNull(),
+//   reference: varchar("reference").unique().notNull(),
+//   currency: jsonb("currency").$type<Token>().default(tokenList[0]!),
 
-export const donationTransactions = pgTable("donationTransactions", {
-  id: varchar("id").primaryKey(),
-  userId: varchar("user_id").notNull(),
-  status: TransactionStatus("status").default("PROCESSING"),
-  sender: varchar("sender").notNull(),
-  receiver: varchar("receiver").notNull(),
-  amount: numeric("amount").notNull(),
-  reference: varchar("reference").unique().notNull(),
-  currency: jsonb("currency").$type<Token>().default(tokenList[0]!),
+//   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+//   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+// });
 
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
-
-export const userRelations = relations(users, ({ many }) => ({
-  donations: many(donationTransactions),
-}));
-
-export const createDonationTransactionSchema = createInsertSchema(
-  donationTransactions,
-).omit({ id: true });
-
-export const updateDonationTransactionSchema =
-  createDonationTransactionSchema.partial();
+// export const userRelations = relations(users, ({ many }) => ({
+//   donations: many(donationTransactions),
+// }));

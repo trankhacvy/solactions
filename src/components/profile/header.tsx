@@ -1,4 +1,4 @@
-import { AppBar, Button, Toolbar } from "@mui/material";
+import { AppBar, Toolbar } from "@mui/material";
 
 import React from "react";
 import { Box } from "@mui/system";

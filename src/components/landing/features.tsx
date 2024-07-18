@@ -9,7 +9,7 @@ import {
   CardContent,
   Grid,
 } from "@mui/material";
-import { Cta } from "./auth-button";
+import { Cta } from "./buttons";
 
 export function Features(): JSX.Element {
   return (

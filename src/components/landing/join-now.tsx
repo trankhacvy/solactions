@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
-import { Cta } from "./auth-button";
+import { Box, Container, Typography } from "@mui/material";
+import { Cta } from "./buttons";
 
 export function JoinNow(): JSX.Element {
   return (
