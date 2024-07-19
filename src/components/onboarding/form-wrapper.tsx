@@ -100,7 +100,6 @@ export function ProfileFormWrapper({
 
   const { mutate, isPending: isCreating } = api.donation.create.useMutation({
     onSuccess: async (data) => {
-      console.log("data", data);
       if (data) {
         await update({ id: data.userId, wallet: data.wallet });
         router.replace(Routes.ADMIN);
@@ -114,7 +113,6 @@ export function ProfileFormWrapper({
   const { mutate: updateMutate, isPending: isUpdating } =
     api.donation.update.useMutation({
       onSuccess: async (data) => {
-        console.log(data);
         if (data) {
           revalidateDonationProfile();
           router.replace(Routes.ADMIN);

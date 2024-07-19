@@ -11,7 +11,7 @@ import {
 import { AdapterAccount } from "next-auth/adapters";
 import { donationProfile } from "@/db";
 
-export const usersV2 = pgTable("user", {
+export const user = pgTable("user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -25,7 +25,7 @@ export const usersV2 = pgTable("user", {
   isNewUser: boolean("is_new_user").default(true),
 });
 
-export const usersV2Relations = relations(usersV2, ({ one }) => ({
+export const usersV2Relations = relations(user, ({ one }) => ({
   donation: one(donationProfile),
 }));
 
@@ -34,7 +34,7 @@ export const accounts = pgTable(
   {
     userId: text("userId")
       .notNull()
-      .references(() => usersV2.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccount>().notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
@@ -57,7 +57,7 @@ export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
-    .references(() => usersV2.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
@@ -81,7 +81,7 @@ export const authenticators = pgTable(
     credentialID: text("credentialID").notNull().unique(),
     userId: text("userId")
       .notNull()
-      .references(() => usersV2.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     providerAccountId: text("providerAccountId").notNull(),
     credentialPublicKey: text("credentialPublicKey").notNull(),
     counter: integer("counter").notNull(),

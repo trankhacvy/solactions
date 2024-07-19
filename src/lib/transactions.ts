@@ -12,11 +12,7 @@ import {
 import { env } from "@/env";
 
 export function getConnection() {
-  return new Connection(
-    env.NODE_ENV === "development"
-      ? `https://devnet.helius-rpc.com/?api-key=${env.HELIUS_API_KEY}`
-      : `https://mainnet.helius-rpc.com/?api-key=${env.HELIUS_API_KEY}`,
-  );
+  return new Connection(env.NEXT_PUBLIC_RPC_URL);
 }
 
 export const buildTransferSolTx = async (
@@ -26,8 +22,6 @@ export const buildTransferSolTx = async (
   amount: number,
 ) => {
   const connection = getConnection();
-
-  console.log("connection", connection.rpcEndpoint);
 
   const transaction = new Transaction();
   transaction.feePayer = feePayer;

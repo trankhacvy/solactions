@@ -51,14 +51,10 @@ export async function POST(req: NextRequest) {
         .filter((data) => data.nativeBalanceChange === 0)
         .map((acc) => acc.account);
 
-      console.log("accountKeys", accountKeys);
-
       const transactions =
         await api.transaction.getPendingTransactionByReference({
           addresses: accountKeys,
         });
-
-      console.log("transactions", transactions);
 
       if (transactions.length > 0) {
         await Promise.all(

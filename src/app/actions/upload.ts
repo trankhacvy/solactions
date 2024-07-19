@@ -10,7 +10,6 @@ export async function uploadFile(
   try {
     const file = formData.get("file") as File;
     const filename = formData.get("filename") as string;
-    console.log("file", file);
 
     if (!file || !filename) {
       return {

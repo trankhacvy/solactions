@@ -9,7 +9,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { usersV2 } from "./users";
+import { user } from "./users";
 import { relations, sql } from "drizzle-orm";
 import { donationTransaction } from ".";
 
@@ -32,7 +32,7 @@ export const donationProfile = pgTable("donation_profile", {
     "Thank you for your donation; you made my day. <3",
   ),
   userId: text("user_id")
-    .references(() => usersV2.id, { onDelete: "cascade" })
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),

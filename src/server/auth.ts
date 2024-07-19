@@ -1,12 +1,8 @@
-import { SigninMessage } from "@/lib/signin-message";
-
 import { getServerSession, type NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import TwitterProvider from "next-auth/providers/twitter";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { drizzleDb } from "./db";
 import * as schema from "@/db";
-import { generatePublicId } from "@/utils/nano-id";
 import { SelectUser } from "@/types";
 import { appendAddress } from "@/lib/helius";
 import { env } from "@/env";
@@ -14,12 +10,10 @@ import { eq } from "drizzle-orm";
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 
-console.log("VERCEL_DEPLOYMENT", VERCEL_DEPLOYMENT);
-
 export const authOptions: NextAuthOptions = {
   // @ts-ignore
   adapter: DrizzleAdapter(drizzleDb, {
-    usersTable: schema.usersV2,
+    usersTable: schema.user,
   }),
   providers: [
     TwitterProvider({
@@ -38,70 +32,70 @@ export const authOptions: NextAuthOptions = {
         description: profile.description,
       }),
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        message: {
-          label: "Message",
-          type: "text",
-        },
-        signature: {
-          label: "Signature",
-          type: "text",
-        },
-      },
-      async authorize(credentials) {
-        try {
-          const signinMessage = new SigninMessage(
-            JSON.parse(credentials?.message || "{}"),
-          );
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     message: {
+    //       label: "Message",
+    //       type: "text",
+    //     },
+    //     signature: {
+    //       label: "Signature",
+    //       type: "text",
+    //     },
+    //   },
+    //   async authorize(credentials) {
+    //     try {
+    //       const signinMessage = new SigninMessage(
+    //         JSON.parse(credentials?.message || "{}"),
+    //       );
 
-          //   const nextAuthUrl = new URL(env.NEXTAUTH_URL);
-          //   if (signinMessage.domain !== nextAuthUrl.host) {
-          //     return null;
-          //   }
+    //       //   const nextAuthUrl = new URL(env.NEXTAUTH_URL);
+    //       //   if (signinMessage.domain !== nextAuthUrl.host) {
+    //       //     return null;
+    //       //   }
 
-          //   if (signinMessage.nonce !== (await getCsrfToken({ req }))) {
-          //     return null;
-          //   }
+    //       //   if (signinMessage.nonce !== (await getCsrfToken({ req }))) {
+    //       //     return null;
+    //       //   }
 
-          const validationResult = await signinMessage.validate(
-            credentials?.signature || "",
-          );
+    //       const validationResult = await signinMessage.validate(
+    //         credentials?.signature || "",
+    //       );
 
-          if (!validationResult)
-            throw new Error("Could not validate the signed message");
+    //       if (!validationResult)
+    //         throw new Error("Could not validate the signed message");
 
-          let existingUser = await drizzleDb.query.users.findFirst({
-            where: (user, { eq }) => eq(user.wallet, signinMessage.publicKey),
-          });
+    //       let existingUser = await drizzleDb.query.user.findFirst({
+    //         where: (user, { eq }) => eq(user.wallet, signinMessage.publicKey),
+    //       });
 
-          if (!existingUser) {
-            const wallet = signinMessage.publicKey;
-            const id = generatePublicId();
+    //       if (!existingUser) {
+    //         const wallet = signinMessage.publicKey;
+    //         const id = generatePublicId();
 
-            const results = await drizzleDb
-              .insert(schema.users)
-              .values({
-                id,
-                wallet,
-                avatar: `https://api.multiavatar.com/${wallet}.png`,
-                slug: id,
-              })
-              .returning();
+    //         const results = await drizzleDb
+    //           .insert(schema.user)
+    //           .values({
+    //             id,
+    //             wallet,
+    //             avatar: `https://api.multiavatar.com/${wallet}.png`,
+    //             slug: id,
+    //           })
+    //           .returning();
 
-            await appendAddress(wallet);
+    //         await appendAddress(wallet);
 
-            return results[0] as unknown as SelectUser;
-          }
+    //         return results[0] as unknown as SelectUser;
+    //       }
 
-          return existingUser as unknown as SelectUser;
-        } catch (error: any) {
-          console.error(error);
-          throw new Error(error?.message ?? "Unknown error");
-        }
-      },
-    }),
+    //       return existingUser as unknown as SelectUser;
+    //     } catch (error: any) {
+    //       console.error(error);
+    //       throw new Error(error?.message ?? "Unknown error");
+    //     }
+    //   },
+    // }),
   ],
 
   session: { strategy: "jwt" },
@@ -113,7 +107,6 @@ export const authOptions: NextAuthOptions = {
         sameSite: "lax",
         path: "/",
         // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-        // domain: VERCEL_DEPLOYMENT ? `.solactions-mu.vercel.app` : undefined,
         secure: VERCEL_DEPLOYMENT,
       },
     },
@@ -121,20 +114,14 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     signIn: async ({ user, account, profile }) => {
-      // console.log("[signIn] user", user);
-      // console.log("[signIn] account", account);
-      // console.log("[signIn] profile", profile);
-
       if (!user.email) return false;
 
       if (account?.provider === "twitter") {
-        let existingUser = await drizzleDb.query.usersV2.findFirst({
-          where: (users, { eq }) => eq(users.email, user.email!),
+        let existingUser = await drizzleDb.query.user.findFirst({
+          where: (user, { eq }) => eq(user.email, user.email!),
         });
 
         if (!existingUser || !profile) return true;
-
-        // console.log("check exist existingUser", existingUser);
 
         // if the user already exists via email,
         // update the user with their name and image
@@ -154,14 +141,14 @@ export const authOptions: NextAuthOptions = {
 
           if (shouldUpdate) {
             await await drizzleDb
-              .update(schema.usersV2)
+              .update(schema.user)
               .set({
                 ...(!existingUser.name && { name: profile.name }),
                 ...(!existingUser.image && { avatar: profilePic }),
                 ...(!existingUser.description && { bio: description }),
                 ...(!existingUser.screen_name && { screen_name }),
               })
-              .where(eq(schema.usersV2.email, existingUser.email!))
+              .where(eq(schema.user.email, existingUser.email!))
               .returning();
           }
         }
@@ -170,31 +157,21 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user, session, trigger }) {
-      // console.log("[jwt]: token ", token);
-      // console.log("[jwt]: user ", user);
-      // console.log("[jwt]: session ", session);
-      // console.log("[jwt]: trigger ", trigger);
-
       if (trigger === "update") {
-        // console.log("[jwt]: token ", token);
-        // console.log("[jwt]: user ", user);
-        // console.log("[jwt]: session ", session);
-        // console.log("[jwt]: trigger ", trigger);
-
         if (session?.wallet && session?.id) {
-          let userToUpdate = await drizzleDb.query.usersV2.findFirst({
-            where: (users, { eq }) => eq(users.id, session.id),
+          let userToUpdate = await drizzleDb.query.user.findFirst({
+            where: (user, { eq }) => eq(user.id, session.id),
           });
 
           if (!userToUpdate) return token;
 
           const [updatedUser] = await drizzleDb
-            .update(schema.usersV2)
+            .update(schema.user)
             .set({
               wallet: session.wallet,
               isNewUser: false,
             })
-            .where(eq(schema.usersV2.id, session.id))
+            .where(eq(schema.user.id, session.id))
             .returning();
 
           await appendAddress(session.wallet);
@@ -210,9 +187,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session({ session, token, user }) {
-      console.log("[session] session: ", session);
-      console.log("[session] token: ", token);
-      console.log("[session] user: ", user);
       return {
         ...session,
         user: {
