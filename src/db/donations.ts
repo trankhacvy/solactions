@@ -1,4 +1,4 @@
-import { donateOptions, tokenList } from "@/config/tokens";
+import { tokenList } from "@/config/tokens";
 import { Token } from "@/types";
 import {
   timestamp,
