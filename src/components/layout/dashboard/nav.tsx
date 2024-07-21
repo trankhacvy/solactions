@@ -148,6 +148,11 @@ const navConfig = [
     path: Routes.ADMIN_DONATIONS,
     icon: <HeartHandshakeIcon />,
   },
+  {
+    title: "KOL Stream",
+    path: Routes.ADMIN_KOL_STREAM,
+    icon: <HeartHandshakeIcon />,
+  },
   // {
   //   title: "Settings",
   //   path: Routes.ADMIN_SETTINGS,
