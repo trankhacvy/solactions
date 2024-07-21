@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { defaultToken } from "@/config/tokens";
 import { Token } from "@/types";
 import { relations } from "drizzle-orm";
@@ -10,16 +11,15 @@ import {
   jsonb,
   boolean,
   integer,
-  pgEnum,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { users } from ".";
+import { transaction, user } from ".";
 
-export const tipLinks = pgTable("tipLinks", {
+export const tipLink = pgTable("tiplink", {
   id: varchar("id").primaryKey(),
   userId: varchar("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 256 }).default("Tiplink"),
   message: text("message").default(""),
   amount: numeric("amount").notNull(),
@@ -39,46 +39,59 @@ export const tipLinks = pgTable("tipLinks", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
-export const tiplinkRelations = relations(tipLinks, ({ one, many }) => ({
-  user: one(users, {
-    fields: [tipLinks.userId],
-    references: [users.id],
+export const tiplinkRelations = relations(tipLink, ({ one, many }) => ({
+  user: one(user, {
+    fields: [tipLink.userId],
+    references: [user.id],
   }),
-  claims: many(tipLinkClaims),
+  claims: many(tipLinkClaim),
 }));
 
-export const createTiplinksSchema = createInsertSchema(tipLinks).omit({
+export const createTiplinksSchema = createInsertSchema(tipLink).omit({
   id: true,
   userId: true,
 });
 
-export const ClaimStatus = pgEnum("claim_status", [
-  "CLAIMING",
-  "CLAIMED",
-  "FAILED",
-]);
-
-export const tipLinkClaims = pgTable("tipLinkClaims", {
+export const tipLinkClaim = pgTable("tiplink_claim", {
   id: varchar("id").primaryKey(),
   tiplinkId: varchar("tiplink_id")
     .notNull()
-    .references(() => tipLinks.id, {
-      onDelete: "restrict",
-      onUpdate: "cascade",
+    .references(() => tipLink.id, {
+      onDelete: "cascade",
     }),
   claimant: varchar("claimant").notNull(),
   note: text("note").default(""),
-  status: ClaimStatus("status").default("CLAIMING"),
-  reference: varchar("reference").unique().notNull(),
+  
+  // txId: text("tx_id")
+  //   .references(() => transaction.id, {
+  //     onDelete: "cascade",
+  //   })
+  //   .notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-  claimAt: timestamp("claim_at", { withTimezone: true }),
+  claimAt: timestamp("claim_at", { withTimezone: true }).defaultNow(),
 });
 
-export const tipLinkClaimRelations = relations(tipLinkClaims, ({ one }) => ({
-  tiplinkId: one(tipLinks, {
-    fields: [tipLinkClaims.tiplinkId],
-    references: [tipLinks.id],
+export const tiplinkClaimRelations = relations(
+  tipLinkClaim,
+  ({ one }) => ({
+    tiplink: one(tipLink, {
+      fields: [tipLinkClaim.tiplinkId],
+      references: [tipLink.id],
+    }),
+    transaction: one(transaction),
   }),
-}));
+);
+
+export const createTiplinkClaimSchema = createInsertSchema(tipLinkClaim)
+  .omit({ id: true, 
+    // txId: true 
+  })
+  .extend({
+    reference: z.string(),
+  });
+
+export const updateTiplinkClaimSchema = createInsertSchema(tipLinkClaim)
+  .pick({ id: true })
+  .merge(createTiplinkClaimSchema.partial());

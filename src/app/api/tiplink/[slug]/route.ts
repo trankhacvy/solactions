@@ -1,8 +1,5 @@
-import {
-  buildTransferSolTx,
-  buildTransferSplTx,
-  getConnection,
-} from "@/lib/transactions";
+import { appendAddress, getAllAddress } from "@/lib/helius";
+import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
 import {
   ActionPostResponse,
@@ -10,29 +7,14 @@ import {
   createPostResponse,
   ActionGetResponse,
   ActionPostRequest,
-  verifySignatureInfoForIdentity,
 } from "@solana/actions";
 
-import {
-  Keypair,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  Transaction,
-} from "@solana/web3.js";
+import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { TipLink } from "@tiplink/api";
 
 type Params = {
   slug: string;
 };
-
-const identity = Keypair.fromSecretKey(
-  Uint8Array.from([
-    218, 114, 201, 162, 184, 160, 47, 242, 144, 135, 38, 233, 238, 43, 70, 155,
-    29, 250, 235, 169, 135, 92, 106, 151, 26, 161, 46, 170, 179, 115, 117, 223,
-    222, 70, 19, 110, 118, 163, 69, 5, 41, 200, 16, 24, 239, 77, 145, 165, 150,
-    187, 124, 58, 41, 153, 122, 93, 164, 205, 199, 90, 73, 22, 221, 219,
-  ]),
-);
 
 export const GET = async (req: Request, context: { params: Params }) => {
   try {
@@ -97,9 +79,9 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const body: ActionPostRequest = await req.json();
 
     // validate the client provided input
-    let receiver: PublicKey;
+    let claimant: PublicKey;
     try {
-      receiver = new PublicKey(body.account);
+      claimant = new PublicKey(body.account);
     } catch (err) {
       return new Response('Invalid "account" provided', {
         status: 400,
@@ -127,6 +109,12 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     const reference = Keypair.generate();
 
+    await getAllAddress();
+
+    await appendAddress(reference.publicKey.toBase58());
+
+    await getAllAddress();
+
     let transaction: Transaction;
 
     const amount = link.multiple ? link.amountPerLink : link.amount;
@@ -134,82 +122,34 @@ export const POST = async (req: Request, context: { params: Params }) => {
     if (link.token?.isNative) {
       transaction = await buildTransferSolTx(
         tiplink.keypair.publicKey,
-        receiver,
+        claimant,
         reference.publicKey,
         Number(amount) / 2,
       );
     } else {
       transaction = await buildTransferSplTx(
         tiplink.keypair.publicKey,
-        receiver,
+        claimant,
         new PublicKey(link.token?.address!),
         reference.publicKey,
         Number(amount) * 10 ** link?.token?.decimals!,
       );
     }
 
-    // console.dir(transaction, { depth: null });
-
-    const ref = Keypair.generate();
-
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
-        message: "Success",
+        message: "Claim Success",
       },
       signers: [tiplink.keypair],
-      reference: ref.publicKey,
-      actionIdentity: identity,
     });
 
-    // console.log(payload);
-
-    async function verify() {
-      let success = false;
-      try {
-        const connection = getConnection();
-        const signatureInfoes = await connection.getSignaturesForAddress(
-          identity.publicKey,
-        );
-
-        console.log("signatureInfoes", signatureInfoes);
-
-        signatureInfoes.forEach(async (info) => {
-          success = await verifySignatureInfoForIdentity(
-            connection,
-            identity,
-            info,
-          );
-
-          if (success) {
-            return success;
-          }
-        });
-
-        return success;
-      } catch (error) {
-        console.error(error);
-      }
-
-      return success;
-    }
-
-    // async function runVerification() {
-    //   console.log("runVerification");
-    //   let success = false;
-
-    //   while (!success) {
-    //     success = await verify();
-
-    //     if (!success) {
-    //       await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 1 second
-    //     }
-    //   }
-
-    //   console.log("Verification succeeded!");
-    // }
-
-    // runVerification();
+    api.tiplinkClaim.create({
+      tiplinkId: link.id,
+      claimant: claimant.toBase58(),
+      reference: reference.publicKey.toBase58(),
+      claimAt: new Date(),
+    });
 
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,

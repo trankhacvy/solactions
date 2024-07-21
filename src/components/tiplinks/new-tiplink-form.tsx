@@ -2,13 +2,13 @@
 
 import { Button, Stack, Card, CardContent, Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import FormNumberInput from "@/components/ui/form-number-input";
-import { FormInput } from "@/components/ui/form-input";
+// import FormNumberInput from "@/components/ui/form-number-input";
+import { FormInput, FormNumberInput } from "@/components/ui/form-input";
 import { FormTokenSelect } from "@/components/ui/form-token-select";
 
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, get, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { useRouter } from "next/navigation";
@@ -22,8 +22,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { sendAndConfirmTransaction } from "@solana/web3.js";
 import { getConnection } from "@/lib/transactions";
 import { FormCustomRadioGroup } from "../ui/form-custom-radio-group";
-// import { FormCustomRadioGroup } from "../ui/form-custom-radio-group";
-import UnstyledNumberFieldFormat from '@/components/ui/my-number-input'
+import ConnectWalletButton from "../connect-wallet";
 
 enum TipType {
   Single = "single",
@@ -75,15 +74,14 @@ export default function NewTipLinkForm() {
   });
 
   const wType = watch("type");
+  const wAmount = watch("amount");
+  const wNumOfClaims = watch("numOfClaims");
+  const wToken = watch("token");
 
   const router = useRouter();
 
   const { mutate, isPending } = api.tiplink.create.useMutation({
     onSuccess: async (data) => {
-      // if (data) {
-      //   await tprcUtils.user.getBySlug.invalidate({ slug: data.slug });
-      // }
-      // revalidateUser();
       router.replace(Routes.ADMIN_TIPLINKS);
     },
     onError: (error) => {
@@ -97,9 +95,7 @@ export default function NewTipLinkForm() {
         alert("Please connect your wallet");
         return;
       }
-
       console.log("values: ", values);
-
       const numOfClaims =
         values.type === TipType.Single ? 1 : values.numOfClaims;
 
@@ -109,16 +105,14 @@ export default function NewTipLinkForm() {
         numOfClaims,
         values.token,
       );
-
       console.log("tiplink", tiplink.url.toString());
 
       const signature = await sendTransaction(transaction, connection);
-
       console.log("signature", signature);
 
       const response = await connection.confirmTransaction(
         signature,
-        "processed",
+        "confirmed",
       );
 
       console.log("response", response);
@@ -142,16 +136,6 @@ export default function NewTipLinkForm() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card sx={{ maxWidth: theme.breakpoints.values.md, mx: "auto" }}>
         <CardContent sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          <UnstyledNumberFieldFormat />
-          {/* <FormInput
-            {...register("name")}
-            fullWidth
-            placeholder=""
-            label="Name"
-            error={!!errors.name}
-            helperText={errors.name?.message}
-          /> */}
-
           <FormInput
             {...register("message")}
             fullWidth
@@ -170,18 +154,14 @@ export default function NewTipLinkForm() {
                 name="amount"
                 render={({ field }) => (
                   <FormNumberInput
-                    label="Amount"
+                    {...field}
                     fullWidth
-                    placeholder=""
-                    slotProps={{
-                      input: field,
-                    }}
-                    onBlur={field.onBlur}
-                    onChange={(_, value) => field.onChange(String(value))}
-                    error={!!errors.amount}
-                    helperText={errors.amount?.message as string | undefined}
-                    step={0.1}
+                    placeholder="Enter amount"
+                    allowNegative={false}
                     min={0}
+                    label="Amount"
+                    error={!!errors.amount}
+                    helperText={errors.amount?.message as string | null}
                   />
                 )}
               />
@@ -236,19 +216,29 @@ export default function NewTipLinkForm() {
               control={control}
               name="numOfClaims"
               render={({ field }) => (
-                <FormNumberInput
-                  label="Number of claims"
-                  fullWidth
-                  placeholder=""
-                  slotProps={{
-                    input: field,
-                  }}
-                  min={2}
-                  max={100}
-                  step={1}
-                  onChange={(_, value) => field.onChange(String(value))}
-                  error={!!errors.numOfClaims}
-                  helperText={errors.numOfClaims?.message as string | undefined}
+                <Controller
+                  control={control}
+                  name="numOfClaims"
+                  render={({ field }) => (
+                    <FormNumberInput
+                      {...field}
+                      fullWidth
+                      placeholder="Enter number of claims"
+                      label="Number of claims"
+                      allowNegative={false}
+                      decimalScale={0}
+                      min={0}
+                      max={100}
+                      error={!!errors.numOfClaims}
+                      helperText={
+                        !!get(errors, "numOfClaims")
+                          ? get(errors, "numOfClaims").message ?? ""
+                          : wAmount && wAmount > 0
+                            ? `${(wAmount / wNumOfClaims).toFixed(3)} ${wToken.symbol} per claim`
+                            : ""
+                      }
+                    />
+                  )}
                 />
               )}
             />
@@ -259,13 +249,17 @@ export default function NewTipLinkForm() {
               <Button variant="outlined">Cancel</Button>
             </Link>
 
-            <LoadingButton
-              loading={isSubmitting || isPending}
-              variant="contained"
-              type="submit"
-            >
-              Create
-            </LoadingButton>
+            {publicKey ? (
+              <LoadingButton
+                loading={isSubmitting || isPending}
+                variant="contained"
+                type="submit"
+              >
+                Create
+              </LoadingButton>
+            ) : (
+              <ConnectWalletButton />
+            )}
           </Stack>
         </CardContent>
       </Card>

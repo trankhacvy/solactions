@@ -40,7 +40,7 @@ dependencies:
     version: 1.9.0
   '@solana/actions':
     specifier: ^1.1.1
-    version: 1.1.1(fastestsmallesttextencoderdecoder@1.0.22)
+    version: 1.2.0
   '@solana/spl-token':
     specifier: ^0.4.7
     version: 0.4.7(@solana/web3.js@1.93.2)(fastestsmallesttextencoderdecoder@1.0.22)
@@ -70,10 +70,9 @@ dependencies:
     version: 5.39.0(react@18.3.0)
   '@tiplink/api':
     specifier: ^0.2.5
-    version: 0.2.5(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1)
+    version: 0.2.6(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1)
   '@trpc/client':
     specifier: next
-<<<<<<< HEAD
     version: 11.0.0-rc.466(@trpc/server@11.0.0-rc.466)
   '@trpc/react-query':
     specifier: next
@@ -81,21 +80,15 @@ dependencies:
   '@trpc/server':
     specifier: next
     version: 11.0.0-rc.466
-=======
-    version: 11.0.0-rc.452(@trpc/server@11.0.0-rc.452)
-  '@trpc/react-query':
-    specifier: next
-    version: 11.0.0-rc.452(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.452)(@trpc/server@11.0.0-rc.452)(react-dom@18.3.0)(react@18.3.0)
-  '@trpc/server':
-    specifier: next
-    version: 11.0.0-rc.452
->>>>>>> aa7f08f (tiplink)
   bs58:
     specifier: ^6.0.0
     version: 6.0.0
   dayjs:
     specifier: ^1.11.11
     version: 1.11.11
+  dotenv:
+    specifier: ^16.4.5
+    version: 16.4.5
   drizzle-orm:
     specifier: ^0.31.2
     version: 0.31.2(@types/react@18.2.57)(postgres@3.3.5)(react@18.3.0)
@@ -135,6 +128,9 @@ dependencies:
   react-hook-form:
     specifier: ^7.52.0
     version: 7.52.0(react@18.3.0)
+  react-number-format:
+    specifier: ^5.4.0
+    version: 5.4.0(react-dom@18.3.0)(react@18.3.0)
   server-only:
     specifier: ^0.0.1
     version: 0.0.1
@@ -1767,29 +1763,6 @@ packages:
       '@babel/helper-string-parser': 7.24.7
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
-    dev: false
-
-  /@base_ui/react@1.0.0-alpha.1(@types/react@18.2.57)(react-dom@18.3.0)(react@18.3.0):
-    resolution: {integrity: sha512-8vSVg5p0/JaHm8YfQ9MuTobwgRV/9CBg6NLmW4Novm8zgYyKguKr7rRlDZp5E3D68/t3hDZZ4igTUssqCNRfpA==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@types/react': ^17.0.0 || ^18.0.0
-      react: ^17.0.0 || ^18.0.0
-      react-dom: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.24.7
-      '@floating-ui/react-dom': 2.1.1(react-dom@18.3.0)(react@18.3.0)
-      '@mui/types': 7.2.14(@types/react@18.2.57)
-      '@mui/utils': 5.15.20(@types/react@18.2.57)(react@18.3.0)
-      '@popperjs/core': 2.11.8
-      '@types/react': 18.2.57
-      clsx: 2.1.1
-      prop-types: 15.8.1
-      react: 18.3.0
-      react-dom: 18.3.0(react@18.3.0)
     dev: false
 
   /@coral-xyz/anchor@0.29.0:
@@ -4497,12 +4470,16 @@ packages:
       - react-native
     dev: false
 
-  /@solana/actions@1.1.1(fastestsmallesttextencoderdecoder@1.0.22):
-    resolution: {integrity: sha512-QS9Bf6IPjHXMr3UMh1aeSEWL9sdVq6gtyOv6RK9IU3bh6W07uPr15OyWVOVBZwgNLD+nzWBfeJWo//bk1vpj/w==}
+  /@solana/actions-spec@2.0.0:
+    resolution: {integrity: sha512-VspGvbPE0Cl+DEE5XOg3ebRVW0/MKxZzrkdgqlHY566LuLkvUWX+ioPv33HcriIiGFXXLtamHajt/UoqE/bKHQ==}
+    dev: false
+
+  /@solana/actions@1.2.0:
+    resolution: {integrity: sha512-RCPp2hb5szNAi98RuTvsichCw1hrM4xmBabU7I/mIeJdti14hKxdKce7x8u7ZhUQnlaHjdeOEB/8ET2JuoE8Pg==}
     engines: {node: '>=16'}
     dependencies:
+      '@solana/actions-spec': 2.0.0
       '@solana/qr-code-styling': 1.6.0
-      '@solana/spl-token': 0.3.11(@solana/web3.js@1.93.2)(fastestsmallesttextencoderdecoder@1.0.22)
       '@solana/web3.js': 1.93.2
       bs58: 5.0.0
       cross-fetch: 3.1.8
@@ -4511,7 +4488,6 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - encoding
-      - fastestsmallesttextencoderdecoder
       - utf-8-validate
     dev: false
 
@@ -5652,15 +5628,15 @@ packages:
       react: 18.3.0
     dev: false
 
-  /@tiplink/api@0.2.5(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1):
-    resolution: {integrity: sha512-6XKaQ3v4F17jY5fVJO/XwJnj9UAUDbVY27kK3Cn6k9pnrfyitOypNWtFQ8JSuEfmyv4MBWmnVVc2+786k8j5BQ==}
+  /@tiplink/api@0.2.6(fastestsmallesttextencoderdecoder@1.0.22)(sodium-native@3.4.1):
+    resolution: {integrity: sha512-+daDBZEMGpJl5ji213UJKK2hmGN1WahAF8gWHBOATasv5s+0KP9hpcAzixOfcWIP8guEHdGkomxQ4Knz/s2+Qw==}
     dependencies:
       '@coral-xyz/anchor': 0.29.0
       '@solana/spl-token': 0.3.11(@solana/web3.js@1.93.2)(fastestsmallesttextencoderdecoder@1.0.22)
       '@solana/web3.js': 1.93.2
       bs58: 5.0.0
-      libsodium: 0.7.13
-      libsodium-wrappers-sumo: 0.7.13
+      libsodium: 0.7.14
+      libsodium-wrappers-sumo: 0.7.14
       nanoid: 3.3.7
       sodium-plus: 0.9.0(sodium-native@3.4.1)
       tweetnacl: 1.0.3
@@ -6103,7 +6079,6 @@ packages:
       wif: 4.0.0
     dev: false
 
-<<<<<<< HEAD
   /@trpc/client@11.0.0-rc.466(@trpc/server@11.0.0-rc.466):
     resolution: {integrity: sha512-8nEYgDPvTrXzn00FgLEOU/BHtH89LVQ0JTiW2efa4wW2XIrj3Nv/QKCRkNXV6yu7VSefwU+p2PulUL6TjNlzAg==}
     peerDependencies:
@@ -6118,44 +6093,18 @@ packages:
       '@tanstack/react-query': ^5.49.2
       '@trpc/client': 11.0.0-rc.466+1e8344ea7
       '@trpc/server': 11.0.0-rc.466+1e8344ea7
-=======
-  /@trpc/client@11.0.0-rc.452(@trpc/server@11.0.0-rc.452):
-    resolution: {integrity: sha512-QAabLHbaqVAc4FOkC5QbDMRy2mEZk+mYdVjAOdeqjIwQ4jUJ/m0Dx6gEM99I7ASnT1TAuPGy6WwIWJixma6QWg==}
-    peerDependencies:
-      '@trpc/server': 11.0.0-rc.452+8f18c400c
-    dependencies:
-      '@trpc/server': 11.0.0-rc.452
-    dev: false
-
-  /@trpc/react-query@11.0.0-rc.452(@tanstack/react-query@5.39.0)(@trpc/client@11.0.0-rc.452)(@trpc/server@11.0.0-rc.452)(react-dom@18.3.0)(react@18.3.0):
-    resolution: {integrity: sha512-R8OhL9YNtMTbE8m7F+0Y+LsWsvXwIz0nuzyxrAiGSzrs8WdiUf4CEnAHoD1SAi+pS1TAc8p1hGWCcyyD0fXB/g==}
-    peerDependencies:
-      '@tanstack/react-query': ^5.49.2
-      '@trpc/client': 11.0.0-rc.452+8f18c400c
-      '@trpc/server': 11.0.0-rc.452+8f18c400c
->>>>>>> aa7f08f (tiplink)
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
     dependencies:
       '@tanstack/react-query': 5.39.0(react@18.3.0)
-<<<<<<< HEAD
       '@trpc/client': 11.0.0-rc.466(@trpc/server@11.0.0-rc.466)
       '@trpc/server': 11.0.0-rc.466
-=======
-      '@trpc/client': 11.0.0-rc.452(@trpc/server@11.0.0-rc.452)
-      '@trpc/server': 11.0.0-rc.452
->>>>>>> aa7f08f (tiplink)
       react: 18.3.0
       react-dom: 18.3.0(react@18.3.0)
     dev: false
 
-<<<<<<< HEAD
   /@trpc/server@11.0.0-rc.466:
     resolution: {integrity: sha512-/40QZXyZCc3HvgJbQ2+IqCGm4m+fJs7q7gMp6nLiuPB3FIJJeV0r+w1M/NGcG5avbCJ3A5Qy45s4N1glcMv1ug==}
-=======
-  /@trpc/server@11.0.0-rc.452:
-    resolution: {integrity: sha512-sqZ2Nmh9hD/xuW5x/9tLoa7N1k/99B0eCDoVdbVtnMQZ0gH79vlLQXrbIPg6BZxu/h1i/jyHWXBmFMqN2JZ6xw==}
->>>>>>> aa7f08f (tiplink)
     dev: false
 
   /@types/connect@3.4.38:
@@ -8498,6 +8447,11 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+    dev: false
+
   /draggabilly@3.0.0:
     resolution: {integrity: sha512-aEs+B6prbMZQMxc9lgTpCBfyCUhRur/VFucHhIOvlvvdARTj7TcDmX/cdOUtqbjJJUh7+agyJXR5Z6IFe1MxwQ==}
     dependencies:
@@ -10787,24 +10741,24 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libsodium-sumo@0.7.13:
-    resolution: {integrity: sha512-zTGdLu4b9zSNLfovImpBCbdAA4xkpkZbMnSQjP8HShyOutnGjRHmSOKlsylh1okao6QhLiz7nG98EGn+04cZjQ==}
+  /libsodium-sumo@0.7.14:
+    resolution: {integrity: sha512-2nDge6qlAjcwyslAhWfVumlkeSNK5+WCfKa2/VEq9prvlT5vP2FR0m0o5hmKaYqfsZ4TQVj5czQsimZvXDB1CQ==}
     dev: false
 
-  /libsodium-wrappers-sumo@0.7.13:
-    resolution: {integrity: sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==}
+  /libsodium-wrappers-sumo@0.7.14:
+    resolution: {integrity: sha512-0lm7ZwN5a95J2yUi8R1rgQeeaVDIWnvNzgVmXmZswis4mC+bQtbDrB+QpJlL4qklaKx3hVpJjoc6ubzJFiv64Q==}
     dependencies:
-      libsodium-sumo: 0.7.13
+      libsodium-sumo: 0.7.14
     dev: false
 
-  /libsodium-wrappers@0.7.13:
-    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
+  /libsodium-wrappers@0.7.14:
+    resolution: {integrity: sha512-300TtsePizhJZ7HjLmWr6hLHAgJUxIGhapSw+EwfCtDuWaEmEdGXSQv6j6qFw0bs9l4vS2NH9BtOHfXAq6h5kQ==}
     dependencies:
-      libsodium: 0.7.13
+      libsodium: 0.7.14
     dev: false
 
-  /libsodium@0.7.13:
-    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+  /libsodium@0.7.14:
+    resolution: {integrity: sha512-/pOd7eO6oZrfORquRTC4284OUJFcMi8F3Vnc9xtRBT0teLfOUxWIItaBFF3odYjZ7nlJNwnLdUVEUFHxVyX/Sw==}
     dev: false
 
   /lighthouse-logger@1.4.2:
@@ -12547,6 +12501,17 @@ packages:
       - utf-8-validate
     dev: false
 
+  /react-number-format@5.4.0(react-dom@18.3.0)(react@18.3.0):
+    resolution: {integrity: sha512-NWdICrqLhI7rAS8yUeLVd6Wr4cN7UjJ9IBTS0f/a9i7UB4x4Ti70kGnksBtZ7o4Z7YRbvCMMR/jQmkoOBa/4fg==}
+    peerDependencies:
+      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.0
+      react-dom: 18.3.0(react@18.3.0)
+    dev: false
+
   /react-qr-reader@2.2.1(react-dom@16.13.1)(react@16.13.1):
     resolution: {integrity: sha512-EL5JEj53u2yAOgtpAKAVBzD/SiKWn0Bl7AZy6ZrSf1lub7xHwtaXe6XSx36Wbhl1VMGmvmrwYMRwO1aSCT2fwA==}
     peerDependencies:
@@ -13231,7 +13196,7 @@ packages:
       sodium-native: ^3.2.0
     dependencies:
       buffer: 5.7.1
-      libsodium-wrappers: 0.7.13
+      libsodium-wrappers: 0.7.14
       poly1305-js: 0.4.4
       sodium-native: 3.4.1
       typedarray-to-buffer: 3.1.5

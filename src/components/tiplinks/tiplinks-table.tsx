@@ -14,12 +14,14 @@ import { PlusIcon } from "lucide-react";
 import { Routes } from "@/config/routes";
 
 export function TiplinksTable() {
-  const { data: tiplinks = [], isLoading } = api.tiplink.all.useQuery(
+  const { data: tiplinks = [], isLoading } = api.tiplink.mine.useQuery(
     undefined,
     {
       refetchOnWindowFocus: false,
     },
   );
+
+  console.log({ tiplinks });
 
   if (tiplinks.length === 0 && !isLoading) {
     return <EmptyUI />;
@@ -31,8 +33,10 @@ export function TiplinksTable() {
         <TableHead>
           <TableRow>
             <TableCell>Link</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell align="right">Date</TableCell>
+            <TableCell align="center">Amount</TableCell>
+            <TableCell align="center">Number of claims</TableCell>
+            <TableCell align="center">Claimed</TableCell>
+            <TableCell align="right">Created at</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -43,6 +47,12 @@ export function TiplinksTable() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
+                  <Skeleton width="100%" height={24} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width="100%" height={24} />
+                </TableCell>
+                <TableCell>
                   <Skeleton width="100%" height={24} />
                 </TableCell>
                 <TableCell>
@@ -64,7 +74,9 @@ export function TiplinksTable() {
                   {tiplink.name} - {tiplink.id}
                 </Link>
               </TableCell>
-              <TableCell>{tiplink.amount}</TableCell>
+              <TableCell align="center">{tiplink.amount}</TableCell>
+              <TableCell align="center">{tiplink.numOfClaims}</TableCell>
+              <TableCell align="center">{tiplink.claims.length}</TableCell>
               <TableCell align="right">
                 {formatDateByPattern(tiplink.createdAt!, "hh:mm:A DD MMM YYYY")}
               </TableCell>

@@ -8,8 +8,8 @@ import {
 
 import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
-import { SQLWrapper, and, eq } from "drizzle-orm";
 import { Token } from "@/types";
+import { eq } from "drizzle-orm";
 
 export const tiplinkRouter = createTRPCRouter({
   create: protectedProcedure
@@ -18,7 +18,7 @@ export const tiplinkRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       const [link] = await ctx.db
-        .insert(schema.tipLinks)
+        .insert(schema.tipLink)
         .values({
           id: generatePublicId(),
           userId,
@@ -37,7 +37,7 @@ export const tiplinkRouter = createTRPCRouter({
       }),
     )
     .query(({ ctx, input }) => {
-      return ctx.db.query.tipLinks.findFirst({
+      return ctx.db.query.tipLink.findFirst({
         where: (link, { eq }) => eq(link.id, input.id),
         with: {
           user: true,
@@ -45,15 +45,36 @@ export const tiplinkRouter = createTRPCRouter({
       });
     }),
 
-  all: protectedProcedure.query(({ ctx, input }) => {
+  mine: protectedProcedure.query(async ({ ctx, input }) => {
     const userId = ctx.session.user.id;
 
-    const filters: SQLWrapper[] = [];
+    // const result = ctx.db
+    //   .select()
+    //   .from(schema.tipLink)
+    //   .where(eq(schema.tipLink.userId, userId))
+    //   .leftJoin(
+    //     schema.tipLinkClaim,
+    //     eq(schema.tipLink.id, schema.tipLinkClaim.tiplinkId),
+    //   );
 
-    filters.push(eq(schema.donationTransactions.userId, userId));
+    // console.log("sql 1: ", result.toSQL());
+    // console.log("sql 1: ", await result);
 
-    return ctx.db.query.tipLinks.findMany({
-      where: and(...filters),
+    const result1 = ctx.db.query.tipLink.findMany({
+      where: (link, { eq }) => eq(link.userId, userId),
+      with: {
+        claims: {
+          columns: {
+            claimant: true,
+            note: true
+          }
+        },
+      },
+      
     });
+
+    console.log("sql 2: ", result1.toSQL());
+
+    return [] as any;
   }),
 });

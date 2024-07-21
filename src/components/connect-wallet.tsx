@@ -12,7 +12,8 @@ export default function ConnectWalletButton() {
   return (
     <WalletMultiButtonDynamic
       style={{
-        height: "40px",
+        height: "36px",
+        borderRadius: "8px",
       }}
       className="!h-10"
     />
