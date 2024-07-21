@@ -51,23 +51,36 @@ export async function POST(req: NextRequest) {
         .filter((data) => data.nativeBalanceChange === 0)
         .map((acc) => acc.account);
 
-      const transactions =
-        await api.transaction.getPendingTransactionByReference({
-          addresses: accountKeys,
-        });
-
-      if (transactions.length > 0) {
-        await Promise.all(
-          transactions.map((tx) =>
-            api.transaction.updateByReference({
-              status: "SUCCESS",
-              reference: tx.reference,
-            }),
-          ),
-        );
-      }
+      await Promise.all(
+        accountKeys.map((key) =>
+          findAndUpdateTransaction(key, transaction.signature),
+        ),
+      );
     }
   }
 
   return NextResponse.json({ success: false });
+}
+
+async function findAndUpdateTransaction(reference: string, signature: string) {
+  try {
+    const referenceInfo = await api.reference.getByReference({ reference });
+
+    if (referenceInfo) {
+      const type = referenceInfo.type;
+
+      if (type === "DONATION") {
+        const tx = await api.donationTransaction.getByReference({ reference });
+        if (tx) {
+          await api.donationTransaction.update({
+            id: tx.id,
+            status: "SUCCESS",
+            signature,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }

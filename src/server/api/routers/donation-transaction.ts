@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 
 import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
-import { eq } from "drizzle-orm";
+import { and, eq, SQLWrapper } from "drizzle-orm";
 import { Token } from "@/types";
 
 export const donationTransactionRouter = createTRPCRouter({
@@ -13,20 +17,18 @@ export const donationTransactionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { reference, ...rest } = input;
 
-      const txId = generatePublicId();
-
-      await ctx.db.insert(schema.transaction).values({
-        id: txId,
-        status: "PROCESSING",
+      await ctx.db.insert(schema.reference).values({
+        type: "DONATION",
         reference,
       });
 
       const [transaction] = await ctx.db
         .insert(schema.donationTransaction)
         .values({
-          id: generatePublicId(),
-          txId,
           ...rest,
+          id: generatePublicId(),
+          reference,
+          status: "PROCESSING",
           currency: rest.currency as Token,
         })
         .returning();
@@ -34,27 +36,46 @@ export const donationTransactionRouter = createTRPCRouter({
       return transaction;
     }),
 
-  getUserDonations: publicProcedure
+  update: publicProcedure
+    .input(schema.updateDonationTransactionSchema)
+    .mutation(async ({ ctx, input }) => {
+      const [transaction] = await ctx.db
+        .update(schema.donationTransaction)
+        .set({
+          ...input,
+          currency: input.currency as Token,
+        })
+        .returning();
+
+      return transaction;
+    }),
+
+  getByReference: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        reference: z.string().trim().min(1),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.query.donationTransaction.findFirst({
+        where: (tx, { eq }) => eq(tx.reference, input.reference),
+      });
+    }),
+
+  getByProfileId: protectedProcedure
+    .input(
+      z.object({
+        profileId: z.string().trim().min(1),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const result = (
-        await ctx.db
-          .select()
-          .from(schema.donationTransaction)
-          .where(eq(schema.donationTransaction.profileId, input.id))
-          .leftJoin(
-            schema.transaction,
-            // TODO
-            eq(schema.transaction.id, schema.donationTransaction.txId),
-          )
-      )
-        .filter((item) => item.transaction?.status === "SUCCESS")
-        .map((item) => item.donation_transaction);
+      const filters: SQLWrapper[] = [];
 
-      return result;
+      filters.push(eq(schema.donationTransaction.profileId, input.profileId));
+      filters.push(eq(schema.donationTransaction.status, "SUCCESS"));
+
+      return ctx.db.query.donationTransaction.findMany({
+        where: and(...filters),
+      });
     }),
 });

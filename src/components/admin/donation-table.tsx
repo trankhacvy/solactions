@@ -23,9 +23,9 @@ export function DonationTable() {
     });
 
   const { data: donations = [], isLoading: isLoadingDonations } =
-    api.donationTransaction.getUserDonations.useQuery(
+    api.donationTransaction.getByProfileId.useQuery(
       {
-        id: profile?.id!,
+        profileId: profile?.id!,
       },
       {
         enabled: !!profile,

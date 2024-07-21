@@ -169,6 +169,13 @@
       "when": 1721241188798,
       "tag": "0023_update-transaction-db",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1721587631704,
+      "tag": "0024_update-tx-table",
+      "breakpoints": true
     }
   ]
 }

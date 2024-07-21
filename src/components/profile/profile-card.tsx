@@ -146,7 +146,7 @@ export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
             ))}
           </Stack>
 
-          {inputs.map((action, idx) => {
+          {inputs.map((action: any, idx) => {
             return (
               <ActionInput
                 key={idx}
