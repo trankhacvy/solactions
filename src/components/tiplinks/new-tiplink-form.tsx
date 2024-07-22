@@ -2,13 +2,12 @@
 
 import { Button, Stack, Card, CardContent, Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-// import FormNumberInput from "@/components/ui/form-number-input";
 import { FormInput, FormNumberInput } from "@/components/ui/form-input";
 import { FormTokenSelect } from "@/components/ui/form-token-select";
 
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, get, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { useRouter } from "next/navigation";
@@ -19,9 +18,6 @@ import { Routes } from "@/config/routes";
 import { zodNumberInputPipe } from "@/utils/zod";
 import { createAndFundTiplink } from "@/lib/tiplink";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { sendAndConfirmTransaction } from "@solana/web3.js";
-import { getConnection } from "@/lib/transactions";
-import { FormCustomRadioGroup } from "../ui/form-custom-radio-group";
 import ConnectWalletButton from "../connect-wallet";
 
 export const NewTiplinkSchema = z.object({
@@ -40,7 +36,6 @@ export const NewTiplinkSchema = z.object({
 
 export default function NewTipLinkForm() {
   const theme = useTheme();
-  const tprcUtils = api.useUtils();
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
 
@@ -48,7 +43,6 @@ export default function NewTipLinkForm() {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof NewTiplinkSchema>>({
     resolver: zodResolver(NewTiplinkSchema),
@@ -59,13 +53,10 @@ export default function NewTipLinkForm() {
     },
   });
 
-  const wAmount = watch("amount");
-  const wToken = watch("token");
-
   const router = useRouter();
 
   const { mutate, isPending } = api.tiplink.create.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: async (_data) => {
       router.replace(Routes.ADMIN_TIPLINKS);
     },
     onError: (error) => {

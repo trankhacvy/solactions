@@ -6,7 +6,7 @@ import {
   text,
   varchar,
   jsonb,
-  integer,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { user } from "./users";
@@ -24,10 +24,7 @@ export const donationProfile = pgTable("donation_profile", {
     .$type<Token>()
     .notNull()
     .default(tokenList[0]!),
-  amountOptions: integer("amount_options")
-    .array()
-    .notNull()
-    .default(sql`'{}'::int[]`),
+  amountOptions: numeric("amount_options").array().notNull(),
   thankMessage: text("thanks_message").default(
     "Thank you for your donation; you made my day. <3",
   ),

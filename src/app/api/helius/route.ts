@@ -72,7 +72,7 @@ async function findAndUpdateTransaction(reference: string, signature: string) {
 
       if (type === "DONATION") {
         const tx = await api.donationTransaction.getByReference({ reference });
-        if (tx) {
+        if (tx && tx.status !== "SUCCESS") {
           await api.donationTransaction.update({
             id: tx.id,
             status: "SUCCESS",

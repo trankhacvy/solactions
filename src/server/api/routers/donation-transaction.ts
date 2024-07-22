@@ -39,12 +39,14 @@ export const donationTransactionRouter = createTRPCRouter({
   update: publicProcedure
     .input(schema.updateDonationTransactionSchema)
     .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
       const [transaction] = await ctx.db
         .update(schema.donationTransaction)
         .set({
-          ...input,
-          currency: input.currency as Token,
+          ...rest,
+          currency: rest.currency as Token,
         })
+        .where(eq(schema.donationTransaction.id, id))
         .returning();
 
       return transaction;

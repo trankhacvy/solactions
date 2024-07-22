@@ -45,17 +45,21 @@ export async function GET(request: NextRequest) {
 }
 
 async function getFont() {
-  let fontData;
+  // let fontData;
 
-  if (env.NODE_ENV === "development") {
-    fontData = await fetch(
-      "https://euchmlalaurbsxwdhsix.supabase.co/storage/v1/object/public/3links/assets/SansPosterBold.ttf",
-    ).then((res) => res.arrayBuffer());
-  } else {
-    fontData = await fetch(
-      new URL("@/styles/Satoshi-Bold.ttf", import.meta.url),
-    ).then((res) => res.arrayBuffer());
-  }
+  // if (env.NODE_ENV === "development") {
+  //   fontData = await fetch(
+  //     "https://euchmlalaurbsxwdhsix.supabase.co/storage/v1/object/public/3links/assets/SansPosterBold.ttf",
+  //   ).then((res) => res.arrayBuffer());
+  // } else {
+  //   fontData = await fetch(
+  //     new URL("@/styles/Satoshi-Bold.ttf", import.meta.url),
+  //   ).then((res) => res.arrayBuffer());
+  // }
+
+  const fontData = await fetch(
+    "https://euchmlalaurbsxwdhsix.supabase.co/storage/v1/object/public/3links/assets/SansPosterBold.ttf",
+  ).then((res) => res.arrayBuffer());
 
   return fontData;
 }

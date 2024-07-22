@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { Token } from "@/types";
 import {
   createTransferInstruction,
@@ -80,4 +81,8 @@ export async function createAndFundTiplink(
     transaction,
     tiplink,
   };
+}
+
+export function getTiplinkBlinkUrl(id: string) {
+  return `${env.NEXT_PUBLIC_FE_BASE_URL}/tiplink/${id}`;
 }

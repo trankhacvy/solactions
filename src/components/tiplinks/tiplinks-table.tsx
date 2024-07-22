@@ -6,12 +6,22 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Button, Link, Skeleton, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Link,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import NextLink from "next/link";
 import { api } from "@/trpc/react";
 import { formatDateByPattern } from "@/lib/format-date";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, PlusIcon } from "lucide-react";
 import { Routes } from "@/config/routes";
+import { getTiplinkBlinkUrl } from "@/lib/tiplink";
+import { useState } from "react";
+import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 
 export function TiplinksTable() {
   const { data: tiplinks = [], isLoading } = api.tiplink.mine.useQuery(
@@ -20,6 +30,9 @@ export function TiplinksTable() {
       refetchOnWindowFocus: false,
     },
   );
+
+  const [copying, setCopying] = useState(false);
+  const [_, copy] = useCopyToClipboard();
 
   console.log({ tiplinks });
 
@@ -66,12 +79,27 @@ export function TiplinksTable() {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                <Link target="_blank" rel="noopener" href="">
-                  {tiplink.name} - {tiplink.id}
-                </Link>
+                <Stack flexDirection="row" alignItems="center" gap={2}>
+                  {tiplink.id}{" "}
+                  <IconButton
+                    size="small"
+                    aria-label="Copy"
+                    onClick={async () => {
+                      setCopying(true);
+                      copy(getTiplinkBlinkUrl(tiplink.id));
+                      setTimeout(() => {
+                        setCopying(false);
+                      }, 1500);
+                    }}
+                  >
+                    {copying ? <CheckIcon /> : <CopyIcon />}
+                  </IconButton>
+                </Stack>
               </TableCell>
               <TableCell align="center">{tiplink.amount}</TableCell>
-              <TableCell align="center">{tiplink.claimant}</TableCell>
+              <TableCell align="center">
+                {tiplink.claimed ? tiplink.claimant : "N/A"}
+              </TableCell>
               <TableCell align="right">
                 {formatDateByPattern(tiplink.createdAt!, "hh:mm:A DD MMM YYYY")}
               </TableCell>

@@ -22,7 +22,7 @@ export function ProfilePreview(): JSX.Element {
     control,
     formState: { errors },
     watch,
-  } = useFormContext<z.infer<typeof ProfileSchema>>();
+  } = useFormContext<z.infer<ProfileSchema>>();
 
   const name = watch("name");
   const bio = watch("bio");

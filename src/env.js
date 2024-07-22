@@ -80,4 +80,4 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 });
 
-// export const IS_PRODUCTION = 
+export const IS_PRODUCTION = process.env.VERCEL_ENV === "production";
