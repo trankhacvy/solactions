@@ -1,3 +1,4 @@
+import { removeAddress } from "@/lib/helius";
 import { api } from "@/trpc/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -78,9 +79,21 @@ async function findAndUpdateTransaction(reference: string, signature: string) {
             signature,
           });
         }
+      } else if (type === "TIPLINK") {
+        const tiplink = await api.tiplink.getByReference({ reference });
+        if (tiplink && !tiplink.claimed) {
+          await api.tiplink.update({
+            id: tiplink.id,
+            status: "SUCCESS",
+            claimed: true,
+            signature,
+          });
+        }
       }
     }
   } catch (error) {
     console.error(error);
+  } finally {
+    removeAddress(reference);
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { Routes } from "@/config/routes";
 import {
   Badge,
   Box,
@@ -11,23 +12,23 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const options = [
   {
     title: "Tip link",
     subtitle: "Send money directly to others on Twitter",
-    enable: false,
+    href: Routes.ADMIN_NEW_TIPLINKS,
+    disabled: false,
   },
   { title: "NFT Sale Link", subtitle: "Sell NFTs on Twitter.", enable: false },
   {
     title: "Payment Link",
     subtitle: "Sell your products on Twitter",
-    enable: false,
   },
   {
     title: "Vote Link",
     subtitle: "Create a poll on Twitter, with the winner receiving the prize",
-    enable: false,
   },
 ];
 
@@ -51,15 +52,23 @@ export function MoreActions() {
 function ActionOption({
   title,
   subtitle,
-  enable,
+  disabled = true,
+  href,
 }: {
   title: string;
   subtitle: string;
-  enable: boolean;
+  disabled?: boolean;
+  href?: string;
 }) {
+  const router = useRouter();
   return (
     <Card>
-      <CardActionArea disabled>
+      <CardActionArea
+        onClick={() => {
+          href && router.push(href);
+        }}
+        disabled={disabled}
+      >
         <CardContent component={Stack} gap={1}>
           <Stack flexDirection="row" gap={1}>
             <Typography fontWeight="fontWeightSemiBold">{title}</Typography>

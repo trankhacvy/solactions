@@ -4,6 +4,7 @@ import { userRouter } from "./routers/user";
 import { donationRouter } from "./routers/donation";
 import { donationTransactionRouter } from "./routers/donation-transaction";
 import { referenceRouter } from "./routers/reference";
+import { tiplinkRouter } from "./routers/tiplink";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   donation: donationRouter,
   donationTransaction: donationTransactionRouter,
   reference: referenceRouter,
+  tiplink: tiplinkRouter,
 });
 
 // export type definition of API

@@ -12,7 +12,7 @@ import {
 import { env } from "@/env";
 
 export function getConnection() {
-  return new Connection(env.NEXT_PUBLIC_RPC_URL);
+  return new Connection(env.NEXT_PUBLIC_RPC_URL, "confirmed");
 }
 
 export const buildTransferSolTx = async (
@@ -24,7 +24,6 @@ export const buildTransferSolTx = async (
   const connection = getConnection();
 
   const transaction = new Transaction();
-  transaction.feePayer = feePayer;
 
   const ix = SystemProgram.transfer({
     fromPubkey: feePayer,
@@ -36,6 +35,12 @@ export const buildTransferSolTx = async (
     pubkey: reference,
     isSigner: false,
     isWritable: false,
+  });
+
+  ix.keys.push({
+    pubkey: receiver,
+    isSigner: true,
+    isWritable: true,
   });
 
   transaction.add(ix);
