@@ -20,6 +20,7 @@ export const buildTransferSolTx = async (
   receiver: PublicKey,
   reference: PublicKey,
   amount: number,
+  receiverIsSigner: boolean
 ) => {
   const connection = getConnection();
 
@@ -37,11 +38,13 @@ export const buildTransferSolTx = async (
     isWritable: false,
   });
 
-  ix.keys.push({
-    pubkey: receiver,
-    isSigner: true,
-    isWritable: true,
-  });
+  if (receiverIsSigner) {
+    ix.keys.push({
+      pubkey: receiver,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   transaction.add(ix);
 
@@ -61,6 +64,7 @@ export const buildTransferSplTx = async (
   mint: PublicKey,
   reference: PublicKey,
   amount: number,
+  receiverIsSigner: boolean
 ) => {
   const connection = getConnection();
 
@@ -85,6 +89,14 @@ export const buildTransferSplTx = async (
     isSigner: false,
     isWritable: false,
   });
+
+  if (receiverIsSigner) {
+    ix.keys.push({
+      pubkey: receiver,
+      isSigner: true,
+      isWritable: true,
+    });
+  }
 
   transaction.add(ix);
 

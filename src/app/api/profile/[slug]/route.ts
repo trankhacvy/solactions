@@ -142,6 +142,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         receiver,
         reference.publicKey,
         amount,
+        false,
       );
     } else {
       transaction = await buildTransferSplTx(
@@ -150,6 +151,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         new PublicKey(token.address),
         reference.publicKey,
         amount * 10 ** token.decimals,
+        true,
       );
     }
 
