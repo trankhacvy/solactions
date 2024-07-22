@@ -34,8 +34,7 @@ export function TiplinksTable() {
           <TableRow>
             <TableCell>Link</TableCell>
             <TableCell align="center">Amount</TableCell>
-            <TableCell align="center">Number of claims</TableCell>
-            <TableCell align="center">Claimed</TableCell>
+            <TableCell align="center">Claimant</TableCell>
             <TableCell align="right">Created at</TableCell>
           </TableRow>
         </TableHead>
@@ -55,16 +54,13 @@ export function TiplinksTable() {
                 <TableCell>
                   <Skeleton width="100%" height={24} />
                 </TableCell>
-                <TableCell>
-                  <Skeleton width="100%" height={24} />
-                </TableCell>
                 <TableCell align="right">
                   <Skeleton width="100%" height={24} />
                 </TableCell>
               </TableRow>
             ))}
 
-          {tiplinks.map((tiplink) => (
+          {tiplinks?.map((tiplink) => (
             <TableRow
               key={tiplink.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -75,8 +71,7 @@ export function TiplinksTable() {
                 </Link>
               </TableCell>
               <TableCell align="center">{tiplink.amount}</TableCell>
-              <TableCell align="center">{tiplink.numOfClaims}</TableCell>
-              <TableCell align="center">{tiplink.claims.length}</TableCell>
+              <TableCell align="center">{tiplink.claimant}</TableCell>
               <TableCell align="right">
                 {formatDateByPattern(tiplink.createdAt!, "hh:mm:A DD MMM YYYY")}
               </TableCell>

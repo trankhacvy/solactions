@@ -3,7 +3,6 @@ import { createInsertSchema } from "drizzle-zod";
 import { donationProfile } from "./donations";
 import { relations } from "drizzle-orm";
 import { donationTransaction } from "./donation-transaction";
-import { tipLinkClaim } from "./tiplink";
 
 export const TransactionStatus = pgEnum("status", [
   "PROCESSING",
@@ -16,12 +15,6 @@ export const transaction = pgTable("transaction", {
   status: TransactionStatus("status").default("PROCESSING"),
   reference: varchar("reference").unique().notNull(),
   // signature: varchar("signature").unique(),
-
-  tiplinkClaimId: text("tiplink_claim_id")
-    .references(() => tipLinkClaim.id, {
-      onDelete: "cascade",
-    })
-    .notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),

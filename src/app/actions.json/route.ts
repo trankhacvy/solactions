@@ -7,14 +7,10 @@ export const GET = async () => {
         pathPattern: "/tiplink/*",
         apiPath: "/api/tiplink/*",
       },
-      // {
-      //   pathPattern: "/*",
-      //   apiPath: "/api/profile/*",
-      // },
-      // {
-      //   pathPattern: "/api/actions/**",
-      //   apiPath: "/api/actions/**",
-      // },
+      {
+        pathPattern: "/*",
+        apiPath: "/api/profile/*",
+      },
     ],
   };
 

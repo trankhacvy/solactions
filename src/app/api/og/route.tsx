@@ -20,7 +20,7 @@ const OG_ASSETS = {
     "https://ohgiavehhugheqqpoysy.supabase.co/storage/v1/object/public/3links/assets/tiplink.jpeg",
 };
 
-export const runtime = env.NODE_ENV === "development" ? "node" : "edge";
+export const runtime = env.NODE_ENV === "development" ? "nodejs" : "edge";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

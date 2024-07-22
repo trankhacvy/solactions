@@ -24,11 +24,6 @@ import { getConnection } from "@/lib/transactions";
 import { FormCustomRadioGroup } from "../ui/form-custom-radio-group";
 import ConnectWalletButton from "../connect-wallet";
 
-enum TipType {
-  Single = "single",
-  Multiple = "multiple",
-}
-
 export const NewTiplinkSchema = z.object({
   message: z
     .string()
@@ -41,13 +36,6 @@ export const NewTiplinkSchema = z.object({
     z.number().gt(0, "Amount must be greater than 0."),
   ),
   token: z.custom<Token>((value) => !!value, "Token field is required."),
-  type: z.nativeEnum(TipType).default(TipType.Single),
-  numOfClaims: zodNumberInputPipe(
-    z
-      .number()
-      .gt(1, "Number of claims must be greater than 1.")
-      .lte(100, "Number of claims must be less than or equal to 100"),
-  ),
 });
 
 export default function NewTipLinkForm() {
@@ -68,14 +56,10 @@ export default function NewTipLinkForm() {
       message: "",
       amount: 1,
       token: defaultToken,
-      type: TipType.Single,
-      numOfClaims: 2,
     },
   });
 
-  const wType = watch("type");
   const wAmount = watch("amount");
-  const wNumOfClaims = watch("numOfClaims");
   const wToken = watch("token");
 
   const router = useRouter();
@@ -96,13 +80,11 @@ export default function NewTipLinkForm() {
         return;
       }
       console.log("values: ", values);
-      const numOfClaims =
-        values.type === TipType.Single ? 1 : values.numOfClaims;
 
       const { tiplink, transaction } = await createAndFundTiplink(
         publicKey,
         values.amount,
-        numOfClaims,
+        1,
         values.token,
       );
       console.log("tiplink", tiplink.url.toString());
@@ -118,13 +100,9 @@ export default function NewTipLinkForm() {
       console.log("response", response);
 
       await mutate({
-        name: "Tiplink",
         message: values.message,
         amount: String(values.amount),
-        amountPerLink: String(Number(values.amount) / Number(numOfClaims)),
         token: values.token as Token,
-        multiple: values.type === TipType.Multiple,
-        numOfClaims,
         link: tiplink.url.toString(),
       });
     } catch (error: any) {
@@ -185,64 +163,6 @@ export default function NewTipLinkForm() {
               />
             </Box>
           </Stack>
-
-          <Controller
-            control={control}
-            name="type"
-            render={({ field }) => (
-              <FormCustomRadioGroup
-                {...field}
-                options={[
-                  {
-                    label: "Single",
-                    value: TipType.Single,
-                  },
-                  {
-                    label: "Multiple",
-                    value: TipType.Multiple,
-                  },
-                ]}
-                label="Type"
-                id="type"
-                onChange={(_, data) => field.onChange(data)}
-                error={!!errors.type}
-                helperText={errors.type?.message as string | undefined}
-              />
-            )}
-          />
-
-          {wType === TipType.Multiple && (
-            <Controller
-              control={control}
-              name="numOfClaims"
-              render={({ field }) => (
-                <Controller
-                  control={control}
-                  name="numOfClaims"
-                  render={({ field }) => (
-                    <FormNumberInput
-                      {...field}
-                      fullWidth
-                      placeholder="Enter number of claims"
-                      label="Number of claims"
-                      allowNegative={false}
-                      decimalScale={0}
-                      min={0}
-                      max={100}
-                      error={!!errors.numOfClaims}
-                      helperText={
-                        !!get(errors, "numOfClaims")
-                          ? get(errors, "numOfClaims").message ?? ""
-                          : wAmount && wAmount > 0
-                            ? `${(wAmount / wNumOfClaims).toFixed(3)} ${wToken.symbol} per claim`
-                            : ""
-                      }
-                    />
-                  )}
-                />
-              )}
-            />
-          )}
 
           <Stack flexDirection="row" gap={2} justifyContent="flex-end">
             <Link href={Routes.ADMIN_TIPLINKS} replace>

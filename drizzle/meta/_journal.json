@@ -15,6 +15,13 @@
       "when": 1721587631704,
       "tag": "0024_update-tx-table",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1721619061956,
+      "tag": "0025_update-tiplink-table",
+      "breakpoints": true
     }
   ]
 }

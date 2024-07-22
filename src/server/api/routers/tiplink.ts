@@ -9,7 +9,8 @@ import {
 import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
 import { Token } from "@/types";
-import { eq } from "drizzle-orm";
+import { and, eq, SQLWrapper } from "drizzle-orm";
+import dayjs from "dayjs";
 
 export const tiplinkRouter = createTRPCRouter({
   create: protectedProcedure
@@ -20,14 +21,39 @@ export const tiplinkRouter = createTRPCRouter({
       const [link] = await ctx.db
         .insert(schema.tipLink)
         .values({
+          ...input,
           id: generatePublicId(),
           userId,
-          ...input,
           token: input.token as Token,
+          expiredAt: dayjs().add(30, "day").toDate(),
         })
         .returning();
 
       return link!;
+    }),
+
+  update: publicProcedure
+    .input(schema.updateTiplinksSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+
+      if (rest.reference) {
+        await ctx.db.insert(schema.reference).values({
+          type: "TIPLINK",
+          reference: rest.reference,
+        });
+      }
+
+      const [tiplink] = await ctx.db
+        .update(schema.tipLink)
+        .set({
+          ...rest,
+          token: rest.token as Token,
+        })
+        .where(eq(schema.tipLink.id, id))
+        .returning();
+
+      return tiplink;
     }),
 
   getById: publicProcedure
@@ -45,36 +71,28 @@ export const tiplinkRouter = createTRPCRouter({
       });
     }),
 
-  mine: protectedProcedure.query(async ({ ctx, input }) => {
+  getByReference: publicProcedure
+    .input(
+      z.object({
+        reference: z.string().trim().min(1),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.query.tipLink.findFirst({
+        where: (tipLink, { eq }) => eq(tipLink.reference, input.reference),
+      });
+    }),
+
+  mine: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    // const result = ctx.db
-    //   .select()
-    //   .from(schema.tipLink)
-    //   .where(eq(schema.tipLink.userId, userId))
-    //   .leftJoin(
-    //     schema.tipLinkClaim,
-    //     eq(schema.tipLink.id, schema.tipLinkClaim.tiplinkId),
-    //   );
+    const filters: SQLWrapper[] = [];
 
-    // console.log("sql 1: ", result.toSQL());
-    // console.log("sql 1: ", await result);
+    filters.push(eq(schema.tipLink.userId, userId));
+    // filters.push(eq(schema.tipLink.status, "SUCCESS"));
 
-    const result1 = ctx.db.query.tipLink.findMany({
-      where: (link, { eq }) => eq(link.userId, userId),
-      with: {
-        claims: {
-          columns: {
-            claimant: true,
-            note: true
-          }
-        },
-      },
-      
+    return ctx.db.query.tipLink.findMany({
+      where: and(...filters),
     });
-
-    console.log("sql 2: ", result1.toSQL());
-
-    return [] as any;
   }),
 });

@@ -33,7 +33,7 @@ export const TokenSelect = React.forwardRef<
       {...props}
       renderOption={(props, option) => {
         return (
-          <ListItem key={option.address} {...props}>
+          <ListItem {...props} key={option.address}>
             <ListItemAvatar sx={{ minWidth: "auto" }}>
               <Avatar
                 src={option.icon}
@@ -51,10 +51,14 @@ export const TokenSelect = React.forwardRef<
           </ListItem>
         );
       }}
-      renderInput={(params) => {
+      renderInput={({
+        InputLabelProps: _InputLabelProps,
+        InputProps,
+        ...rest
+      }) => {
         return (
           <OutlinedInput
-            {...params}
+            {...rest}
             startAdornment={
               props.value ? (
                 <Box
@@ -71,8 +75,8 @@ export const TokenSelect = React.forwardRef<
                 />
               ) : null
             }
-            ref={params.InputProps.ref}
-            inputProps={params.inputProps}
+            ref={InputProps.ref}
+            inputProps={rest.inputProps}
             autoFocus
           />
         );

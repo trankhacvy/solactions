@@ -2,7 +2,6 @@ import { Token } from "@/types";
 import {
   createTransferInstruction,
   getAssociatedTokenAddressSync,
-  getOrCreateAssociatedTokenAccount,
   createAssociatedTokenAccountInstruction,
 } from "@solana/spl-token";
 import {
@@ -13,6 +12,8 @@ import {
 } from "@solana/web3.js";
 
 import { TipLink } from "@tiplink/api";
+
+const SOLANA_TRANSACTION_FEE_LAMPORTS = 6000; // to derive the real cost use: Connection.getFeeForMessage()
 
 const TIPLINK_MINIMUM_LAMPORTS = 4083560;
 
@@ -31,7 +32,8 @@ export async function createAndFundTiplink(
   if (token.isNative) {
     const lamports =
       amount * LAMPORTS_PER_SOL +
-      numOfLinks * TIPLINK_SOL_ONLY_LINK_MINIMUM_LAMPORTS;
+      numOfLinks * TIPLINK_SOL_ONLY_LINK_MINIMUM_LAMPORTS +
+      SOLANA_TRANSACTION_FEE_LAMPORTS * 2; // 2 signer
 
     transaction.add(
       SystemProgram.transfer({
@@ -54,7 +56,9 @@ export async function createAndFundTiplink(
       SystemProgram.transfer({
         fromPubkey: wallet,
         toPubkey: tiplink.keypair.publicKey,
-        lamports: numOfLinks * TIPLINK_MINIMUM_LAMPORTS,
+        lamports:
+          numOfLinks * TIPLINK_MINIMUM_LAMPORTS +
+          SOLANA_TRANSACTION_FEE_LAMPORTS * 2,
       }),
       createAssociatedTokenAccountInstruction(
         wallet,

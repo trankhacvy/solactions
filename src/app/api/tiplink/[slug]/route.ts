@@ -1,4 +1,5 @@
-import { appendAddress, getAllAddress } from "@/lib/helius";
+import { env } from "@/env";
+import { appendAddress } from "@/lib/helius";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
 import {
@@ -11,6 +12,7 @@ import {
 
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { TipLink } from "@tiplink/api";
+import dayjs from "dayjs";
 
 type Params = {
   slug: string;
@@ -33,25 +35,31 @@ export const GET = async (req: Request, context: { params: Params }) => {
       );
     }
 
+    const expired = dayjs().isAfter(dayjs(link.expiredAt));
+
     const baseHref = new URL(
       `/api/tiplink/${link.id}`,
       requestUrl.origin,
     ).toString();
 
-    const baseImageUrl = process.env.VERCEL_URL
-      ? new URL(`https://solactions.fun/`)
-      : new URL(`http://localhost:${process.env.PORT || 3000}`);
+    let label = `Claim ${link.amount} ${link.token.symbol}`;
+
+    if (link.claimed) {
+      label = "Claimed";
+    } else if (expired) {
+      label = "Expired";
+    }
 
     const payload: ActionGetResponse = {
       title: link.name ?? "",
-      icon: `${baseImageUrl}/api/og?type=tiplink&id=${link.id}`,
+      icon: `${new URL(env.NEXT_PUBLIC_FE_BASE_URL)}api/og?type=tiplink&id=${link.id}`,
       description: link.message ?? "",
-      label: "Claim",
-      disabled: !link.claimable,
+      label,
+      disabled: expired || link.claimed,
       links: {
         actions: [
           {
-            label: `Claim ${link.amountPerLink} ${link.token.symbol}`,
+            label,
             href: baseHref,
           },
         ],
@@ -92,7 +100,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const link = await api.tiplink.getById({ id: context.params.slug });
 
     if (!link) {
-      return new Response("Link not found", {
+      return new Response("Tip link not found", {
         status: 400,
         headers: ACTIONS_CORS_HEADERS,
       });
@@ -101,7 +109,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const tiplink = await TipLink.fromLink(link.link!);
 
     if (!tiplink) {
-      return new Response("Link not found", {
+      return new Response("Tip link not found", {
         status: 400,
         headers: ACTIONS_CORS_HEADERS,
       });
@@ -109,22 +117,16 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     const reference = Keypair.generate();
 
-    await getAllAddress();
-
     await appendAddress(reference.publicKey.toBase58());
 
-    await getAllAddress();
-
     let transaction: Transaction;
-
-    const amount = link.multiple ? link.amountPerLink : link.amount;
 
     if (link.token?.isNative) {
       transaction = await buildTransferSolTx(
         tiplink.keypair.publicKey,
         claimant,
         reference.publicKey,
-        Number(amount) / 2,
+        Number(link.amount),
       );
     } else {
       transaction = await buildTransferSplTx(
@@ -132,7 +134,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         claimant,
         new PublicKey(link.token?.address!),
         reference.publicKey,
-        Number(amount) * 10 ** link?.token?.decimals!,
+        Number(link.amount) * 10 ** link?.token?.decimals!,
       );
     }
 
@@ -144,11 +146,12 @@ export const POST = async (req: Request, context: { params: Params }) => {
       signers: [tiplink.keypair],
     });
 
-    api.tiplinkClaim.create({
-      tiplinkId: link.id,
+    console.log(payload.transaction);
+
+    api.tiplink.update({
+      id: link.id,
       claimant: claimant.toBase58(),
       reference: reference.publicKey.toBase58(),
-      claimAt: new Date(),
     });
 
     return Response.json(payload, {

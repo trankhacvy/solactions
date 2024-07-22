@@ -1,19 +1,6 @@
-import NewCampaignForm from "@/components/campaign/new-campaign-form";
-import ProfileForm from "@/components/profile-form";
-import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
 import { Stack, Typography } from "@mui/material";
-import { notFound } from "next/navigation";
 
 export default async function NewCampaign() {
-  const session = await getServerAuthSession();
-
-  const user = await api.user.getById({ id: session?.user.id! });
-
-  if (!user) {
-    return notFound();
-  }
-
   return (
     <Stack
       width="100%"
@@ -32,7 +19,7 @@ export default async function NewCampaign() {
       >
         <Typography variant="h4">Create campaign</Typography>
       </Stack>
-      <NewCampaignForm user={user} />
+      {/* <NewCampaignForm user={user} /> */}
     </Stack>
   );
 }

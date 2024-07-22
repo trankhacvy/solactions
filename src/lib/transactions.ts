@@ -12,7 +12,7 @@ import {
 import { env } from "@/env";
 
 export function getConnection() {
-  return new Connection(env.NEXT_PUBLIC_RPC_URL);
+  return new Connection(env.NEXT_PUBLIC_RPC_URL, "confirmed");
 }
 
 export const buildTransferSolTx = async (
@@ -67,11 +67,7 @@ export const buildTransferSplTx = async (
   // TODO: verify token account
   const sourceAccount = getAssociatedTokenAddressSync(mint, sender);
 
-  console.log("sourceAccount", sourceAccount.toBase58());
-
   const destAccount = getAssociatedTokenAddressSync(mint, receiver);
-
-  console.log("destAccount", destAccount.toBase58());
 
   const transaction = new Transaction();
   transaction.feePayer = sender;
