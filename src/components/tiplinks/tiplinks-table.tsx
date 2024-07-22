@@ -96,7 +96,9 @@ export function TiplinksTable() {
                   </IconButton>
                 </Stack>
               </TableCell>
-              <TableCell align="center">{tiplink.amount}</TableCell>
+              <TableCell align="center">
+                {tiplink.amount} {tiplink.token.symbol}
+              </TableCell>
               <TableCell align="center">
                 {tiplink.claimed ? tiplink.claimant : "N/A"}
               </TableCell>

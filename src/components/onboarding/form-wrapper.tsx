@@ -47,9 +47,6 @@ export function createProfileSchema(isEdit: boolean, userId?: string) {
               slug,
             });
 
-            console.log("user", userId);
-            console.log(profile);
-
             if (!profile) return true;
 
             return isEdit && profile.userId === userId;

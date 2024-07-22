@@ -134,7 +134,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     }
 
     const reference = Keypair.generate();
-    await appendAddress(reference.publicKey.toBase58());
+    await appendAddress(account.toBase58());
 
     let transaction;
 
@@ -173,7 +173,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
       receiver: receiver.toBase58(),
       amount: String(amount),
       reference: reference.publicKey.toBase58(),
-      currency: token.address,
+      currency: tokenList.find((t) => t.address === token.address),
     });
 
     return Response.json(payload, {

@@ -117,7 +117,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     const reference = Keypair.generate();
 
-    await appendAddress(reference.publicKey.toBase58());
+    await appendAddress(tiplink.keypair.publicKey.toBase58());
 
     let transaction: Transaction;
 
