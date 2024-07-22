@@ -1,4 +1,5 @@
 import { tokenList } from "@/config/tokens";
+import { appendAddress } from "@/lib/helius";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
 import { SelectDonationProfile, Token } from "@/types";
@@ -133,6 +134,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     }
 
     const reference = Keypair.generate();
+    await appendAddress(reference.publicKey.toBase58());
 
     let transaction;
 
@@ -158,7 +160,9 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
-        message: `Send ${amount} ${token.symbol} to ${receiver.toBase58()}. ${profile.thankMessage}`,
+        message: profile.thankMessage
+          ? profile.thankMessage
+          : `Send ${amount} ${token.symbol} to ${receiver.toBase58()}.`,
       },
     });
 
