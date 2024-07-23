@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1721410974409,
-      "tag": "0000_add-tiplink-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 24,
-      "version": "7",
-      "when": 1721587631704,
-      "tag": "0024_update-tx-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 25,
-      "version": "7",
-      "when": 1721619061956,
-      "tag": "0025_update-tiplink-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 26,
-      "version": "7",
-      "when": 1721645469078,
-      "tag": "0026_update-donation-options-field",
+      "when": 1721719756237,
+      "tag": "0000_init-tables",
       "breakpoints": true
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "id": "ee8a6b3f-7f49-4554-a4b7-1412c4a96827",
+  "id": "1df731d6-10ff-43e4-a6e5-237a80e3048b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -341,58 +341,6 @@
       },
       "uniqueConstraints": {}
     },
-    "public.transaction": {
-      "name": "transaction",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'PROCESSING'"
-        },
-        "reference": {
-          "name": "reference",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "transaction_reference_unique": {
-          "name": "transaction_reference_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "reference"
-          ]
-        }
-      }
-    },
     "public.donation_profile": {
       "name": "donation_profile",
       "schema": "",
@@ -443,10 +391,9 @@
         },
         "amount_options": {
           "name": "amount_options",
-          "type": "integer[]",
+          "type": "numeric[]",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'{}'::int[]"
+          "notNull": true
         },
         "thanks_message": {
           "name": "thanks_message",
@@ -526,12 +473,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tx_id": {
-          "name": "tx_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "sender": {
           "name": "sender",
           "type": "varchar",
@@ -556,6 +497,26 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'{\"name\":\"Solana\",\"symbol\":\"SOL\",\"isNative\":true,\"address\":\"So11111111111111111111111111111111111111112\",\"decimals\":9,\"icon\":\"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756\"}'::jsonb"
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'PROCESSING'"
+        },
+        "reference": {
+          "name": "reference",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "signature": {
+          "name": "signature",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -586,23 +547,76 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "donation_transaction_tx_id_transaction_id_fk": {
-          "name": "donation_transaction_tx_id_transaction_id_fk",
-          "tableFrom": "donation_transaction",
-          "tableTo": "transaction",
-          "columnsFrom": [
-            "tx_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "donation_transaction_reference_unique": {
+          "name": "donation_transaction_reference_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "reference"
+          ]
+        },
+        "donation_transaction_signature_unique": {
+          "name": "donation_transaction_signature_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "signature"
+          ]
+        }
+      }
+    },
+    "public.reference": {
+      "name": "reference",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "reference": {
+          "name": "reference",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reference_type": {
+          "name": "reference_type",
+          "type": "reference_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "reference_reference_unique": {
+          "name": "reference_reference_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "reference"
+          ]
+        }
+      }
     },
     "public.tiplink": {
       "name": "tiplink",
@@ -640,12 +654,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "amount_per_link": {
-          "name": "amount_per_link",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
         "token": {
           "name": "token",
           "type": "jsonb",
@@ -653,45 +661,44 @@
           "notNull": true,
           "default": "'{\"name\":\"Solana\",\"symbol\":\"SOL\",\"isNative\":true,\"address\":\"So11111111111111111111111111111111111111112\",\"decimals\":9,\"icon\":\"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756\"}'::jsonb"
         },
-        "multiple": {
-          "name": "multiple",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "claimable": {
-          "name": "claimable",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "wallet": {
-          "name": "wallet",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "num_of_claims": {
-          "name": "num_of_claims",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 1
-        },
-        "claimed": {
-          "name": "claimed",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 0
-        },
         "link": {
           "name": "link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "claimant": {
+          "name": "claimant",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "claimed": {
+          "name": "claimed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'PROCESSING'"
+        },
+        "reference": {
+          "name": "reference",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signature": {
+          "name": "signature",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -706,6 +713,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "expired_at": {
+          "name": "expired_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -725,98 +738,33 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.tiplink_claim": {
-      "name": "tiplink_claim",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
+      "uniqueConstraints": {
+        "tiplink_reference_unique": {
+          "name": "tiplink_reference_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "reference"
+          ]
         },
-        "tiplink_id": {
-          "name": "tiplink_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "claimant": {
-          "name": "claimant",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "note": {
-          "name": "note",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "''"
-        },
-        "tx_id": {
-          "name": "tx_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "claim_at": {
-          "name": "claim_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
+        "tiplink_signature_unique": {
+          "name": "tiplink_signature_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "signature"
+          ]
         }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tiplink_claim_tiplink_id_tiplink_id_fk": {
-          "name": "tiplink_claim_tiplink_id_tiplink_id_fk",
-          "tableFrom": "tiplink_claim",
-          "tableTo": "tiplink",
-          "columnsFrom": [
-            "tiplink_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tiplink_claim_tx_id_transaction_id_fk": {
-          "name": "tiplink_claim_tx_id_transaction_id_fk",
-          "tableFrom": "tiplink_claim",
-          "tableTo": "transaction",
-          "columnsFrom": [
-            "tx_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      }
     }
   },
   "enums": {
+    "public.reference_type": {
+      "name": "reference_type",
+      "schema": "public",
+      "values": [
+        "DONATION",
+        "TIPLINK"
+      ]
+    },
     "public.status": {
       "name": "status",
       "schema": "public",

@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
-import { alpha, Box, useTheme } from "@mui/material";
+import { alpha, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FormTokenSelect } from "@/components/ui/form-token-select";

@@ -1,2 +1,0 @@
-ALTER TABLE "tipLinks" ADD COLUMN "token" jsonb DEFAULT '{"name":"Solana","symbol":"SOL","isNative":true,"address":"So11111111111111111111111111111111111111112","decimals":9,"icon":"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756"}'::jsonb;--> statement-breakpoint
-ALTER TABLE "tipLinks" DROP COLUMN IF EXISTS "currency";

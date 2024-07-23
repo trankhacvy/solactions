@@ -15,7 +15,7 @@ const productionTokenList = [
     name: "USDC",
     symbol: "USDC",
     isNative: false,
-    address: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     decimals: 6,
     icon: "https://assets.coingecko.com/coins/images/6319/standard/usdc.png?1696506694",
   },
@@ -43,6 +43,8 @@ const devTokenList = [
 export const tokenList: Token[] = IS_PRODUCTION
   ? productionTokenList
   : devTokenList;
+
+console.log({ tokenList })  
 
 export const defaultToken: Token = {
   name: "Solana",
