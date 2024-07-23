@@ -115,7 +115,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     signIn: async ({ user, account, profile }) => {
-      console.log('sign in', user, account, profile)
+      console.log("sign in", user, account, profile);
 
       if (account?.provider === "twitter") {
         // @ts-ignore
@@ -162,7 +162,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user, session, trigger }) {
-      console.log('jwt', token, user, session, trigger)
       if (trigger === "update") {
         if (session?.wallet && session?.id) {
           let userToUpdate = await drizzleDb.query.user.findFirst({

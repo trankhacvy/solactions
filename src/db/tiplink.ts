@@ -27,6 +27,7 @@ export const tipLink = pgTable("tiplink", {
   link: varchar("link").notNull(), // tip link
   claimant: varchar("claimant"),
   claimed: boolean("claimed").notNull().default(false),
+  image: text("image"),
 
   // tx
   status: TransactionStatus("status").default("PROCESSING"),
