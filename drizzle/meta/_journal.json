@@ -15,6 +15,13 @@
       "when": 1721728980006,
       "tag": "0001_update-user-table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1721754660612,
+      "tag": "0002_add-image-to-tiplink",
+      "breakpoints": true
     }
   ]
 }

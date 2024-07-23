@@ -10,7 +10,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { donationProfile } from "./donations";
-import { z } from "zod";
 import { TransactionStatus } from "./reference";
 
 export const donationTransaction = pgTable("donation_transaction", {

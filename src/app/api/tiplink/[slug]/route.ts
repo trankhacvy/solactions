@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { tiplinkImages } from "@/config/constants";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
 import {
@@ -51,7 +51,7 @@ export const GET = async (req: Request, context: { params: Params }) => {
 
     const payload: ActionGetResponse = {
       title: link.name ?? "",
-      icon: `${new URL(env.NEXT_PUBLIC_FE_BASE_URL)}api/og?type=tiplink&id=${link.id}`,
+      icon: link.image ?? tiplinkImages[1]?.image!,
       description: link.message ?? "",
       label,
       disabled: expired || link.claimed,
