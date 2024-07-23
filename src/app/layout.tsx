@@ -2,12 +2,13 @@ require("@solana/wallet-adapter-react-ui/styles.css");
 import "@/styles/globals.css";
 
 import { Poppins } from "next/font/google";
-
+import { Analytics } from "@vercel/analytics/react";
 import { TRPCReactProvider } from "@/trpc/react";
 import Providers from "./providers";
 import { getServerAuthSession } from "@/server/auth";
 import { AppConfig } from "@/config/constants";
 import { Metadata } from "next";
+import { IS_PRODUCTION } from "@/env";
 
 const font = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -55,6 +56,7 @@ export default async function RootLayout({
         <TRPCReactProvider>
           <Providers session={session}>{children}</Providers>
         </TRPCReactProvider>
+        {IS_PRODUCTION && <Analytics />}
       </body>
     </html>
   );

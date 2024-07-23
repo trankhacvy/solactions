@@ -44,8 +44,6 @@ export const tokenList: Token[] = IS_PRODUCTION
   ? productionTokenList
   : devTokenList;
 
-console.log({ tokenList })  
-
 export const defaultToken: Token = {
   name: "Solana",
   symbol: "SOL",

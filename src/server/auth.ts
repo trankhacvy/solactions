@@ -13,6 +13,7 @@ const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 export const authOptions: NextAuthOptions = {
   // @ts-ignore
   adapter: DrizzleAdapter(drizzleDb, {
+    // @ts-ignore
     usersTable: schema.user,
   }),
   providers: [
@@ -115,11 +116,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     signIn: async ({ user, account, profile }) => {
       console.log('sign in', user, account, profile)
-      if (!user.email) return false;
 
       if (account?.provider === "twitter") {
+        // @ts-ignore
+        if (!user.screen_name) return false;
+
         let existingUser = await drizzleDb.query.user.findFirst({
-          where: (user, { eq }) => eq(user.email, user.email!),
+          // @ts-ignore
+          where: (u, { eq }) => eq(u.screen_name, user.screen_name!),
         });
 
         if (!existingUser || !profile) return true;
