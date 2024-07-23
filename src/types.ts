@@ -1,6 +1,8 @@
-import * as schema from "@/db/schema";
+import * as schema from "@/db";
 
-export type SelectUser = typeof schema.users.$inferSelect;
+export type SelectUser = typeof schema.user.$inferSelect;
+
+export type SelectDonationProfile = typeof schema.donationProfile.$inferSelect;
 
 // upload action
 export type UploadActionResponse = {

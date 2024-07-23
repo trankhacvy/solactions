@@ -8,30 +8,35 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { Button, Link, Skeleton, Stack, Typography } from "@mui/material";
 import { api } from "@/trpc/react";
-import { useSession } from "next-auth/react";
 import { getExplorerUrl } from "@/lib/explorer";
 import { truncateWallet } from "@/lib/wallet";
 import { tokenList } from "@/config/tokens";
 import { formatDateByPattern } from "@/lib/format-date";
 import { twitterLink } from "@/utils/twitter";
 import { getDonationLink } from "@/utils/links";
-import { SelectUser } from "@/types";
+import { SelectDonationProfile } from "@/types";
 
 export function DonationTable() {
-  const { data: session } = useSession();
+  const { data: profile, isLoading: isLoadingProfile } =
+    api.donation.me.useQuery(undefined, {
+      refetchOnWindowFocus: false,
+    });
 
-  const { data: donations = [], isLoading } =
-    api.donation.getUserDonations.useQuery(
+  const { data: donations = [], isLoading: isLoadingDonations } =
+    api.donationTransaction.getByProfileId.useQuery(
       {
-        wallet: session?.user.wallet!,
+        profileId: profile?.id!,
       },
       {
+        enabled: !!profile,
         refetchOnWindowFocus: false,
       },
     );
 
+  const isLoading = isLoadingProfile || isLoadingDonations;
+
   if (donations.length === 0 && !isLoading) {
-    return <EmptyUI user={session?.user} />;
+    return <EmptyUI profile={profile} />;
   }
 
   return (
@@ -94,8 +99,8 @@ export function DonationTable() {
   );
 }
 
-function EmptyUI({ user }: { user?: SelectUser }) {
-  if (!user) return null;
+function EmptyUI({ profile }: { profile?: SelectDonationProfile }) {
+  if (!profile) return null;
 
   return (
     <Stack alignItems="center">
@@ -103,7 +108,7 @@ function EmptyUI({ user }: { user?: SelectUser }) {
         No donation yet
       </Typography>
       <a
-        href={twitterLink(getDonationLink(user?.slug), {
+        href={twitterLink(getDonationLink(profile?.slug), {
           title: "Donate me on ",
           hashtags: ["solactions", "actions", "blinks", "opos"],
         })}

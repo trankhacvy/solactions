@@ -21,3 +21,4 @@ theme = createTheme(theme, {
 });
 
 export default responsiveFontSizes(theme);
+export * from "./css";

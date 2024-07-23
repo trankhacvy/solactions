@@ -22,9 +22,9 @@ type Props = {
 export default async function Image({ params }: Props) {
   const { slug } = params;
 
-  const user = await api.user.getBySlug({ slug });
+  const profile = await api.donation.getBySlug({ slug });
 
-  if (!user) {
+  if (!profile) {
     notFound();
   }
 
@@ -101,8 +101,8 @@ export default async function Image({ params }: Props) {
             <div tw="flex justify-center overflow-hidden rounded-lg p-4">
               <div tw="apsect-square flex w-full items-center justify-center rounded-lg bg-gray-100">
                 <img
-                  src={user.avatar ?? ""}
-                  alt={user.name ?? ""}
+                  src={profile.image ?? ""}
+                  alt={profile.name ?? ""}
                   className="h-auto w-full rounded-lg object-cover"
                 />
               </div>
@@ -116,7 +116,7 @@ export default async function Image({ params }: Props) {
                   textAlign: "left",
                 }}
               >
-                {user.name}
+                {profile.name}
               </p>
               <p
                 style={{
@@ -124,7 +124,7 @@ export default async function Image({ params }: Props) {
                   textAlign: "left",
                 }}
               >
-                {user.bio}
+                {profile.bio}
               </p>
             </div>
           </div>

@@ -1,74 +1,64 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from "@/server/api/trpc";
 
-import * as schema from "@/db/schema";
+import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
-import { SQLWrapper, and, eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Token } from "@/types";
 
 export const donationRouter = createTRPCRouter({
-  createNew: publicProcedure
-    .input(schema.createDonationTransactionSchema)
+  create: protectedProcedure
+    .input(schema.createDonationProfileSchema)
     .mutation(async ({ ctx, input }) => {
-      const result = await ctx.db
-        .insert(schema.donationTransactions)
+      const userId = ctx.session.user.id!;
+
+      const [profile] = await ctx.db
+        .insert(schema.donationProfile)
         .values({
           id: generatePublicId(),
           ...input,
-          currency: input.currency as Token,
+          userId,
+          acceptToken: input.acceptToken as Token,
         })
         .returning();
 
-      return result[0]!;
+      return profile;
     }),
 
-  updateByReference: publicProcedure
-    .input(schema.updateDonationTransactionSchema)
+  update: protectedProcedure
+    .input(schema.updateDonationProfileSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db
-        .update(schema.donationTransactions)
-        .set({
-          ...input,
-          currency: input.currency as Token,
-        })
-        .where(eq(schema.donationTransactions.reference, input.reference!));
+      const { id, ...rest } = input;
+
+      const [profile] = await ctx.db
+        .update(schema.donationProfile)
+        .set(rest as any)
+        .where(eq(schema.donationProfile.id, id))
+        .returning();
+
+      return profile;
     }),
 
-  getPendingTransaction: publicProcedure
+  me: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.query.donationProfile.findFirst({
+      where: (profile, { eq }) => eq(profile.userId, ctx.session.user.id),
+    });
+  }),
+
+  getBySlug: publicProcedure
     .input(
       z.object({
-        receiver: z.string(),
-        addresses: z.array(z.string()),
+        slug: z.string().trim().min(1),
       }),
     )
     .query(({ ctx, input }) => {
-      const filters: SQLWrapper[] = [];
-
-      filters.push(eq(schema.donationTransactions.status, "PROCESSING"));
-      filters.push(
-        inArray(schema.donationTransactions.reference, input.addresses),
-      );
-
-      return ctx.db.query.donationTransactions.findMany({
-        where: and(...filters),
-      });
-    }),
-
-  getUserDonations: publicProcedure
-    .input(
-      z.object({
-        wallet: z.string(),
-      }),
-    )
-    .query(({ ctx, input }) => {
-      const filters: SQLWrapper[] = [];
-
-      filters.push(eq(schema.donationTransactions.status, "SUCCESS"));
-      filters.push(eq(schema.donationTransactions.receiver, input.wallet));
-
-      return ctx.db.query.donationTransactions.findMany({
-        where: and(...filters),
+      return ctx.db.query.donationProfile.findFirst({
+        where: (profile, { eq }) => eq(profile.slug, input.slug),
       });
     }),
 });

@@ -1,3 +1,4 @@
+import { removeAddress } from "@/lib/helius";
 import { api } from "@/trpc/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -41,81 +42,56 @@ export type Body = Array<{
 
 export async function POST(req: NextRequest) {
   const body: Body = await req.json();
-  // console.dir(body, { depth: null });
+
+  console.dir(body, { depth: null });
 
   if (body && body.length > 0) {
     const transaction = body[0]!;
     if (transaction.type === "TRANSFER" && !transaction.transactionError) {
-      const nativeTranfer = transaction.nativeTransfers?.[0];
-      const tokenTranfer = transaction.tokenTransfers?.[0];
+      const accountKeys = transaction.accountData
+        .filter((data) => data.nativeBalanceChange === 0)
+        .map((acc) => acc.account);
 
-      if (nativeTranfer) {
-        const sender = nativeTranfer.fromUserAccount;
-        const receiver = nativeTranfer.toUserAccount;
-
-        const accountKeys = transaction.accountData
-          .map((acc) => acc.account)
-          .filter((acc) => acc !== sender && acc !== receiver);
-
-        const donations = await api.donation.getPendingTransaction({
-          receiver,
-          addresses: accountKeys,
-        });
-
-        if (donations.length > 0) {
-          await Promise.all(
-            donations.map((donation) =>
-              api.donation.updateByReference({
-                status: "SUCCESS",
-                reference: donation.reference,
-              }),
-            ),
-          );
-
-          return NextResponse.json({ success: true });
-        }
-      }
-
-      if (tokenTranfer) {
-        const sender = tokenTranfer.fromUserAccount;
-        const senderTokenAccount = tokenTranfer.fromTokenAccount;
-
-        const receiver = tokenTranfer.toUserAccount;
-        const receiverTokenAccount = tokenTranfer.toTokenAccount;
-
-        const accountKeys = transaction.accountData
-          .map((acc) => acc.account)
-          .filter(
-            (acc) =>
-              ![
-                sender,
-                receiver,
-                senderTokenAccount,
-                receiverTokenAccount,
-                tokenTranfer.mint,
-              ].includes(acc),
-          );
-
-        const donations = await api.donation.getPendingTransaction({
-          receiver,
-          addresses: accountKeys,
-        });
-
-        if (donations.length > 0) {
-          await Promise.all(
-            donations.map((donation) =>
-              api.donation.updateByReference({
-                status: "SUCCESS",
-                reference: donation.reference,
-              }),
-            ),
-          );
-
-          return NextResponse.json({ success: true });
-        }
-      }
+      await Promise.all(
+        accountKeys.map((key) =>
+          findAndUpdateTransaction(key, transaction.signature),
+        ),
+      );
     }
   }
 
   return NextResponse.json({ success: false });
+}
+
+async function findAndUpdateTransaction(reference: string, signature: string) {
+  try {
+    const referenceInfo = await api.reference.getByReference({ reference });
+
+    if (referenceInfo) {
+      const type = referenceInfo.type;
+
+      if (type === "DONATION") {
+        const tx = await api.donationTransaction.getByReference({ reference });
+        if (tx && tx.status !== "SUCCESS") {
+          await api.donationTransaction.update({
+            id: tx.id,
+            status: "SUCCESS",
+            signature,
+          });
+        }
+      } else if (type === "TIPLINK") {
+        const tiplink = await api.tiplink.getByReference({ reference });
+        if (tiplink && !tiplink.claimed) {
+          await api.tiplink.update({
+            id: tiplink.id,
+            status: "SUCCESS",
+            claimed: true,
+            signature,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }

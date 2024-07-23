@@ -7,12 +7,11 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 
-import { SelectUser } from "@/types";
+import { SelectDonationProfile } from "@/types";
 import { alpha } from "@mui/system";
 import { Box, OutlinedInput, Stack, useTheme } from "@mui/material";
-import { donateOptions } from "@/config/tokens";
 
-export function PreviewCard({ user }: { user: SelectUser }) {
+export function PreviewCard({ profile }: { profile: SelectDonationProfile }) {
   const theme = useTheme();
 
   return (
@@ -25,8 +24,8 @@ export function PreviewCard({ user }: { user: SelectUser }) {
         <Box p={2}>
           <CardMedia
             component="img"
-            image={user.avatar ?? ""}
-            alt={user.name ?? ""}
+            image={profile.image ?? ""}
+            alt={profile.name ?? ""}
             sx={{
               aspectRatio: "1/1",
               bgcolor: alpha(theme.palette.grey["500"], 0.24),
@@ -42,10 +41,10 @@ export function PreviewCard({ user }: { user: SelectUser }) {
           }}
         >
           <Typography gutterBottom variant="h5" component="div">
-            {user.name}
+            {profile.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {user.bio}
+            {profile.bio}
           </Typography>
         </CardContent>
 
@@ -53,9 +52,9 @@ export function PreviewCard({ user }: { user: SelectUser }) {
           sx={{ display: "flex", flexDirection: "column", p: 2, pt: 0, gap: 2 }}
         >
           <Stack flexDirection="row" gap={2} alignItems="center" width="100%">
-            {donateOptions.map((option) => (
-              <Button sx={{ flex: 1 }} color="inherit">
-                {option} {user.acceptToken?.symbol}
+            {profile.amountOptions.map((option, idx) => (
+              <Button key={idx} sx={{ flex: 1 }} color="inherit">
+                {option} {profile.acceptToken?.symbol}
               </Button>
             ))}
           </Stack>

@@ -13,15 +13,15 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = params;
 
-  const user = await api.user.getBySlug({ slug });
+  const profile = await api.donation.getBySlug({ slug });
 
-  if (!user) {
+  if (!profile) {
     notFound();
   }
 
   return {
-    title: `${user.name} | SolActions`,
-    description: user.bio,
+    title: `${profile.name} | SolActions`,
+    description: profile.bio,
     twitter: {
       card: "summary_large_image",
     },
@@ -29,15 +29,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Profile({ params: { slug } }: Props) {
-  const user = await api.user.getBySlug({ slug });
+  const profile = await api.donation.getBySlug({ slug });
 
-  if (!user) {
+  if (!profile) {
     notFound();
   }
 
   return (
     <Stack>
-      <ProfileCard user={user} />
+      <ProfileCard profile={profile} />
     </Stack>
   );
 }

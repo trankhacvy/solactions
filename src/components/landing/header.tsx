@@ -4,7 +4,7 @@ import React from "react";
 import { Box } from "@mui/system";
 import { Logo } from "../ui/logo";
 import { HEADER } from "@/config/header";
-import { AuthButton } from "./auth-button";
+import { GetStarted } from "./buttons";
 
 const menuItems = ["How it work", "About us"];
 
@@ -51,7 +51,7 @@ export function Header() {
         </Stack>
         <Box flex={1} />
 
-        <AuthButton />
+        <GetStarted />
       </Toolbar>
     </AppBar>
   );
