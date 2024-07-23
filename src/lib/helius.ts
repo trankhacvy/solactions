@@ -22,12 +22,3 @@ export function removeAddress(address: string | string[]) {
     console.error(error);
   }
 }
-
-export async function getAllAddress() {
-  const webhook = await helius.getWebhookByID(env.HELIUS_WEBHOOK_ID);
-  console.log(
-    "helius webhook: ",
-    webhook.accountAddresses.length,
-    webhook.accountAddresses,
-  );
-}

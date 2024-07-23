@@ -34,8 +34,6 @@ export function TiplinksTable() {
   const [copying, setCopying] = useState(false);
   const [_, copy] = useCopyToClipboard();
 
-  console.log({ tiplinks });
-
   if (tiplinks.length === 0 && !isLoading) {
     return <EmptyUI />;
   }

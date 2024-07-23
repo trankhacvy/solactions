@@ -19,7 +19,6 @@ import { zodNumberInputPipe } from "@/utils/zod";
 import { createAndFundTiplink } from "@/lib/tiplink";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import ConnectWalletButton from "../connect-wallet";
-import { appendAddress } from "@/lib/helius";
 import { appendWebhookAddress } from "@/app/actions/helius";
 
 export const NewTiplinkSchema = z.object({
@@ -79,17 +78,10 @@ export default function NewTipLinkForm() {
         1,
         values.token,
       );
-      console.log("tiplink", tiplink.url.toString());
 
       const signature = await sendTransaction(transaction, connection);
-      console.log("signature", signature);
 
-      const response = await connection.confirmTransaction(
-        signature,
-        "confirmed",
-      );
-
-      console.log("response", response);
+      await connection.confirmTransaction(signature, "confirmed");
 
       await mutate({
         message: values.message,
