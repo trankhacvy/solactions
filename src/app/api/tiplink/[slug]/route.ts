@@ -1,5 +1,4 @@
 import { env } from "@/env";
-import { appendAddress } from "@/lib/helius";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { api } from "@/trpc/server";
 import {
@@ -117,8 +116,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     const reference = Keypair.generate();
 
-    await appendAddress(tiplink.keypair.publicKey.toBase58());
-
     let transaction: Transaction;
 
     if (link.token?.isNative) {
@@ -136,7 +133,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         new PublicKey(link.token?.address!),
         reference.publicKey,
         Number(link.amount) * 10 ** link?.token?.decimals!,
-        false,
+        true,
       );
     }
 

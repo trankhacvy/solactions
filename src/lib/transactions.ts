@@ -6,8 +6,13 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import {
+  Account,
   createTransferInstruction,
+  getAccount,
   getAssociatedTokenAddressSync,
+  TokenAccountNotFoundError,
+  TokenInvalidAccountOwnerError,
+  createAssociatedTokenAccountInstruction,
 } from "@solana/spl-token";
 import { env } from "@/env";
 
@@ -20,7 +25,7 @@ export const buildTransferSolTx = async (
   receiver: PublicKey,
   reference: PublicKey,
   amount: number,
-  receiverIsSigner: boolean
+  receiverIsSigner: boolean,
 ) => {
   const connection = getConnection();
 
@@ -64,17 +69,47 @@ export const buildTransferSplTx = async (
   mint: PublicKey,
   reference: PublicKey,
   amount: number,
-  receiverIsSigner: boolean
+  receiverIsSigner: boolean,
 ) => {
   const connection = getConnection();
+  const transaction = new Transaction();
 
   // TODO: verify token account
   const sourceAccount = getAssociatedTokenAddressSync(mint, sender);
+  console.log("sourceAccount", sourceAccount.toBase58());
 
   const destAccount = getAssociatedTokenAddressSync(mint, receiver);
+  console.log("destAccount", destAccount.toBase58());
 
-  const transaction = new Transaction();
-  transaction.feePayer = sender;
+  let _account: Account;
+  try {
+    _account = await getAccount(connection, destAccount);
+  } catch (error: unknown) {
+    // TokenAccountNotFoundError can be possible if the associated address has already received some lamports,
+    // becoming a system account. Assuming program derived addressing is safe, this is the only case for the
+    // TokenInvalidAccountOwnerError in this code path.
+    if (
+      error instanceof TokenAccountNotFoundError ||
+      error instanceof TokenInvalidAccountOwnerError
+    ) {
+      // As this isn't atomic, it's possible others can create associated accounts meanwhile.
+      try {
+        transaction.add(
+          createAssociatedTokenAccountInstruction(
+            sender,
+            destAccount,
+            receiver,
+            mint,
+          ),
+        );
+      } catch (error: unknown) {
+        // Ignore all errors; for now there is no API-compatible way to selectively ignore the expected
+        // instruction error if the associated account exists already.
+      }
+    } else {
+      throw error;
+    }
+  }
 
   const ix = createTransferInstruction(
     sourceAccount,
@@ -103,6 +138,7 @@ export const buildTransferSplTx = async (
   transaction.recentBlockhash = (
     await connection.getLatestBlockhash()
   ).blockhash;
+  transaction.feePayer = sender;
 
   return transaction;
 };
