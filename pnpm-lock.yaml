@@ -26,6 +26,9 @@ importers:
       '@mui/base':
         specifier: 5.0.0-beta.40
         version: 5.0.0-beta.40(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      '@mui/icons-material':
+        specifier: ^5.16.4
+        version: 5.16.4(@mui/material@5.15.20(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0))(@types/react@18.2.57)(react@18.3.0)
       '@mui/lab':
         specifier: 5.0.0-alpha.170
         version: 5.0.0-alpha.170(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@mui/material@5.15.20(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
@@ -55,7 +58,7 @@ importers:
         version: 0.9.35(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(react-dom@18.3.0(react@18.3.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(react@18.3.0)
       '@solana/wallet-adapter-wallets':
         specifier: ^0.19.32
-        version: 0.19.32(@babel/core@7.24.7)(@babel/runtime@7.24.7)(@react-native-async-storage/async-storage@1.23.1(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.0(react@18.3.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(react@18.3.0)(tslib@2.6.3)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.24.7)(@babel/runtime@7.24.8)(@react-native-async-storage/async-storage@1.23.1(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.0(react@18.3.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(react@18.3.0)(tslib@2.6.3)(utf-8-validate@5.0.10)
       '@solana/web3.js':
         specifier: ^1.93.2
         version: 1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1652,6 +1655,17 @@ packages:
 
   '@mui/core-downloads-tracker@5.15.20':
     resolution: {integrity: sha512-DoL2ppgldL16utL8nNyj/P12f8mCNdx/Hb/AJnX9rLY4b52hCMIx1kH83pbXQ6uMy6n54M3StmEbvSGoj2OFuA==}
+
+  '@mui/icons-material@5.16.4':
+    resolution: {integrity: sha512-j9/CWctv6TH6Dou2uR2EH7UOgu79CW/YcozxCYVLJ7l03pCsiOlJ5sBArnWJxJ+nGkFwyL/1d1k8JEPMDR125A==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@mui/lab@5.0.0-alpha.170':
     resolution: {integrity: sha512-0bDVECGmrNjd3+bLdcLiwYZ0O4HP5j5WSQm5DV6iA/Z9kr8O6AnvZ1bv9ImQbbX7Gj3pX4o43EKwCutj3EQxQg==}
@@ -8251,7 +8265,7 @@ snapshots:
   '@emotion/babel-plugin@11.11.0':
     dependencies:
       '@babel/helper-module-imports': 7.24.7
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@emotion/hash': 0.9.1
       '@emotion/memoize': 0.8.1
       '@emotion/serialize': 1.1.4
@@ -9127,6 +9141,14 @@ snapshots:
 
   '@mui/core-downloads-tracker@5.15.20': {}
 
+  '@mui/icons-material@5.16.4(@mui/material@5.15.20(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0))(@types/react@18.2.57)(react@18.3.0)':
+    dependencies:
+      '@babel/runtime': 7.24.8
+      '@mui/material': 5.15.20(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)
+      react: 18.3.0
+    optionalDependencies:
+      '@types/react': 18.2.57
+
   '@mui/lab@5.0.0-alpha.170(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@mui/material@5.15.20(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0))(@types/react@18.2.57)(react-dom@18.3.0(react@18.3.0))(react@18.3.0)':
     dependencies:
       '@babel/runtime': 7.24.7
@@ -9177,7 +9199,7 @@ snapshots:
 
   '@mui/private-theming@5.15.20(@types/react@18.2.57)(react@18.3.0)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@mui/utils': 5.15.20(@types/react@18.2.57)(react@18.3.0)
       prop-types: 15.8.1
       react: 18.3.0
@@ -9186,7 +9208,7 @@ snapshots:
 
   '@mui/styled-engine@5.15.14(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.57)(react@18.3.0))(@types/react@18.2.57)(react@18.3.0))(react@18.3.0)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@emotion/cache': 11.11.0
       csstype: 3.1.3
       prop-types: 15.8.1
@@ -9217,7 +9239,7 @@ snapshots:
 
   '@mui/utils@5.15.20(@types/react@18.2.57)(react@18.3.0)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@types/prop-types': 15.7.12
       prop-types: 15.8.1
       react: 18.3.0
@@ -10257,11 +10279,11 @@ snapshots:
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
-  '@solana/wallet-adapter-torus@0.11.28(@babel/runtime@7.24.7)(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-torus@0.11.28(@babel/runtime@7.24.8)(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@toruslabs/solana-embed': 0.3.4(@babel/runtime@7.24.7)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@toruslabs/solana-embed': 0.3.4(@babel/runtime@7.24.8)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       assert: 2.1.0
       crypto-browserify: 3.12.0
       process: 0.11.10
@@ -10328,7 +10350,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.24.7)(@babel/runtime@7.24.7)(@react-native-async-storage/async-storage@1.23.1(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.0(react@18.3.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(react@18.3.0)(tslib@2.6.3)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.24.7)(@babel/runtime@7.24.8)(@react-native-async-storage/async-storage@1.23.1(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.0(react@18.3.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(react@18.3.0)(tslib@2.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -10360,7 +10382,7 @@ snapshots:
       '@solana/wallet-adapter-spot': 0.1.15(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-tokenary': 0.1.12(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-tokenpocket': 0.4.19(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-torus': 0.11.28(@babel/runtime@7.24.7)(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-torus': 0.11.28(@babel/runtime@7.24.8)(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-trezor': 0.1.2(@babel/core@7.24.7)(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.57)(bufferutil@4.0.8)(react@18.3.0)(utf-8-validate@5.0.10))(tslib@2.6.3)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-unsafe-burner': 0.1.7(@solana/web3.js@1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -10684,13 +10706,13 @@ snapshots:
       '@tanstack/query-core': 5.38.0
       react: 18.3.0
 
-  '@toruslabs/base-controllers@2.9.0(@babel/runtime@7.24.7)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@toruslabs/base-controllers@2.9.0(@babel/runtime@7.24.8)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@ethereumjs/util': 8.1.0
       '@toruslabs/broadcast-channel': 6.3.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.7)
-      '@toruslabs/openlogin-jrpc': 4.7.2(@babel/runtime@7.24.7)
+      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.8)
+      '@toruslabs/openlogin-jrpc': 4.7.2(@babel/runtime@7.24.8)
       async-mutex: 0.4.1
       bignumber.js: 9.1.2
       bowser: 2.11.0
@@ -10706,9 +10728,9 @@ snapshots:
 
   '@toruslabs/broadcast-channel@6.3.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@toruslabs/eccrypto': 2.2.1
-      '@toruslabs/metadata-helpers': 3.2.0(@babel/runtime@7.24.7)
+      '@toruslabs/metadata-helpers': 3.2.0(@babel/runtime@7.24.8)
       bowser: 2.11.0
       loglevel: 1.9.1
       oblivious-set: 1.1.1
@@ -10724,27 +10746,27 @@ snapshots:
     dependencies:
       elliptic: 6.5.5
 
-  '@toruslabs/http-helpers@3.4.0(@babel/runtime@7.24.7)':
+  '@toruslabs/http-helpers@3.4.0(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       lodash.merge: 4.6.2
       loglevel: 1.9.1
 
-  '@toruslabs/metadata-helpers@3.2.0(@babel/runtime@7.24.7)':
+  '@toruslabs/metadata-helpers@3.2.0(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@toruslabs/eccrypto': 2.2.1
-      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.7)
+      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.8)
       elliptic: 6.5.5
       ethereum-cryptography: 2.2.0
       json-stable-stringify: 1.1.1
     transitivePeerDependencies:
       - '@sentry/types'
 
-  '@toruslabs/openlogin-jrpc@3.2.0(@babel/runtime@7.24.7)':
+  '@toruslabs/openlogin-jrpc@3.2.0(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
-      '@toruslabs/openlogin-utils': 3.0.0(@babel/runtime@7.24.7)
+      '@babel/runtime': 7.24.8
+      '@toruslabs/openlogin-utils': 3.0.0(@babel/runtime@7.24.8)
       end-of-stream: 1.4.4
       eth-rpc-errors: 4.0.3
       events: 3.3.0
@@ -10753,11 +10775,11 @@ snapshots:
       pump: 3.0.0
       readable-stream: 3.6.2
 
-  '@toruslabs/openlogin-jrpc@4.7.2(@babel/runtime@7.24.7)':
+  '@toruslabs/openlogin-jrpc@4.7.2(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@metamask/rpc-errors': 5.1.1
-      '@toruslabs/openlogin-utils': 4.7.0(@babel/runtime@7.24.7)
+      '@toruslabs/openlogin-utils': 4.7.0(@babel/runtime@7.24.8)
       end-of-stream: 1.4.4
       events: 3.3.0
       fast-safe-stringify: 2.1.1
@@ -10767,25 +10789,25 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@toruslabs/openlogin-utils@3.0.0(@babel/runtime@7.24.7)':
+  '@toruslabs/openlogin-utils@3.0.0(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       base64url: 3.0.1
       keccak: 3.0.4
       randombytes: 2.1.0
 
-  '@toruslabs/openlogin-utils@4.7.0(@babel/runtime@7.24.7)':
+  '@toruslabs/openlogin-utils@4.7.0(@babel/runtime@7.24.8)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       base64url: 3.0.1
 
-  '@toruslabs/solana-embed@0.3.4(@babel/runtime@7.24.7)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@toruslabs/solana-embed@0.3.4(@babel/runtime@7.24.8)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       '@solana/web3.js': 1.93.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@toruslabs/base-controllers': 2.9.0(@babel/runtime@7.24.7)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.7)
-      '@toruslabs/openlogin-jrpc': 3.2.0(@babel/runtime@7.24.7)
+      '@toruslabs/base-controllers': 2.9.0(@babel/runtime@7.24.8)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@toruslabs/http-helpers': 3.4.0(@babel/runtime@7.24.8)
+      '@toruslabs/openlogin-jrpc': 3.2.0(@babel/runtime@7.24.8)
       eth-rpc-errors: 4.0.3
       fast-deep-equal: 3.1.3
       is-stream: 2.0.1
@@ -11834,7 +11856,7 @@ snapshots:
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       cosmiconfig: 7.1.0
       resolve: 1.22.8
 
@@ -12524,7 +12546,7 @@ snapshots:
 
   dom-helpers@5.2.1:
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       csstype: 3.1.3
 
   draggabilly@3.0.0:
@@ -14988,7 +15010,7 @@ snapshots:
 
   react-transition-group@4.4.5(react-dom@18.3.0(react@18.3.0))(react@18.3.0):
     dependencies:
-      '@babel/runtime': 7.24.7
+      '@babel/runtime': 7.24.8
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1

@@ -10,7 +10,19 @@ import { SelectDonationProfile } from "@/types";
 import { alpha } from "@mui/system";
 import { Box, OutlinedInput, Stack, useTheme } from "@mui/material";
 
-export function KolStreamCard({ profile }: { profile: SelectDonationProfile }) {
+export interface Profile {
+  title: string;
+  duration: string;
+  customDuration?: string;
+  price: string;
+  type: string;
+  calendyUrl?: string;
+  telegramUsername?: string;
+  description: string;
+  image: string; // Add image field
+}
+
+export const KolStreamCard = ({ profile }: { profile: Profile }) => {
   const theme = useTheme();
 
   return (
@@ -20,43 +32,47 @@ export function KolStreamCard({ profile }: { profile: SelectDonationProfile }) {
       height="100%"
     >
       <Card sx={{ maxWidth: 360, mx: "auto" }}>
-        <Box p={2}>
-          <CardMedia
-            component="img"
-            image={profile.image ?? ""}
-            alt={profile.name ?? ""}
-            sx={{
-              aspectRatio: "1/1",
-              bgcolor: alpha(theme.palette.grey["500"], 0.24),
-              borderRadius: 1,
-            }}
-          />
-        </Box>
-        <CardContent
-          sx={{
-            px: 2,
-            pb: 2,
-            pt: 0,
-          }}
-        >
+        <CardMedia
+          component="img"
+          height="140"
+          image={profile.image}
+          alt={profile.title}
+        />
+        <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {profile.name}
+            {profile.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {profile.bio}
+            Duration: {profile.duration === 'custom' ? profile.customDuration : profile.duration}
+          </Typography>
+          {profile.customDuration && (
+            <Typography variant="body2" color="text.secondary">
+              Custom Duration: {profile.customDuration}
+            </Typography>
+          )}
+          <Typography variant="body2" color="text.secondary">
+            Price: {profile.price}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Type: {profile.type}
+          </Typography>
+          {profile.calendyUrl && (
+            <Typography variant="body2" color="text.secondary">
+              Calendy URL: {profile.calendyUrl}
+            </Typography>
+          )}
+          {profile.telegramUsername && (
+            <Typography variant="body2" color="text.secondary">
+              Telegram Username: {profile.telegramUsername}
+            </Typography>
+          )}
+          <Typography variant="body2" color="text.secondary">
+            Description: {profile.description}
           </Typography>
         </CardContent>
-
         <CardActions
           sx={{ display: "flex", flexDirection: "column", p: 2, pt: 0, gap: 2 }}
         >
-          {/* <Stack flexDirection="row" gap={2} alignItems="center" width="100%">
-            {profile.amountOptions.map((option, idx) => (
-              <Button key={idx} sx={{ flex: 1 }} color="inherit">
-                {option} {profile.acceptToken?.symbol}
-              </Button>
-            ))}
-          </Stack> */}
           <Stack width="100%">
             <OutlinedInput
               sx={{ width: "100%" }}
@@ -79,4 +95,4 @@ export function KolStreamCard({ profile }: { profile: SelectDonationProfile }) {
       </Card>
     </Box>
   );
-}
+};
