@@ -9,23 +9,23 @@ import {
   numeric,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { user } from "./users";
+import { donationProfile } from "./donations";
 import { relations } from "drizzle-orm";
 import { kolTransaction } from "./kol-fan-pay-transactions";
 
 export const kolProfile = pgTable("kol_profile", {
   id: varchar("id").primaryKey(),
-  name: varchar("name", { length: 256 }).default("Anon"),
-  image: text("image"),
-  bio: text("Pay for talk with me"),
-  slug: varchar("slug", { length: 256 }).unique().notNull(),
-  wallet: varchar("wallet").unique().notNull(),
-  amountOptions: numeric("amount_options").array().notNull(),
+  title: varchar("title").notNull(),
+  type: varchar("type").notNull(),
+  description: varchar("desc").notNull(),
+  calendy_url: varchar("calendyurl").notNull(),
+  telegram_user_name: varchar("username").notNull(),
+  price: numeric("price").notNull(),
   thankMessage: text("thanks_message").default(
     "You will receive a confirmation email after successful payment <3",
   ),
   userId: text("user_id")
-    .references(() => user.id, { onDelete: "cascade" })
+    .references(() => donationProfile.id, { onDelete: "cascade" })
     .notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -35,7 +35,7 @@ export const kolProfile = pgTable("kol_profile", {
 export const kolProfileRelations = relations(
   kolProfile,
   ({ many }) => ({
-    pay: many(kolTransaction),
+    booking: many(kolTransaction),
   }),
 );
 
