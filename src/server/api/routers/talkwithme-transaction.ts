@@ -37,16 +37,16 @@ export const talkwithmeTransactionRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
-    .input(schema.updateDonationTransactionSchema)
+    .input(schema.updateKolTransactionSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
       const [transaction] = await ctx.db
-        .update(schema.donationTransaction)
+        .update(schema.kolTransaction)
         .set({
           ...rest,
           currency: rest.currency as Token,
         })
-        .where(eq(schema.donationTransaction.id, id))
+        .where(eq(schema.kolTransaction.id, id))
         .returning();
 
       return transaction;
@@ -59,7 +59,7 @@ export const talkwithmeTransactionRouter = createTRPCRouter({
       }),
     )
     .query(({ ctx, input }) => {
-      return ctx.db.query.donationTransaction.findFirst({
+      return ctx.db.query.kolTransaction.findFirst({
         where: (tx, { eq }) => eq(tx.reference, input.reference),
       });
     }),
@@ -73,10 +73,10 @@ export const talkwithmeTransactionRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const filters: SQLWrapper[] = [];
 
-      filters.push(eq(schema.donationTransaction.profileId, input.profileId));
-      filters.push(eq(schema.donationTransaction.status, "SUCCESS"));
+      filters.push(eq(schema.kolTransaction.profileId, input.profileId));
+      filters.push(eq(schema.kolTransaction.status, "SUCCESS"));
 
-      return ctx.db.query.donationTransaction.findMany({
+      return ctx.db.query.kolTransaction.findMany({
         where: and(...filters),
       });
     }),
