@@ -1,7 +1,7 @@
 import { pgTable, varchar, timestamp, pgEnum, text } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
-export const ReferenceType = pgEnum("reference_type", ["DONATION", "TIPLINK"]);
+export const ReferenceType = pgEnum("reference_type", ["DONATION", "TIPLINK", "TALKWITHME"]);
 
 export const TransactionStatus = pgEnum("status", [
   "PROCESSING",
