@@ -15,11 +15,19 @@ import { kolTransaction } from "./kol-fan-pay-transactions";
 
 export const kolProfile = pgTable("kol_profile", {
   id: varchar("id").primaryKey(),
-  userId: varchar("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  name: varchar("name", { length: 256 }).default("Tiplink"),
-  message: text("message").default(""),
+  name: varchar("name", { length: 256 }).default("Anon"),
+  image: text("image"),
+  bio: text("Pay for talk with me"),
+  slug: varchar("slug", { length: 256 }).unique().notNull(),
+  wallet: varchar("wallet").unique().notNull(),
+  amountOptions: numeric("amount_options").array().notNull(),
+  thankMessage: text("thanks_message").default(
+    "You will receive a confirmation email after successful payment <3",
+  ),
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
