@@ -24,6 +24,7 @@ import isToday from "dayjs/plugin/isToday";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { env } from "@/env";
+import { SnackbarHost } from "@/components/ui/snackbar";
 
 dayjs.extend(isToday);
 dayjs.extend(relativeTime);
@@ -49,7 +50,10 @@ export default function Providers({
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <SessionProvider session={session}>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider>
+              {children}
+              <SnackbarHost />
+            </ThemeProvider>
           </SessionProvider>
         </WalletModalProvider>
       </WalletProvider>

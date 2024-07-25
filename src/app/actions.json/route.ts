@@ -7,6 +7,10 @@ export const GET = async () => {
         pathPattern: "/tiplink/*",
         apiPath: "/api/tiplink/*",
       },
+      // {
+      //   pathPattern: "/nft-dispenser/*",
+      //   apiPath: "/api/nft-dispenser/*",
+      // },
       {
         pathPattern: "/*",
         apiPath: "/api/profile/*",

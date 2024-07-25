@@ -10,4 +10,6 @@ export const Routes = {
   ADMIN_TIPLINKS: "/admin/tiplink",
   ADMIN_NEW_TIPLINKS: "/admin/tiplink/create",
   ADMIN_KOL_STREAM: "/admin/kol-stream",
+  ADMIN_NFT_DISPENSER: "/admin/nft-dispenser",
+  ADMIN_NEW_NFT_DISPENSER: "/admin/nft-dispenser/create",
 };
