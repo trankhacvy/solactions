@@ -1,7 +1,7 @@
 "use client"
-import { Typography, TextField, Button, Box, RadioGroup, FormControlLabel, Radio, MenuItem, Select, Avatar } from "@mui/material";
+import { TextField, Button, Box, RadioGroup, FormControlLabel, Radio, MenuItem, Select, Avatar } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { Profile } from "./kol-stream-card";
+import { type Profile } from "./kol-stream-card";
 import React, { useEffect } from "react";
 
 function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formValues: Profile) => void, initialProfile: Profile }) {
