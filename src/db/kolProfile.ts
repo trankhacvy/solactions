@@ -23,8 +23,8 @@ export const kolProfile = pgTable("kol_profile", {
   title: varchar("title").notNull(),
   type: TypeBooking("type").notNull(),
   description: varchar("desc").notNull(),
-  calendy_url: varchar("calendyurl").notNull(),
-  telegram_user_name: varchar("username").notNull(),
+  calendyUrl: varchar("calendy_url").notNull(),
+  telegram_username: varchar("username").notNull(),
   price: numeric("price").notNull(),
   thankMessage: text("thanks_message").default(
     "You will receive a confirmation email after successful payment <3",
