@@ -102,7 +102,7 @@ export default function Nav({
   );
 }
 
-function NavItem({ item }: any) {
+function NavItem({ item }: { item: { title: string; path: string; icon: React.ReactNode } }) {
   const pathname = usePathname();
 
   const active = item.path === pathname;
@@ -152,6 +152,11 @@ const navConfig = [
     title: "Tiplinks",
     path: Routes.ADMIN_TIPLINKS,
     icon: <Link2Icon />,
+  },
+  {
+    title: "KOL Stream",
+    path: Routes.ADMIN_KOL_STREAM,
+    icon: <HeartHandshakeIcon />,
   },
   // {
   //   title: "Settings",
