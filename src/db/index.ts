@@ -5,3 +5,4 @@ export * from "./reference";
 export * from './tiplink';
 export * from './kolProfile';
 export * from './kol-fan-pay-transactions';
+export * from './nft-dispenser'
