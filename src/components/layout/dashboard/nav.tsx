@@ -11,7 +11,12 @@ import { usePathname } from "next/navigation";
 import { NAV } from "@/config/header";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
-import { HeartHandshakeIcon, HomeIcon, Link2Icon } from "lucide-react";
+import {
+  HeartHandshakeIcon,
+  HomeIcon,
+  ImageIcon,
+  Link2Icon,
+} from "lucide-react";
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -153,9 +158,9 @@ const navConfig = [
     path: Routes.ADMIN_TIPLINKS,
     icon: <Link2Icon />,
   },
-  // {
-  //   title: "Settings",
-  //   path: Routes.ADMIN_SETTINGS,
-  //   icon: <SettingsIcon />,
-  // },
+  {
+    title: "NFT Dispenser",
+    path: Routes.ADMIN_NFT_DISPENSER,
+    icon: <ImageIcon />,
+  },
 ];

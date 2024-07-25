@@ -9,4 +9,6 @@ export const Routes = {
   ADMIN_EDIT: "/admin/edit",
   ADMIN_TIPLINKS: "/admin/tiplink",
   ADMIN_NEW_TIPLINKS: "/admin/tiplink/create",
+  ADMIN_NFT_DISPENSER: "/admin/nft-dispenser",
+  ADMIN_NEW_NFT_DISPENSER: "/admin/nft-dispenser/create",
 };

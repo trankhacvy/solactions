@@ -44,3 +44,45 @@ export async function uploadFile(
     };
   }
 }
+
+export async function uploadObject(
+  filename: string,
+  object: Object,
+): Promise<UploadActionResponse> {
+  try {
+    if (!object || !filename) {
+      return {
+        success: false,
+        error: `'object' and 'filename' are required`,
+      };
+    }
+
+    const { error } = await adminSupabase.storage
+      .from(APP_STORAGE_BUCKET)
+      .upload(filename, JSON.stringify(object), {
+        contentType: "application/json",
+        upsert: true,
+      });
+
+    if (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    const { data } = await adminSupabase.storage
+      .from(APP_STORAGE_BUCKET)
+      .getPublicUrl(filename);
+
+    return {
+      success: true,
+      result: data.publicUrl,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.message ?? "Unknown error",
+    };
+  }
+}
