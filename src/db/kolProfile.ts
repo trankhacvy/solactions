@@ -5,18 +5,23 @@ import {
   pgTable,
   text,
   varchar,
-  jsonb,
   numeric,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { donationProfile } from "./donations";
 import { relations } from "drizzle-orm";
 import { kolTransaction } from "./kol-fan-pay-transactions";
 
+export const TypeBooking = pgEnum("booking", [
+  "TELE",
+  "CALENDY",
+]);
+
 export const kolProfile = pgTable("kol_profile", {
   id: varchar("id").primaryKey(),
   title: varchar("title").notNull(),
-  type: varchar("type").notNull(),
+  type: TypeBooking("type").notNull(),
   description: varchar("desc").notNull(),
   calendy_url: varchar("calendyurl").notNull(),
   telegram_user_name: varchar("username").notNull(),
