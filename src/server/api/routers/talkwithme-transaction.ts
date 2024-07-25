@@ -11,7 +11,7 @@ import { generatePublicId } from "@/utils/nano-id";
 import { and, eq, SQLWrapper } from "drizzle-orm";
 import { Token } from "@/types";
 
-export const talkwithmeTransactionRouter = createTRPCRouter({
+export const talkWithMeTransactionRouter = createTRPCRouter({
   create: publicProcedure
     .input(schema.createKolTransactionSchema)
     .mutation(async ({ ctx, input }) => {
@@ -28,11 +28,10 @@ export const talkwithmeTransactionRouter = createTRPCRouter({
           ...rest,
           id: generatePublicId(),
           reference,
-          status: "PROCESSING",
           currency: rest.currency as Token,
         })
         .returning();
-
+        
       return transaction;
     }),
 
