@@ -9,7 +9,7 @@ export default async function KolStream() {
 
   const profile = await api.donation.me();
 
-  if (!profile) {
+  if (!profile || !session) {
     return notFound();
   }
 
