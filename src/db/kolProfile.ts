@@ -14,8 +14,8 @@ import { relations } from "drizzle-orm";
 import { kolTransaction } from "./kol-fan-pay-transactions";
 
 export const TypeBooking = pgEnum("booking", [
-  "TELE",
-  "CALENDY",
+  "TELEGRAM",
+  "CALENDLY",
 ]);
 
 export const kolProfile = pgTable("kol_profile", {
@@ -32,7 +32,9 @@ export const kolProfile = pgTable("kol_profile", {
   userId: text("user_id")
     .references(() => donationProfile.id, { onDelete: "cascade" })
     .notNull(),
-
+  slug: text("slug")
+     .references(() => donationProfile.slug, {onDelete: "cascade"})
+     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
