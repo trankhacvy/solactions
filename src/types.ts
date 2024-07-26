@@ -4,7 +4,7 @@ export type SelectUser = typeof schema.user.$inferSelect;
 
 export type SelectDonationProfile = typeof schema.donationProfile.$inferSelect;
 
-export type selectKolProfileSchema = typeof schema.kolProfile.$inferSelect;
+export type SelectKolProfileSchema = typeof schema.kolProfile.$inferSelect;
 // upload action
 export type UploadActionResponse = {
   success: boolean;
