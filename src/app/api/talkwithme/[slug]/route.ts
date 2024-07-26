@@ -2,7 +2,7 @@ import { tokenList } from "@/config/tokens";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { appendAddress } from "@/lib/helius";
 import { api } from "@/trpc/server";
-import { SelectDonationProfile, selectKolProfileSchema , Token } from "@/types";
+import { SelectDonationProfile, SelectKolProfileSchema  , Token } from "@/types";
 import {
   ActionPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -11,7 +11,6 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { profile } from "console";
 
 const DEFAULT_SOL_AMOUNT: number = 0.001;
 
@@ -24,7 +23,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
     const requestUrl = new URL(req.url);
     const profile = await api.donation.getBySlug({ slug: context.params.slug });
     const kolProfile = await api.talkwithme.getBySlug({ slug: context.params.slug })
-    
     if (!profile || !kolProfile) {
       return Response.json(
         {
@@ -85,9 +83,10 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const { email, token } = validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
-    let kolprofile: selectKolProfileSchema | undefined;
+    let kolprofile: SelectKolProfileSchema  | undefined;
     let profile: SelectDonationProfile | undefined;
-    if (!profile || !kolprofile) {
+    console.log(kolprofile)
+    if (!profile) {
       return Response.json(
         {
           error: true,
@@ -97,7 +96,17 @@ export const POST = async (req: Request, context: { params: Params }) => {
         },
       );
     }
-    let amount: number = parseFloat(kolprofile.price);
+    if (!kolprofile) {
+      return Response.json(
+        {
+          error: true,
+        },
+        {
+          headers: ACTIONS_CORS_HEADERS,
+        },
+      );
+    }
+    const amount: number = parseFloat(kolprofile.price);
 
     try {
       kolprofile = await api.talkwithme.getBySlug({
