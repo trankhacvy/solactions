@@ -10,7 +10,7 @@ import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
 import { eq } from "drizzle-orm";
 
-export const talkwithme = createTRPCRouter({
+export const talkwithmeRouter = createTRPCRouter({
   create: protectedProcedure
     .input(schema.createKolProfileSchema)
     .mutation(async ({ ctx, input }) => {
