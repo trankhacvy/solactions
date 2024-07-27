@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { KolStreamCard, type Profile } from "../../components/admin/kol-stream-card";
 import FormComponent from "../../components/admin/kol-form";
@@ -22,6 +22,7 @@ export default function KolStreamClient({ session, profile }: KolStreamClientPro
   const [formValues, setFormValues] = useState<Profile | null>(null);
 
   const handleFormChange = (updatedFormValues: Profile) => {
+    console.log("updatedFormValues", updatedFormValues);
     setFormValues(updatedFormValues);
   };
 
@@ -37,6 +38,10 @@ export default function KolStreamClient({ session, profile }: KolStreamClientPro
     telegramUsername: "",
     image: profile.image ?? "",
   };
+
+  useEffect(() => {
+    console.log("formValues",formValues);
+  }, [formValues]);
 
   return (
     <Stack width="100%" flexDirection={{ xs: "column", md: "row" }} flex={1}>
@@ -54,7 +59,7 @@ export default function KolStreamClient({ session, profile }: KolStreamClientPro
           Call with KOL, {session?.user?.name ?? 'Guest'} 👋
         </Typography>
         </Box>
-        <FormComponent onFormChange={handleFormChange} initialProfile={initialProfile} />
+        <FormComponent onFormUpdate={handleFormChange} initialProfile={initialProfile} />
         <KolCalendar />
       </Stack>
       <KolStreamCard profile={formValues ?? initialProfile} />

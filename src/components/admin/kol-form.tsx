@@ -2,18 +2,20 @@
 import { TextField, Button, Box, RadioGroup, FormControlLabel, Radio, MenuItem, Select, Avatar } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { type Profile } from "./kol-stream-card";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 
-function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formValues: Profile) => void, initialProfile: Profile }) {
-    const { control, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<Profile>({
+function FormComponent({ onFormUpdate, initialProfile }: { onFormUpdate: (formValues: Profile) => void, initialProfile: Profile }) {
+    const { control,handleSubmit, watch, setValue,formState: { errors, isSubmitting } } = useForm<Profile>({
         defaultValues: initialProfile
     });
 
-    const watchedValues = watch();
+    const watchedValues = useMemo(() => watch(), [watch]);
 
     useEffect(() => {
-        onFormChange(watchedValues);
-    }, [watchedValues, onFormChange]);
+        watch((data) => {
+            onFormUpdate(data as Profile);
+        })
+    }, [watch]);
 
     const onSubmit = async (data: Profile) => {
         try {
@@ -43,19 +45,19 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
     return (
         <Box component="div" sx={{ borderRadius: '8px', padding: '16px' }}>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Controller
+                {/* <Controller
                     name="image"
                     control={control}
                     render={({ field }) => (
                         <Avatar src={field.value} alt={watchedValues.title} sx={{ width: 56, height: 56, mb: 2 }} />
                     )}
-                />
+                /> */}
                 
                 <Controller
                     name="title"
                     control={control}
                     rules={{ required: "Tiêu đề là bắt buộc" }}
-                    render={({ field }) => (
+                    render={({  field }) => (
                         <TextField
                             {...field}
                             fullWidth
