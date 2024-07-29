@@ -11,7 +11,7 @@ export function Header(): JSX.Element {
     <AppBar
       sx={{
         position: {
-          xs: "sticky",
+          xs: "fixed",
           lg: "fixed",
         },
         boxShadow: "none",
