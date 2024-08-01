@@ -16,7 +16,6 @@ import { Routes } from "@/config/routes";
 import { donateOptions, tokenList } from "@/config/tokens";
 import { ProfilePreview } from "./profile-preview";
 import { ProfileForm } from "./profile-form";
-import { PublicKey } from "@solana/web3.js";
 import { revalidateDonationProfile } from "@/app/actions/revalidate";
 
 const createProfileSchema = (isEdit: boolean, userId?: string) => z.object({
@@ -45,7 +44,6 @@ export function ProfileFormWrapper({
   const { data: session, update } = useSession();
   const user = session?.user;
   const isEdit = !!profile;
-
   const methods = useForm<z.infer<ProfileSchema>>({
     resolver: zodResolver(createProfileSchema(isEdit, user?.id)),
     defaultValues: {
