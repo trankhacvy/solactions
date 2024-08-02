@@ -19,18 +19,17 @@ import { ProfileForm } from "./profile-form";
 import { revalidateDonationProfile } from "@/app/actions/revalidate";
 
 const createProfileSchema = (isEdit: boolean, userId?: string) => z.object({
+  image: z
+    .string({ message: "Image is required." })
+    .trim()
+    .min(3, "Image is required"),
   title: z.string(),
   description: z.string(),
   type: z.enum(["TELEGRAM", "CALENDLY"]),
   calendyUrl: z.string(),
   telegram_username: z.string(),
-  priceOptions: z.array(z.string()),
+  price: z.string(),
   slug: z.string(),
-  amounts: z.array(
-    z.object({
-      value: z.coerce.number({ message: "Required" }).gt(0, "Invalid amount"),
-    })
-  ),
   acceptToken: z.any().optional(),
   thankMessage: z.string().nullable().optional(),
 });
@@ -47,17 +46,17 @@ export function ProfileFormWrapper({
   const methods = useForm<z.infer<ProfileSchema>>({
     resolver: zodResolver(createProfileSchema(isEdit, user?.id)),
     defaultValues: {
+      image: isEdit ? profile.image ?? "" : user?.image ?? "",
       title: isEdit ? profile.title : "",
       description: isEdit ? profile.description : "",
       calendyUrl: isEdit ? profile.calendyUrl : "",
+      telegram_username: isEdit ? profile.telegram_username : "",
       slug: isEdit ? profile.slug : user?.screen_name ?? "",
-      amounts: isEdit
-        ? profile.priceOptions.map((amount) => ({ value: parseFloat(amount) }))
-        : donateOptions.map((option) => ({ value: option })),
+      price: isEdit ? profile.price : "", 
       acceptToken: isEdit ? profile.acceptToken : tokenList[0],
       thankMessage: isEdit
         ? profile.thankMessage
-        : "Thank you for your donation; you made my day. <3",
+        : "You will receive a confirmation email after successful payment <3",
     },
   });
 
