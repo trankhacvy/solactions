@@ -7,15 +7,11 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Stack from "@mui/material/Stack";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import { alpha, useTheme } from "@mui/material";
+
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FormTokenSelect } from "@/components/ui/form-token-select";
 import { ProfileSchema } from "./form-wrapper";
-import { WalletMultiButtonDynamic } from "../connect-wallet";
 import { FormInput, FormNumberInput } from "@/components/ui/form-input";
 
 import {
@@ -32,8 +28,6 @@ import Link from "next/link";
 import { Routes } from "@/config/routes";
 import { getDonationLink } from "@/utils/links";
 import { tokenList } from "@/config/tokens";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { PlusIcon } from "lucide-react";
 
 export function ProfileForm({
   loading,
@@ -53,9 +47,10 @@ export function ProfileForm({
     control,
     name: "amounts",
   });
-
+  console.log(errors)
+  console.log("1")
   const wSlug = watch("slug");
-
+  const selectedType = watch('type');
   return (
     <Stack width="100%" gap={3}>
       <Card>
@@ -64,7 +59,7 @@ export function ProfileForm({
             {...register("slug")}
             fullWidth
             placeholder=""
-            label="Username"
+            label="Custom Name"
             error={!!errors.slug}
             helperText={
               errors.slug?.message
@@ -75,71 +70,31 @@ export function ProfileForm({
             }
           />
 
-          <ConnectWalletButton isEdit={isEdit} />
 
           <FormInput
-            {...register("name")}
+            {...register("title")}
             fullWidth
             placeholder=""
-            label="Full name"
-            error={!!errors.name}
-            helperText={errors.name?.message}
+            label="Title"
+            error={!!errors.title}
+            helperText={errors.title?.message}
           />
 
           <FormInput
-            {...register("bio")}
+            {...register("description")}
             fullWidth
             placeholder=""
-            label="Bio"
-            error={!!errors.bio}
+            label="Description"
+            error={!!errors.description}
             rows={5}
             multiline
-            helperText={errors.bio?.message}
+            helperText={errors.description?.message}
           />
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="flex flex-col items-start gap-5">
-          <Stack alignItems="flex-start" gap={2}>
-            <Stack
-              width="100%"
-              flexDirection="row"
-              alignItems="flex-start"
-              gap={4}
-            >
-              {fields.map((field, index) => (
-                <Stack width="100%" key={field.id} flexDirection="row">
-                  <Controller
-                    control={control}
-                    name={`amounts.${index}.value` as const}
-                    render={({ field }) => (
-                      <FormNumberInput
-                        {...field}
-                        fullWidth
-                        placeholder="Enter amount"
-                        allowNegative={false}
-                        min={0}
-                        label={`Amount ${index + 1}`}
-                        error={!!get(errors, `amounts.${index}.value`)}
-                        helperText={
-                          get(errors, `amounts.${index}.value`)?.message ?? ""
-                        }
-                      />
-                    )}
-                  />
-                </Stack>
-              ))}
-            </Stack>
-            <Button
-              disabled={fields.length === 3}
-              onClick={() => append({ value: 1 })}
-              startIcon={<PlusIcon />}
-            >
-              Add
-            </Button>
-          </Stack>
-
           <Controller
             name="acceptToken"
             control={control}
@@ -157,6 +112,41 @@ export function ProfileForm({
             )}
           />
 
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <select {...field}>
+              <option value="TELEGRAM">Telegram</option>
+              <option value="CALENDLY">Calendly</option>
+            </select>
+          )}
+        />
+         {selectedType === 'TELEGRAM' && (
+             <FormInput
+              {...register("telegram_username")}
+              fullWidth
+              placeholder=""
+              label="Telegram Username"
+           />
+        )}
+
+        {selectedType === 'CALENDLY' && (
+            <FormInput
+              {...register("calendyUrl")}
+              fullWidth
+              placeholder=""
+              label="Calendy Url"
+            />
+          )}
+          <FormInput
+                {...register("price")}
+                fullWidth
+                placeholder=""
+                label="Price"
+                error={!!errors.title}
+                helperText={errors.title?.message}
+            />
           <FormInput
             {...register("thankMessage")}
             fullWidth
@@ -170,7 +160,7 @@ export function ProfileForm({
         </CardContent>
         <CardActions className="justify-end gap-4"></CardActions>
       </Card>
-
+      
       <Stack flexDirection="row" gap={2} justifyContent="flex-end">
         {isEdit && (
           <Link href={Routes.ADMIN} replace>
@@ -193,85 +183,4 @@ export function ProfileForm({
   );
 }
 
-function ConnectWalletButton({ isEdit }: { isEdit: boolean }) {
-  const theme = useTheme();
-  const { publicKey } = useWallet();
 
-  const {
-    setValue,
-    clearErrors,
-    watch,
-    formState: { errors },
-  } = useFormContext<z.infer<ProfileSchema>>();
-
-  const wWallet = watch("wallet");
-
-  useEffect(() => {
-    if (isEdit) {
-      if (publicKey && wWallet !== publicKey?.toBase58()) {
-        clearErrors("wallet");
-        setValue("wallet", publicKey.toBase58());
-      }
-    } else {
-      if (publicKey) {
-        clearErrors("wallet");
-        setValue("wallet", publicKey.toBase58());
-      } else {
-        setValue("wallet", "");
-      }
-    }
-  }, [publicKey, isEdit, wWallet]);
-
-  return (
-    <FormControl>
-      <FormLabel sx={{ mb: 1.5 }}>Wallet</FormLabel>
-      {isEdit ? (
-        <Stack flexDirection="row" gap={2} alignItems="center">
-          <Stack
-            border={`1px solid ${alpha(theme.palette.grey[500], 0.24)}`}
-            height="56px"
-            borderRadius={1}
-            flex={1}
-            justifyContent="center"
-            padding="16.5px 14px"
-            color="text.primary"
-          >
-            {wWallet}
-          </Stack>
-          <WalletMultiButtonDynamic
-            style={{
-              width: "100%",
-              textAlign: "center",
-              justifyContent: "center",
-              height: "56px",
-              fontSize: "0.875rem",
-              fontFamily: "inherit",
-              backgroundColor: theme.palette.grey[800],
-              color: theme.palette.common.white,
-              borderRadius: theme.shape.borderRadius,
-            }}
-          />
-        </Stack>
-      ) : (
-        <WalletMultiButtonDynamic
-          style={{
-            width: "100%",
-            textAlign: "center",
-            justifyContent: "center",
-            height: "36px",
-            fontSize: "0.875rem",
-            fontFamily: "inherit",
-            backgroundColor: theme.palette.grey[800],
-            color: theme.palette.common.white,
-            borderRadius: theme.shape.borderRadius,
-          }}
-        />
-      )}
-      {errors.wallet && (
-        <FormHelperText error sx={{ mt: 1 }}>
-          {errors.wallet.message}
-        </FormHelperText>
-      )}
-    </FormControl>
-  );
-}
