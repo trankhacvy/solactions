@@ -20,12 +20,13 @@ export const TypeBooking = pgEnum("booking", [
 ]);
 
 export const kolProfile = pgTable("kol_profile", {
+  image: text("image"),
   id: varchar("id").primaryKey(),
   title: varchar("title").notNull(),
   type: TypeBooking("type").notNull(),
   description: varchar("desc").notNull(),
   calendyUrl: varchar("calendy_url").notNull(),
-  telegram_username: varchar("username").notNull(),
+  telegram_username: varchar("telegram_username").notNull(),
   price: numeric("price").notNull(),
   thankMessage: text("thanks_message").default(
     "You will receive a confirmation email after successful payment <3",
