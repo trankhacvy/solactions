@@ -6,6 +6,7 @@ import {
   text,
   varchar,
   numeric,
+  jsonb,
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -29,6 +30,10 @@ export const kolProfile = pgTable("kol_profile", {
   thankMessage: text("thanks_message").default(
     "You will receive a confirmation email after successful payment <3",
   ),
+  acceptToken: jsonb("accepted_token")
+    .$type<Token>()
+    .notNull()
+    .default(tokenList[0]!),
   userId: text("user_id")
     .references(() => donationProfile.id, { onDelete: "cascade" })
     .notNull(),
