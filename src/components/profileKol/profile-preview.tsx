@@ -24,9 +24,8 @@ export function ProfilePreview(): JSX.Element {
     watch,
   } = useFormContext<z.infer<ProfileSchema>>();
 
-  const name = watch("name");
-  const bio = watch("bio");
-  const amounts = watch("amounts");
+  const name = watch("title");
+  const bio = watch("description");
   const acceptToken = watch("acceptToken");
 
   return (
@@ -68,17 +67,10 @@ export function ProfilePreview(): JSX.Element {
       <CardActions
         sx={{ display: "flex", flexDirection: "column", p: 2, pt: 0, gap: 2 }}
       >
-        <Stack flexDirection="row" gap={2} alignItems="center" width="100%">
-          {amounts.map((amount, idx) => (
-            <Button key={idx} sx={{ flex: 1 }} color="inherit">
-              {amount.value} {acceptToken?.symbol}
-            </Button>
-          ))}
-        </Stack>
         <Stack width="100%">
           <OutlinedInput
             sx={{ width: "100%" }}
-            placeholder="Enter a custom amount"
+            placeholder="Please enter your email"
             endAdornment={
               <Button
                 sx={{
