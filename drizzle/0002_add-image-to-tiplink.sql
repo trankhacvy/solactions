@@ -1,1 +1,0 @@
-ALTER TABLE "tiplink" ADD COLUMN "image" text;

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1721719756237,
-      "tag": "0000_init-tables",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1721728980006,
-      "tag": "0001_update-user-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1721754660612,
-      "tag": "0002_add-image-to-tiplink",
+      "when": 1722586430101,
+      "tag": "0000_friendly_vermin",
       "breakpoints": true
     }
   ]

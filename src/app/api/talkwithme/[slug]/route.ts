@@ -80,40 +80,17 @@ export const POST = async (req: Request, context: { params: Params }) => {
   try {
     const requestUrl = new URL(req.url);
 
-    const { email, token } = validatedQueryParams(requestUrl);
+    const { email , token } = validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
-    let kolprofile: SelectKolProfileSchema  | undefined;
-    let profile: SelectDonationProfile | undefined;
-    console.log(kolprofile)
-    if (!profile) {
-      return Response.json(
-        {
-          error: true,
-        },
-        {
-          headers: ACTIONS_CORS_HEADERS,
-        },
-      );
-    }
-    if (!kolprofile) {
-      return Response.json(
-        {
-          error: true,
-        },
-        {
-          headers: ACTIONS_CORS_HEADERS,
-        },
-      );
-    }
-    const amount: number = parseFloat(kolprofile.price);
 
+    let profile: SelectKolProfileSchema | undefined;
     try {
-      kolprofile = await api.talkwithme.getBySlug({
+      profile = await api.talkwithme.getBySlug({
         slug: context.params.slug,
       });
 
-      if (!kolprofile) {
+      if (!profile) {
         return new Response('Invalid "receiver" provided', {
           status: 400,
           headers: ACTIONS_CORS_HEADERS,
@@ -126,6 +103,8 @@ export const POST = async (req: Request, context: { params: Params }) => {
         headers: ACTIONS_CORS_HEADERS,
       });
     }
+
+    // validate the client provided input
     let account: PublicKey;
     try {
       account = new PublicKey(body.account);
@@ -136,6 +115,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
       });
     }
 
+    // validate the client provided input
     let receiver: PublicKey;
     try {
       receiver = new PublicKey(profile.wallet);
@@ -179,7 +159,8 @@ export const POST = async (req: Request, context: { params: Params }) => {
       },
     });
 
-    api.talkwithmeTransactions.create({
+    // insert to db
+    api.donationTransaction.create({
       profileId: profile.id,
       sender: account.toBase58(),
       receiver: receiver.toBase58(),
@@ -187,7 +168,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
       reference: reference.publicKey.toBase58(),
       currency: tokenList.find((t) => t.address === token.address),
     });
-
+    
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
@@ -203,11 +184,14 @@ export const POST = async (req: Request, context: { params: Params }) => {
 };
 
 function validatedQueryParams(requestUrl: URL) {
-  let email: string | null = "";
+  let amount: number = DEFAULT_SOL_AMOUNT;
+
   try {
-    if (requestUrl.searchParams.get("email")) {
-      email = requestUrl.searchParams.get("email");
+    if (requestUrl.searchParams.get("amount")) {
+      amount = parseFloat(requestUrl.searchParams.get("amount")!);
     }
+
+    if (amount <= 0) throw "amount is too small";
   } catch (err) {
     throw "Invalid input query parameter: amount";
   }
@@ -224,7 +208,7 @@ function validatedQueryParams(requestUrl: URL) {
   }
 
   return {
-    email,
+    amount,
     token: token || tokenList[0]!,
   };
 }

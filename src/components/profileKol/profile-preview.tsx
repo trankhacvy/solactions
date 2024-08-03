@@ -80,7 +80,7 @@ export function ProfilePreview(): JSX.Element {
                 }}
                 color="inherit"
               >
-                Donate
+                Pay
               </Button>
             }
           />

@@ -80,7 +80,7 @@ export function ProfileFormWrapper({
       onSuccess: async (data) => {
         if (data) {
           revalidateDonationProfile();
-          router.replace(Routes.ADMIN);
+          router.replace(Routes.ADMIN_KOL_STREAM);
         }
       },
       onError: (error) => {
