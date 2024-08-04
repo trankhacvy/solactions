@@ -1,11 +1,17 @@
 DO $$ BEGIN
- CREATE TYPE "public"."reference_type" AS ENUM('DONATION', 'TIPLINK');
+ CREATE TYPE "public"."reference_type" AS ENUM('DONATION', 'TIPLINK', 'TALKWITHME');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."status" AS ENUM('PROCESSING', 'SUCCESS', 'FAILED');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."booking" AS ENUM('TELEGRAM', 'CALENDLY');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -48,7 +54,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"screen_name" text,
-	"email" text NOT NULL,
+	"email" text,
 	"wallet" varchar,
 	"emailVerified" timestamp,
 	"image" text,
@@ -116,6 +122,7 @@ CREATE TABLE IF NOT EXISTS "tiplink" (
 	"link" varchar NOT NULL,
 	"claimant" varchar,
 	"claimed" boolean DEFAULT false NOT NULL,
+	"image" text,
 	"status" "status" DEFAULT 'PROCESSING',
 	"reference" varchar,
 	"signature" varchar,
@@ -124,6 +131,39 @@ CREATE TABLE IF NOT EXISTS "tiplink" (
 	"expired_at" timestamp with time zone,
 	CONSTRAINT "tiplink_reference_unique" UNIQUE("reference"),
 	CONSTRAINT "tiplink_signature_unique" UNIQUE("signature")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "kol_profile" (
+	"image" text,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"title" varchar NOT NULL,
+	"type" "booking" NOT NULL,
+	"desc" varchar NOT NULL,
+	"calendy_url" varchar NOT NULL,
+	"telegram_username" varchar NOT NULL,
+	"price" numeric NOT NULL,
+	"thanks_message" text DEFAULT 'You will receive a confirmation email after successful payment <3',
+	"accepted_token" jsonb DEFAULT '{"name":"Solana","symbol":"SOL","isNative":true,"address":"So11111111111111111111111111111111111111112","decimals":9,"icon":"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756"}'::jsonb NOT NULL,
+	"user_id" text NOT NULL,
+	"slug" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "kol_transaction" (
+	"id" varchar PRIMARY KEY NOT NULL,
+	"profile_id" text NOT NULL,
+	"sender" varchar NOT NULL,
+	"receiver" varchar NOT NULL,
+	"amount" numeric NOT NULL,
+	"currency" jsonb DEFAULT '{"name":"Solana","symbol":"SOL","isNative":true,"address":"So11111111111111111111111111111111111111112","decimals":9,"icon":"https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756"}'::jsonb,
+	"status" "status" DEFAULT 'PROCESSING',
+	"reference" varchar NOT NULL,
+	"signature" varchar,
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	CONSTRAINT "kol_transaction_reference_unique" UNIQUE("reference"),
+	CONSTRAINT "kol_transaction_signature_unique" UNIQUE("signature")
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -158,6 +198,24 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "tiplink" ADD CONSTRAINT "tiplink_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "kol_profile" ADD CONSTRAINT "kol_profile_user_id_donation_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."donation_profile"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "kol_profile" ADD CONSTRAINT "kol_profile_slug_donation_profile_slug_fk" FOREIGN KEY ("slug") REFERENCES "public"."donation_profile"("slug") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "kol_transaction" ADD CONSTRAINT "kol_transaction_profile_id_kol_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."kol_profile"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

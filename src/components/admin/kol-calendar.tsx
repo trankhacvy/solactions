@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-// Dữ liệu các cuộc họp gặp gỡ của KOL
+
 const meetings = [
   {
     name: "John Doe",
@@ -29,7 +29,7 @@ const meetings = [
     date: "2023-10-16",
     time: "2:00 PM",
   },
-  // Thêm các cuộc họp khác nếu cần
+
 ];
 
 export function KolCalendar() {

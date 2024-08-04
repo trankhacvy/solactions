@@ -33,10 +33,8 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
             const result = await response.json();
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
             setValue('image', result.image);
-            // Xử l thành công
         } catch (error) {
             console.error(error);
-            // Xử lỗi
         }
     };
 

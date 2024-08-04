@@ -4,17 +4,15 @@ import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import { Box, Stack, Typography } from "@mui/material";
 import { YourLink } from "@/components/admin/your-link";
+import { YourLinkKol } from "@/components/admin/you-link-kol";
 import { MoreActions } from "@/components/admin/more-actions";
 
 export default async function AdminPage() {
   const session = await getServerAuthSession();
-
   const profile = await api.donation.me();
-
   if (!profile) {
     return notFound();
   }
-
   return (
     <Stack width="100%" flexDirection={{ xs: "column", md: "row" }} flex={1}>
       <Stack
@@ -31,6 +29,7 @@ export default async function AdminPage() {
             Hello, {session?.user.name} 👋
           </Typography>
           <YourLink profile={profile} />
+          <YourLinkKol profile={profile}/>
         </Box>
         <MoreActions />
       </Stack>
