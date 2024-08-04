@@ -1,10 +1,10 @@
 import { getServerAuthSession } from "@/server/auth";
-import { PreviewCard } from "@/components/admin/preview-card";
 import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import { Box, Stack, Typography } from "@mui/material";
-import { YourLink } from "@/components/admin/your-link";
-import { MoreActions } from "@/components/admin/more-actions";
+import { YourLinkKol } from "@/components/admin/you-link-kol";
+import { MoreMeetings } from "@/components/admin/more-meetings";
+import { PreviewKolCard } from "@/components/admin/preview-kol-card";
 
 export default async function AdminPage() {
   const session = await getServerAuthSession();
@@ -25,13 +25,13 @@ export default async function AdminPage() {
       >
         <Box>
           <Typography mb={2} variant="h4">
-            Hello, {session?.user.name} 👋
+            Call with me, {session?.user.name} 👋
           </Typography>
-          <YourLink profile={profile} />
+          <YourLinkKol profile={profile}/>
         </Box>
-        <MoreActions />
+        <MoreMeetings />
       </Stack>
-      <PreviewCard profile={profile} />
+      <PreviewKolCard profile={profile} />
     </Stack>
   );
 }
