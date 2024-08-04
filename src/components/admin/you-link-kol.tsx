@@ -45,7 +45,7 @@ export function YourLinkKol({ profile }: { profile: SelectDonationProfile }) {
                 aria-label="Copy"
                 onClick={async () => {
                   setCopying(true);
-                  copy(getTalkwithmeLink(profile.slug));
+                  await copy(getTalkwithmeLink(profile.slug));
                   setTimeout(() => {
                     setCopying(false);
                   }, 1500);
@@ -61,7 +61,7 @@ export function YourLinkKol({ profile }: { profile: SelectDonationProfile }) {
       </CardContent>
 
       <CardActions sx={{ justifyContent: "flex-end" }}>
-        <Link href={Routes.ADMIN_EDIT}>
+        <Link href={Routes.ADMIN_KOL_STREAM}>
           <Button variant="outlined">Edit</Button>
         </Link>
         <a
