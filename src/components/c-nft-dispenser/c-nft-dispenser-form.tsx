@@ -9,9 +9,6 @@ import {
   FormControl,
   FormHelperText,
   CardHeader,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -37,7 +34,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import ConnectWalletButton from "../connect-wallet";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-const newNftSchema = z.object({
+const newCNftSchema = z.object({
   media: z.any().refine((file) => !!file, "Media is required."),
   name: z
     .string({ required_error: "This field is required." })
@@ -66,7 +63,15 @@ const newNftSchema = z.object({
     })
     .min(0, "The royalty must be greater than or equal to 0.")
     .max(100, "The royalty must not exceed 100."),
-  isCollection: z.boolean(),
+  merkleTreePublicKey: z
+    .string()
+    .trim()
+    .max(256, `The maximum allowed length for this field is 256 characters`),
+  collectionMintPublicKeys: z
+    .string()
+    .trim()
+    .max(256, `The maximum allowed length for this field is 256 characters`)
+    .optional(),
   creators: z
     .array(
       z.object({
@@ -159,13 +164,13 @@ const newNftSchema = z.object({
     )
     .optional(),
 
-  numOfNFT: z.coerce
+  numOfCNFT: z.coerce
     .number({
       required_error: "This field is required.",
       invalid_type_error: "This field is required.",
     })
-    .gt(0, "Number of NFT must be greater than 0.")
-    .max(10000, "Number of NFT must not exceed 100."),
+    .gt(0, "Number of CNFT must be greater than 0.")
+    .max(10000, "Number of CNFT must not exceed 100."),
 });
 
 export default function NewDispenserForm({ user }: { user: SelectUser }) {
@@ -181,18 +186,19 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
     control,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof newNftSchema>>({
-    resolver: zodResolver(newNftSchema),
+  } = useForm<z.infer<typeof newCNftSchema>>({
+    resolver: zodResolver(newCNftSchema),
     defaultValues: {
       name: "",
       symbol: "",
       description: "",
       externalUrl: "",
       royalty: 10,
-      isCollection: false,
+      merkleTreePublicKey: "",
+      collectionMintPublicKeys: "",
       creators: [{ address: "", share: 100 }],
       properties: [{ name: "", value: "" }],
-      numOfNFT: 100,
+      numOfCNFT: 100,
     },
   });
 
@@ -217,26 +223,26 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
   const wCreators = watch("creators");
   const wProperties = watch("properties");
 
-  const { mutate, isPending } = api.nftDispenser.create.useMutation({
+  const { mutate, isPending } = api.cnftDispenser.create.useMutation({
     onSuccess: async (_data) => {
       openSnackbar({
         title: "success",
         severity: "success",
       });
-      router.replace(Routes.ADMIN_NFT_DISPENSER);
+      router.replace(Routes.ADMIN_C_NFT_DISPENSER);
     },
     onError: (error) => {
       console.error(error);
     },
   });
 
-  async function onSubmit(values: z.infer<typeof newNftSchema>) {
+  async function onSubmit(values: z.infer<typeof newCNftSchema>) {
     try {
       if (!publicKey) {
         return;
       }
 
-      const amount = values.numOfNFT * 0.001 * LAMPORTS_PER_SOL;
+      const amount = values.numOfCNFT * 0.001 * LAMPORTS_PER_SOL;
 
       const { tiplink, transaction } = await createSOLTiplink(
         publicKey,
@@ -344,6 +350,26 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                 />
 
                 <FormInput
+                  {...register("merkleTreePublicKey")}
+                  fullWidth
+                  placeholder=""
+                  label="Merkle Tree Public Key"
+                  multiline
+                  error={!!errors.merkleTreePublicKey}
+                  helperText={errors.merkleTreePublicKey?.message}
+                />
+
+                <FormInput
+                  {...register("collectionMintPublicKeys")}
+                  fullWidth
+                  placeholder=""
+                  label="Collection Mint Public Key"
+                  multiline
+                  error={!!errors.collectionMintPublicKeys}
+                  helperText={errors.collectionMintPublicKeys?.message}
+                />
+
+                <FormInput
                   {...register("externalUrl")}
                   fullWidth
                   placeholder=""
@@ -351,30 +377,6 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                   error={!!errors.externalUrl}
                   helperText={errors.externalUrl?.message}
                 />
-
-                <FormControl fullWidth error={!!errors.isCollection}>
-                  <InputLabel id="is-collection-label">Is Collection</InputLabel>
-                  <Controller
-                    control={control}
-                    name="isCollection"
-                    defaultValue={false}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        labelId="is-collection-label"
-                        label="Is Collection"
-                        onChange={(event) => {
-                          field.onChange(event.target.value === "true"); // Chuyển đổi giá trị sang boolean
-                        }}
-                        value={field.value ? "true" : "false"}
-                      >
-                        <MenuItem value="true">True</MenuItem>
-                        <MenuItem value="false">False</MenuItem>
-                      </Select>
-                    )}
-                  />
-                  <FormHelperText>{errors.isCollection?.message}</FormHelperText>
-                </FormControl>
 
                 <Controller
                   control={control}
@@ -390,7 +392,7 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                       error={!!errors.royalty}
                       helperText={
                         (errors.royalty?.message as string | null) ??
-                        "The percentage of future sales that will be sent to the creators of this NFT."
+                        "The percentage of future sales that will be sent to the creators of this CNFT."
                       }
                     />
                   )}
@@ -554,7 +556,7 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
               <CardContent>
                 <Controller
                   control={control}
-                  name="numOfNFT"
+                  name="numOfCNFT"
                   render={({ field }) => (
                     <FormNumberInput
                       {...field}
@@ -562,10 +564,10 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                       placeholder=""
                       allowNegative={false}
                       min={0}
-                      label="Number of NFT"
-                      error={!!errors.numOfNFT}
+                      label="Number of CNFT"
+                      error={!!errors.numOfCNFT}
                       helperText={
-                        (errors.numOfNFT?.message as string | null) ?? ""
+                        (errors.numOfCNFT?.message as string | null) ?? ""
                       }
                     />
                   )}

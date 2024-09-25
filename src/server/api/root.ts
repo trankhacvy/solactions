@@ -6,6 +6,7 @@ import { donationTransactionRouter } from "./routers/donation-transaction";
 import { referenceRouter } from "./routers/reference";
 import { tiplinkRouter } from "./routers/tiplink";
 import { nftDispenserRouter } from "./routers/nft-dispenser";
+import { cnftDispenserRouter } from "./routers/c-nft-dispenser";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   reference: referenceRouter,
   tiplink: tiplinkRouter,
   nftDispenser: nftDispenserRouter,
+  cnftDispenser: cnftDispenserRouter,
 });
 
 // export type definition of API

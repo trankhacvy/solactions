@@ -163,4 +163,9 @@ const navConfig = [
     path: Routes.ADMIN_NFT_DISPENSER,
     icon: <ImageIcon />,
   },
+  {
+    title: "cNFT Dispenser",
+    path: Routes.ADMIN_C_NFT_DISPENSER,
+    icon: <ImageIcon />,
+  },
 ];

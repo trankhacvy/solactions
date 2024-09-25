@@ -11,4 +11,6 @@ export const Routes = {
   ADMIN_NEW_TIPLINKS: "/admin/tiplink/create",
   ADMIN_NFT_DISPENSER: "/admin/nft-dispenser",
   ADMIN_NEW_NFT_DISPENSER: "/admin/nft-dispenser/create",
+  ADMIN_C_NFT_DISPENSER: "/admin/c-nft-dispenser",
+  ADMIN_NEW_C_NFT_DISPENSER: "/admin/c-nft-dispenser/create",
 };
