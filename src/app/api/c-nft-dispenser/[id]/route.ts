@@ -59,9 +59,10 @@ export const GET = async (req: Request, context: { params: Params }) => {
     // const expired = dayjs().isAfter(dayjs(link.expiredAt));
 
     const baseHref = new URL(
-      `/api/nft-dispenser/${dispenser.id}`,
+      `/api/c-nft-dispenser/${dispenser.id}`,
       requestUrl.origin,
     ).toString();
+    console.log("c-nft", baseHref);
 
     let label = `Claim NFT`;
 
@@ -158,6 +159,8 @@ export const POST = async (req: Request, context: { params: Params }) => {
         category: "image",
       },
     };
+
+    console.log(metadata);
 
     const uploadResponse = await uploadObject(
       `${dispenser.userId}/dispense/${dispenser.id}`,

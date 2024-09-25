@@ -24,7 +24,7 @@ import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { env } from "@/env";
 
 export function getCNFTDispenserBlinkUrl(id: string) {
-  return `https://dial.to/devnet?action=solana-action:${encodeURI(`${env.NEXT_PUBLIC_FE_BASE_URL}/api/cnft-dispenser/${id}`)}`;
+  return `https://dial.to/devnet?action=solana-action:${encodeURI(`${env.NEXT_PUBLIC_FE_BASE_URL}/api/c-nft-dispenser/${id}`)}`;
 }
 
 export function CNFTDispenserTable() {
