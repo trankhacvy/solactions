@@ -61,6 +61,7 @@ export const GET = async (req: Request, context: { params: Params }) => {
       `/api/nft-dispenser/${dispenser.id}`,
       requestUrl.origin,
     ).toString();
+    console.log("nft", baseHref);
 
     let label = `Claim NFT`;
 
