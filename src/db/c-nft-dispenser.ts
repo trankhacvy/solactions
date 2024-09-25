@@ -9,23 +9,23 @@ import {
   numeric,
   jsonb,
   integer,
-  boolean,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { user } from ".";
 
-export const nftDispenser = pgTable("nft_dispenser", {
+export const cnftDispenser = pgTable("c_nft_dispenser", {
   id: varchar("id").primaryKey(),
   userId: varchar("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   media: text("media"),
   name: varchar("name", { length: 32 }),
-  isCollection: boolean("is_collection").notNull().default(false),
   symbol: varchar("symbol", { length: 10 }),
   description: varchar("description", { length: 200 }),
   externalUrl: varchar("external_url"),
   royalty: numeric("royalty").notNull().default("0"),
+  merkleTreePublicKey: varchar("merkle_tree_public_key").notNull().default(""),
+  collectionMintPublicKeys: varchar("collection_mint_public_keys"),
   creators: jsonb("creators").$type<Omit<Creator, "verified">[]>().default([]),
   properties: jsonb("properties").$type<Property[]>().default([]),
   numOfNFT: integer("num_of_nft").notNull().default(1),
@@ -36,14 +36,14 @@ export const nftDispenser = pgTable("nft_dispenser", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
-export const nftDispenserRelations = relations(nftDispenser, ({ one }) => ({
+export const cnftDispenserRelations = relations(cnftDispenser, ({ one }) => ({
   user: one(user, {
-    fields: [nftDispenser.userId],
+    fields: [cnftDispenser.userId],
     references: [user.id],
   }),
 }));
 
-export const createNFTDispenserSchema = createInsertSchema(nftDispenser, {
+export const createCNFTDispenserSchema = createInsertSchema(cnftDispenser, {
   creators: z.array(
     z.object({
       address: z.string().trim().min(1),
@@ -62,7 +62,7 @@ export const createNFTDispenserSchema = createInsertSchema(nftDispenser, {
   userId: true,
 });
 
-export const updateNFTDispenerSchema = createNFTDispenserSchema.partial().merge(
+export const updateCNFTDispenserSchema = createCNFTDispenserSchema.partial().merge(
   z.object({
     id: z.string().min(1),
   }),

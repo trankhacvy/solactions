@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1721719756237,
-      "tag": "0000_init-tables",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1721728980006,
-      "tag": "0001_update-user-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1721754660612,
-      "tag": "0002_add-image-to-tiplink",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1721899528309,
-      "tag": "0003_add-NFT-dispenser-table",
+      "when": 1727232743401,
+      "tag": "0000_black_human_torch",
       "breakpoints": true
     }
   ]

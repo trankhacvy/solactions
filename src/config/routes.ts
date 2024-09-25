@@ -12,4 +12,6 @@ export const Routes = {
   ADMIN_KOL_STREAM: "/admin/kol-stream",
   ADMIN_NFT_DISPENSER: "/admin/nft-dispenser",
   ADMIN_NEW_NFT_DISPENSER: "/admin/nft-dispenser/create",
+  ADMIN_C_NFT_DISPENSER: "/admin/c-nft-dispenser",
+  ADMIN_NEW_C_NFT_DISPENSER: "/admin/c-nft-dispenser/create",
 };
