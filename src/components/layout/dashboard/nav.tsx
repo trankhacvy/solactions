@@ -16,6 +16,7 @@ import {
   HomeIcon,
   ImageIcon,
   Link2Icon,
+  BookIcon
 } from "lucide-react";
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
@@ -180,6 +181,6 @@ const navConfig = [
   {
     title: "cNFT Dispenser",
     path: Routes.ADMIN_C_NFT_DISPENSER,
-    icon: <ImageIcon />,
+    icon: <BookIcon />,
   },
 ];
