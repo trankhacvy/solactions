@@ -45,7 +45,7 @@ export function YourLink({ profile }: { profile: SelectDonationProfile }) {
                 aria-label="Copy"
                 onClick={async () => {
                   setCopying(true);
-                  copy(getDonationLink(profile.slug));
+                  await copy(getDonationLink(profile.slug));
                   setTimeout(() => {
                     setCopying(false);
                   }, 1500);

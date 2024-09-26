@@ -67,7 +67,7 @@ export function ProfileFormWrapper({
     onSuccess: async (data) => {
       if (data) {
         await update({ id: data.userId });
-        router.replace(Routes.ADMIN);
+        router.replace(Routes.ADMIN_KOL_HOME);
       }
     },
     onError: (error) => {
@@ -96,7 +96,7 @@ export function ProfileFormWrapper({
           ...values,
         });
       } else {
-        await mutate({
+        mutate({
           ...values,
         });
       }

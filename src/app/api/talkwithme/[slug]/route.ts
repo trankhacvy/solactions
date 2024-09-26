@@ -80,7 +80,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
   try {
     const requestUrl = new URL(req.url);
 
-    const { email , token } = validatedQueryParams(requestUrl);
+    const { amount, token } = validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
 
