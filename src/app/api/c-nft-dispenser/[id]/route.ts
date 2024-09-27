@@ -1,18 +1,14 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { MetadataArgsArgs, mintToCollectionV1, mplBubblegum } from "@metaplex-foundation/mpl-bubblegum";
+import { none } from '@metaplex-foundation/umi'
+import { MetadataArgsArgs , mintV1, mplBubblegum } from "@metaplex-foundation/mpl-bubblegum";
 import {
   fromWeb3JsKeypair,
-  fromWeb3JsPublicKey,
   toWeb3JsInstruction,
   toWeb3JsKeypair,
-  toWeb3JsTransaction,
 } from "@metaplex-foundation/umi-web3js-adapters";
-import { createNft } from "@metaplex-foundation/mpl-token-metadata";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { tiplinkImages } from "@/config/constants";
 import {
-  buildTransferSolTx,
-  buildTransferSplTx,
+ 
   getConnection,
 } from "@/lib/transactions";
 import { api } from "@/trpc/server";
@@ -26,11 +22,9 @@ import {
 
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { TipLink } from "@tiplink/api";
-import dayjs from "dayjs";
 import {
   generateSigner,
   keypairIdentity,
-  percentAmount,
   publicKey,
 } from "@metaplex-foundation/umi";
 import { uploadObject } from "@/app/actions/upload";
@@ -65,13 +59,7 @@ export const GET = async (req: Request, context: { params: Params }) => {
     console.log("c-nft", baseHref);
 
     let label = `Claim NFT`;
-
-    // if (link.claimed) {
-    //   label = "Claimed";
-    // } else if (expired) {
-    //   label = "Expired";
-    // }
-
+    
     const payload: ActionGetResponse = {
       title: dispenser.name ?? "",
       icon: dispenser.media ?? "",
@@ -108,7 +96,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
   try {
     const body: ActionPostRequest = await req.json();
 
-    // validate the client provided input
     let claimant: PublicKey;
     try {
       claimant = new PublicKey(body.account);
@@ -118,7 +105,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
         headers: ACTIONS_CORS_HEADERS,
       });
     }
-
     const dispenser = await api.cnftDispenser.getById({ id: context.params.id });
 
     if (!dispenser) {
@@ -129,7 +115,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
     }
 
     const tiplink = await TipLink.fromLink(dispenser.link!);
-
     if (!tiplink) {
       return new Response("Tip link not found", {
         status: 400,
@@ -181,27 +166,21 @@ export const POST = async (req: Request, context: { params: Params }) => {
       .use(mplTokenMetadata())
       .use(mplBubblegum())
       .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
-
+    console.log("1")
     const mint = generateSigner(umi);
-
-    const builder = await mintToCollectionV1(umi, {
-      leafOwner: publicKey(claimant),
-      merkleTree: publicKey(dispenser.merkleTreePublicKey),
-      collectionMint: publicKey(dispenser.collectionMintPublicKeys ?? ""),
-      metadata: {
-        name: dispenser.name ?? "",
-        uri: uploadResponse.result,
-        sellerFeeBasisPoints: percentAmount(parseFloat(dispenser.royalty)),
-        collection: {
-          key: publicKey(dispenser.collectionMintPublicKeys ?? ""),
-          verified: false,
-        },
-        creators: [
-          {address: publicKey(claimant), verified: false, share: 100}
-        ],
-      } as unknown as MetadataArgsArgs,
-    });
-
+        const builder = await mintV1(umi, {
+          leafOwner: publicKey(claimant),
+          merkleTree: publicKey(dispenser.merkleTreePublicKey),
+          metadata: {
+            name: dispenser.name ?? "",
+            uri: uploadResponse.result,
+            sellerFeeBasisPoints: 500,
+            collection: none(),
+            creators: [
+              {address: publicKey(claimant), verified: false, share: 100}
+            ],
+          } as unknown as MetadataArgsArgs,
+        });
     const ixs = builder.getInstructions().map(toWeb3JsInstruction);
 
     const reference = Keypair.generate();
@@ -223,7 +202,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         });
       }
     });
-
+  
     const transaction = new Transaction().add(...ixs);
 
     transaction.feePayer = tiplink.keypair.publicKey;
@@ -231,32 +210,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
     transaction.recentBlockhash = (
       await connection.getLatestBlockhash()
     ).blockhash;
-
-    console.dir(transaction, { depth: null });
-
-    // const ixs = toWeb3JsInstruction()
-
-    // let transaction: Transaction;
-
-    // if (link.token?.isNative) {
-    //   transaction = await buildTransferSolTx(
-    //     tiplink.keypair.publicKey,
-    //     claimant,
-    //     reference.publicKey,
-    //     Number(link.amount),
-    //     true,
-    //   );
-    // } else {
-    //   transaction = await buildTransferSplTx(
-    //     tiplink.keypair.publicKey,
-    //     claimant,
-    //     new PublicKey(link.token?.address!),
-    //     reference.publicKey,
-    //     Number(link.amount) * 10 ** link?.token?.decimals!,
-    //     true,
-    //   );
-    // }
-
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction: transaction,
@@ -264,13 +217,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
       },
       signers: [toWeb3JsKeypair(mint), tiplink.keypair],
     });
-
-    // api.tiplink.update({
-    //   id: link.id,
-    //   claimant: claimant.toBase58(),
-    //   reference: reference.publicKey.toBase58(),
-    // });
-
+    console.log(payload)
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
