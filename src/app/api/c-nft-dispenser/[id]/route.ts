@@ -1,6 +1,6 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { none } from '@metaplex-foundation/umi'
-import { MetadataArgsArgs , mintV1, mplBubblegum } from "@metaplex-foundation/mpl-bubblegum";
+import { none } from '@metaplex-foundation/umi';
+import { mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import {
   fromWeb3JsKeypair,
   toWeb3JsInstruction,
@@ -56,7 +56,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
       `/api/c-nft-dispenser/${dispenser.id}`,
       requestUrl.origin,
     ).toString();
-    console.log("c-nft", baseHref);
 
     let label = `Claim NFT`;
     
@@ -145,14 +144,10 @@ export const POST = async (req: Request, context: { params: Params }) => {
       },
     };
 
-    console.log(metadata);
-
     const uploadResponse = await uploadObject(
       `${dispenser.userId}/dispense/${dispenser.id}`,
       metadata,
     );
-
-    console.log({ uploadResponse });
 
     if (!uploadResponse.success) {
       return new Response("Tip link not found", {
@@ -166,42 +161,40 @@ export const POST = async (req: Request, context: { params: Params }) => {
       .use(mplTokenMetadata())
       .use(mplBubblegum())
       .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
-    console.log("1")
-    const mint = generateSigner(umi);
-        const builder = await mintV1(umi, {
-          leafOwner: publicKey(claimant),
-          merkleTree: publicKey(dispenser.merkleTreePublicKey),
-          metadata: {
-            name: dispenser.name ?? "",
-            uri: uploadResponse.result,
-            sellerFeeBasisPoints: 500,
-            collection: none(),
-            creators: [
-              {address: publicKey(claimant), verified: false, share: 100}
-            ],
-          } as unknown as MetadataArgsArgs,
-        });
-    const ixs = builder.getInstructions().map(toWeb3JsInstruction);
-
-    const reference = Keypair.generate();
-
-    ixs.forEach((ix) => {
-      if (
-        ix.keys.some((key) => key.pubkey.toBase58() === claimant.toBase58())
-      ) {
-        ix.keys.push({
-          pubkey: reference.publicKey,
-          isSigner: false,
-          isWritable: false,
-        });
-
-        ix.keys.push({
-          pubkey: claimant,
-          isSigner: true,
-          isWritable: true,
-        });
-      }
+    const builder = await mintV1(umi, {
+      leafOwner: publicKey(claimant),
+      merkleTree: publicKey(dispenser.merkleTreePublicKey),
+      metadata: {
+        name: dispenser.name ?? "",
+        uri: uploadResponse.result,
+        sellerFeeBasisPoints: 500,
+        collection: none(),
+        creators: [
+          {address: publicKey(claimant), verified: false, share: 100}
+        ],
+      },
     });
+    const ixs = await builder.getInstructions().map(toWeb3JsInstruction);
+
+    // const reference = Keypair.generate();
+
+    // ixs.forEach((ix) => {
+    //   if (
+    //     ix.keys.some((key) => key.pubkey.toBase58() === claimant.toBase58())
+    //   ) {
+    //     ix.keys.push({
+    //       pubkey: reference.publicKey,
+    //       isSigner: false,
+    //       isWritable: false,
+    //     });
+
+    //     ix.keys.push({
+    //       pubkey: claimant,
+    //       isSigner: true,
+    //       isWritable: true,
+    //     });
+    //   }
+    // });
   
     const transaction = new Transaction().add(...ixs);
 
@@ -210,14 +203,19 @@ export const POST = async (req: Request, context: { params: Params }) => {
     transaction.recentBlockhash = (
       await connection.getLatestBlockhash()
     ).blockhash;
+
+    console.dir(transaction, { depth: null });
+
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction: transaction,
         message: "Claim Success",
       },
-      signers: [toWeb3JsKeypair(mint), tiplink.keypair],
+      signers: [tiplink.keypair],
     });
-    console.log(payload)
+
+    console.log(payload);
+
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
