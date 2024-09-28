@@ -1,12 +1,12 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { none } from '@metaplex-foundation/umi';
-import { MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
+import { none, percentAmount } from '@metaplex-foundation/umi';
+import { createTree, MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import {
   fromWeb3JsKeypair,
   toWeb3JsInstruction,
   toWeb3JsKeypair,
 } from "@metaplex-foundation/umi-web3js-adapters";
-import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import {
  
   getConnection,
@@ -28,6 +28,7 @@ import {
   publicKey,
 } from "@metaplex-foundation/umi";
 import { uploadObject } from "@/app/actions/upload";
+// import bs58 from "bs58";
 
 type Params = {
   id: string;
@@ -156,6 +157,14 @@ export const POST = async (req: Request, context: { params: Params }) => {
       });
     }
 
+    // const keypair = Keypair.fromSecretKey(
+    //   bs58.decode(
+    //     process.env.SOLANA_PRIVATE_KEY || ""
+    //   )
+    // );
+
+    console.log("tiplink keypair public key", tiplink.keypair.publicKey.toBase58());
+
     const connection = getConnection();
     const umi = createUmi(connection)
       .use(mplTokenMetadata())
@@ -163,30 +172,60 @@ export const POST = async (req: Request, context: { params: Params }) => {
       .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
     let builder;
     if(!dispenser.collectionMintPublicKeys){
+      const merkleTree = generateSigner(umi);
+      const builders = await createTree(umi, {
+        merkleTree,
+        maxDepth: 5,
+        maxBufferSize: 8,
+      });
+      await builders.sendAndConfirm(umi)
+      console.log("minting without collection");
       builder = await mintV1(umi, {
         leafOwner: publicKey(claimant),
-        merkleTree: publicKey(dispenser.merkleTreePublicKey),
+        merkleTree: merkleTree.publicKey,
         metadata: {
           name: dispenser.name ?? "",
           uri: uploadResponse.result,
           sellerFeeBasisPoints: 500,
           collection: none(),
           creators: [
-            {address: publicKey(claimant), verified: false, share: 100}
+            {address: umi.identity.publicKey, verified: false, share: 100}
           ],
         },
       });
     } else {
+      console.log("minting with collection");
+
+      const merkleTree = generateSigner(umi);
+      const builders = await createTree(umi, {
+        merkleTree,
+        maxDepth: 5,
+        maxBufferSize: 8,
+      });
+      await builders.sendAndConfirm(umi);
+      console.log("merkleTree", merkleTree.publicKey);
+    
+      const collectionMint = generateSigner(umi);
+      console.log("collectionMint", collectionMint);
+      await createNft(umi, {
+        mint: collectionMint,
+        name: dispenser.name ?? '',
+        uri: uploadResponse.result,
+        sellerFeeBasisPoints: percentAmount(5.5), // 5.5%
+        isCollection: true,
+      }).sendAndConfirm(umi);
+
+      console.log("collection mint public key", collectionMint.publicKey);
       builder = await mintToCollectionV1(umi, {
         leafOwner: publicKey(claimant),
-        merkleTree: publicKey(dispenser.merkleTreePublicKey),
-        collectionMint: publicKey(dispenser.collectionMintPublicKeys),
+        merkleTree: merkleTree.publicKey,
+        collectionMint: collectionMint.publicKey,
         metadata: {
           name: dispenser.name ?? "",
           uri: uploadResponse.result,
           sellerFeeBasisPoints: 500,
           collection: {
-            key: publicKey(dispenser.collectionMintPublicKeys),
+            key: collectionMint.publicKey,
             verified: false,
           },
           creators: [ 
@@ -198,25 +237,25 @@ export const POST = async (req: Request, context: { params: Params }) => {
     
     const ixs = await builder.getInstructions().map(toWeb3JsInstruction);
 
-    // const reference = Keypair.generate();
+    const reference = Keypair.generate();
 
-    // ixs.forEach((ix) => {
-    //   if (
-    //     ix.keys.some((key) => key.pubkey.toBase58() === claimant.toBase58())
-    //   ) {
-    //     ix.keys.push({
-    //       pubkey: reference.publicKey,
-    //       isSigner: false,
-    //       isWritable: false,
-    //     });
+    ixs.forEach((ix) => {
+      if (
+        ix.keys.some((key) => key.pubkey.toBase58() === claimant.toBase58())
+      ) {
+        ix.keys.push({
+          pubkey: reference.publicKey,
+          isSigner: false,
+          isWritable: false,
+        });
 
-    //     ix.keys.push({
-    //       pubkey: claimant,
-    //       isSigner: true,
-    //       isWritable: true,
-    //     });
-    //   }
-    // });
+        ix.keys.push({
+          pubkey: claimant,
+          isSigner: true,
+          isWritable: true,
+        });
+      }
+    });
   
     const transaction = new Transaction().add(...ixs);
 
