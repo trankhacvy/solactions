@@ -1,6 +1,6 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { none } from '@metaplex-foundation/umi';
-import { mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
+import { MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import {
   fromWeb3JsKeypair,
   toWeb3JsInstruction,
@@ -161,19 +161,41 @@ export const POST = async (req: Request, context: { params: Params }) => {
       .use(mplTokenMetadata())
       .use(mplBubblegum())
       .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
-    const builder = await mintV1(umi, {
-      leafOwner: publicKey(claimant),
-      merkleTree: publicKey(dispenser.merkleTreePublicKey),
-      metadata: {
-        name: dispenser.name ?? "",
-        uri: uploadResponse.result,
-        sellerFeeBasisPoints: 500,
-        collection: none(),
-        creators: [
-          {address: publicKey(claimant), verified: false, share: 100}
-        ],
-      },
-    });
+    let builder;
+    if(!dispenser.collectionMintPublicKeys){
+      builder = await mintV1(umi, {
+        leafOwner: publicKey(claimant),
+        merkleTree: publicKey(dispenser.merkleTreePublicKey),
+        metadata: {
+          name: dispenser.name ?? "",
+          uri: uploadResponse.result,
+          sellerFeeBasisPoints: 500,
+          collection: none(),
+          creators: [
+            {address: publicKey(claimant), verified: false, share: 100}
+          ],
+        },
+      });
+    } else {
+      builder = await mintToCollectionV1(umi, {
+        leafOwner: publicKey(claimant),
+        merkleTree: publicKey(dispenser.merkleTreePublicKey),
+        collectionMint: publicKey(dispenser.collectionMintPublicKeys),
+        metadata: {
+          name: dispenser.name ?? "",
+          uri: uploadResponse.result,
+          sellerFeeBasisPoints: 500,
+          collection: {
+            key: publicKey(dispenser.collectionMintPublicKeys),
+            verified: false,
+          },
+          creators: [ 
+            {address: publicKey(claimant), verified: false, share: 100}
+          ],
+        } as MetadataArgsArgs,
+      });
+    }
+    
     const ixs = await builder.getInstructions().map(toWeb3JsInstruction);
 
     // const reference = Keypair.generate();
