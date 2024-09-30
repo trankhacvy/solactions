@@ -187,6 +187,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
       uri: uploadResponse.result,
       sellerFeeBasisPoints: percentAmount(parseFloat(dispenser.royalty)),
       tokenOwner: fromWeb3JsPublicKey(claimant),
+      isCollection: dispenser.isCollection ?? false,
     });
 
     const ixs = builder.getInstructions().map(toWeb3JsInstruction);
