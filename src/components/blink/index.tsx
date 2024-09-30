@@ -109,7 +109,6 @@ export function BlinkCard({ actions, status, onClick }: BlinkCardProps) {
                 loading: status === BlinkActionStatus.PROCESSING,
                 disabled: disabled,
                 onClick: (formValue) => {
-                  console.log("formValue", formValue);
                   if (!connected) {
                     setVisible(true);
                     return;

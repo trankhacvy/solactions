@@ -110,6 +110,7 @@ function FeatureItem({
           >
             {icon.map((i, idx) => (
               <Box
+                key={idx}
                 component="img"
                 src={i}
                 sx={{

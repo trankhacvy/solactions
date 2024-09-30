@@ -1,6 +1,6 @@
 {
-  "id": "1df731d6-10ff-43e4-a6e5-237a80e3048b",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "580b878f-deae-4f15-bd3f-3fe51799875e",
+  "prevId": "1df731d6-10ff-43e4-a6e5-237a80e3048b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -258,7 +258,7 @@
           "name": "email",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "wallet": {
           "name": "wallet",

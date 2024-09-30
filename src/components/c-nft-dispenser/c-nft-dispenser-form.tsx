@@ -9,6 +9,9 @@ import {
   FormControl,
   FormHelperText,
   CardHeader,
+  Typography,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -33,6 +36,12 @@ import { createSOLTiplink } from "@/lib/tiplink";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import ConnectWalletButton from "../connect-wallet";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getConnection } from "@/lib/transactions";
+import { generateSigner, keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
+import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createTree, mplBubblegum } from "@metaplex-foundation/mpl-bubblegum";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { fromWeb3JsKeypair, fromWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 
 const newCNftSchema = z.object({
   media: z.any().refine((file) => !!file, "Media is required."),
@@ -63,15 +72,28 @@ const newCNftSchema = z.object({
     })
     .min(0, "The royalty must be greater than or equal to 0.")
     .max(100, "The royalty must not exceed 100."),
-  merkleTreePublicKey: z
-    .string()
-    .trim()
-    .max(256, `The maximum allowed length for this field is 256 characters`),
-  collectionMintPublicKeys: z
-    .string()
-    .trim()
-    .max(256, `The maximum allowed length for this field is 256 characters`)
-    .optional(),
+  max_depth: z.coerce
+    .number({
+      required_error: "This field is required.",
+      invalid_type_error: "This field is required.",
+    })
+    .min(0, "The royalty must be greater than or equal to 0.")
+    .max(100, "The royalty must not exceed 100."),
+  max_buffer_size: z.coerce
+    .number({
+      required_error: "This field is required.",
+      invalid_type_error: "This field is required.",
+    })
+    .min(0, "The royalty must be greater than or equal to 0.")
+    .max(100, "The royalty must not exceed 100."),
+  canopy_depth: z.coerce
+    .number({
+      required_error: "This field is required.",
+      invalid_type_error: "This field is required.",
+    })
+    .min(0, "The royalty must be greater than or equal to 0.")
+    .max(100, "The royalty must not exceed 100."),
+  useCollection: z.boolean().default(false),
   creators: z
     .array(
       z.object({
@@ -194,13 +216,16 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
       description: "",
       externalUrl: "",
       royalty: 10,
-      merkleTreePublicKey: "",
-      collectionMintPublicKeys: "",
+      max_depth: 5,
+      max_buffer_size: 8,
+      canopy_depth: 2,
+      useCollection: false,
       creators: [{ address: "", share: 100 }],
       properties: [{ name: "", value: "" }],
       numOfCNFT: 100,
     },
   });
+
 
   const {
     fields: creatorFields,
@@ -239,10 +264,14 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
   async function onSubmit(values: z.infer<typeof newCNftSchema>) {
     try {
       if (!publicKey) {
+        openSnackbar({
+          title: "Please connect your wallet",
+          severity: "error",
+        });
         return;
       }
 
-      const amount = values.numOfCNFT * 0.001 * LAMPORTS_PER_SOL;
+      const amount = values.numOfCNFT * 0.005 * LAMPORTS_PER_SOL;
 
       const { tiplink, transaction } = await createSOLTiplink(
         publicKey,
@@ -253,12 +282,98 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
 
       await connection.confirmTransaction(signature, "confirmed");
 
-      await mutate({
+      const connectionRPC = getConnection();
+      const umi = createUmi(connectionRPC)
+        .use(mplTokenMetadata())
+        .use(mplBubblegum())
+        .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
+
+      const createMerkleTree = async () => {
+        try {
+          const merkleTree = generateSigner(umi);
+          const builders = await createTree(umi, {
+            merkleTree,
+            maxDepth: values.max_depth,
+            maxBufferSize: values.max_buffer_size,
+            canopyDepth: values.canopy_depth
+          });
+          await builders.sendAndConfirm(umi);
+          return merkleTree.publicKey.toString();
+        } catch (error) {
+          console.error("Error when creating a Merkle tree:", error);
+          throw new Error("Unable to create a Merkle tree");
+        }
+      };
+
+      const createCollectionNft = async () => {
+        try {
+          const collectionMint = generateSigner(umi);
+          await createNft(umi, {
+            mint: collectionMint,
+            name: values.name ?? '',
+            uri: values.externalUrl ? '' : '',
+            sellerFeeBasisPoints: percentAmount(parseFloat(values.royalty.toString())),
+            tokenOwner: fromWeb3JsPublicKey(publicKey),
+            isCollection: true,
+          }).sendAndConfirm(umi);
+          return collectionMint.publicKey.toString();
+        } catch (error) {
+          console.error("Errors when creating NFT Collections:", error);
+          throw new Error("Unable to create NFT Collections");
+        }
+      };
+
+      let merkleTreePublicKey: string;
+      try {
+        merkleTreePublicKey = await createMerkleTree();
+      } catch (error) {
+        openSnackbar({
+          title: "Error when creating a Merkle tree",
+          severity: "error",
+        });
+        return;
+      }
+
+      if (!merkleTreePublicKey) {
+        openSnackbar({
+          title: "Unable to create a Merkle tree",
+          severity: "error",
+        });
+        return;
+      }
+
+      let collectionMintPublicKeys: string | undefined;
+      if (values.useCollection) {
+        try {
+          collectionMintPublicKeys = await createCollectionNft();
+        } catch (error) {
+          openSnackbar({
+            title: "Errors when creating NFT Collections",
+            severity: "error",
+          });
+          return;
+        }
+      }
+
+      const mutateData = {
         ...values,
         link: tiplink.url.toString(),
+        merkleTreePublicKey,
+        collectionMintPublicKeys,
+      };
+
+      await mutate(mutateData);
+
+      openSnackbar({
+        title: "CNFT dispenser has been successfully made",
+        severity: "success",
       });
     } catch (error: any) {
-      console.error(error);
+      console.error("Errors when creating CNFT dispensers:", error);
+      openSnackbar({
+        title: "Error creating a CNFT dispenser",
+        severity: "error",
+      });
     }
   }
 
@@ -271,7 +386,6 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
 
       const res = await uploadObject("test-file.json", object);
 
-      console.log(res);
     } catch (error) {
       console.error(error);
     }
@@ -350,26 +464,6 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                 />
 
                 <FormInput
-                  {...register("merkleTreePublicKey")}
-                  fullWidth
-                  placeholder=""
-                  label="Merkle Tree Public Key"
-                  multiline
-                  error={!!errors.merkleTreePublicKey}
-                  helperText={errors.merkleTreePublicKey?.message}
-                />
-
-                <FormInput
-                  {...register("collectionMintPublicKeys")}
-                  fullWidth
-                  placeholder=""
-                  label="Collection Mint Public Key"
-                  multiline
-                  error={!!errors.collectionMintPublicKeys}
-                  helperText={errors.collectionMintPublicKeys?.message}
-                />
-
-                <FormInput
                   {...register("externalUrl")}
                   fullWidth
                   placeholder=""
@@ -397,6 +491,69 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
                     />
                   )}
                 />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader title="Merkle Tree Settings" />
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Please fill in the following information to create a Merkle Tree
+                </Typography>
+                
+                <FormInput
+                  {...register("max_depth")}
+                  fullWidth
+                  placeholder=""
+                  label="Maximum Depth"
+                  error={!!errors.max_depth}
+                  helperText={errors.max_depth?.message}
+                />
+                
+                <FormInput
+                  {...register("max_buffer_size")}
+                  fullWidth
+                  placeholder=""
+                  label="Maximum Buffer Size"
+                  error={!!errors.max_buffer_size}
+                  helperText={errors.max_buffer_size?.message}
+                />
+                
+                <FormInput
+                  {...register("canopy_depth")}
+                  fullWidth
+                  placeholder=""
+                  label="Canopy Depth"
+                  error={!!errors.canopy_depth}
+                  helperText={errors.canopy_depth?.message}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent>
+                <FormControl fullWidth>
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name="useCollection"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            {...field}
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    }
+                    label="Mint with Collection"
+                    style={{ fontWeight: 'bold' }}
+                  />
+                  {errors.useCollection && (
+                    <FormHelperText error>{errors.useCollection.message}</FormHelperText>
+                  )}
+                </FormControl>
               </CardContent>
             </Card>
 

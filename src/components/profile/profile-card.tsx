@@ -30,7 +30,6 @@ export function ProfileCard({ profile }: { profile: SelectDonationProfile }) {
   });
 
   const handleClick = async (action: LinkedAction) => {
-    console.log(action);
     try {
       if (!publicKey) {
         setVisible(true);
