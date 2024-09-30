@@ -172,16 +172,16 @@ const navConfig = [
   //   path: Routes.ADMIN_SETTINGS,
   //   icon: <SettingsIcon />,
   // },
-  {
-    title: "NFT Dispenser",
-    path: Routes.ADMIN_NFT_DISPENSER,
-    icon: <ImageIcon />,
-  },
-  {
-    title: "cNFT Dispenser",
-    path: Routes.ADMIN_C_NFT_DISPENSER,
-    icon: <BookIcon />,
-  },
+  // {
+  //   title: "NFT Dispenser",
+  //   path: Routes.ADMIN_NFT_DISPENSER,
+  //   icon: <ImageIcon />,
+  // },
+  // {
+  //   title: "cNFT Dispenser",
+  //   path: Routes.ADMIN_C_NFT_DISPENSER,
+  //   icon: <BookIcon />,
+  // },
   {
     title: "Dispenser",
     path: Routes.ADMIN_DISPENSER,
