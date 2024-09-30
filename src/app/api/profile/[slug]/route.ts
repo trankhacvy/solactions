@@ -71,7 +71,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {
@@ -180,7 +179,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {

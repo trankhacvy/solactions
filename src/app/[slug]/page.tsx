@@ -1,4 +1,5 @@
 import { ProfileCard } from "@/components/profile/profile-card";
+import { AppConfig } from "@/config/constants";
 import { api } from "@/trpc/server";
 import { Stack } from "@mui/material";
 import { Metadata } from "next";
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${profile.name} | SolActions`,
+    title: `${profile.name} | ${AppConfig.title}`,
     description: profile.bio,
     twitter: {
       card: "summary_large_image",

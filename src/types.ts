@@ -21,3 +21,7 @@ export type Token = {
   decimals: number;
   icon: string;
 };
+
+export type Creator = { address: string; verified: boolean; share: number };
+
+export type Property = { name: string; value: string };
