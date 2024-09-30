@@ -3,6 +3,7 @@ import { none, percentAmount } from '@metaplex-foundation/umi';
 import { createTree, MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import {
   fromWeb3JsKeypair,
+  fromWeb3JsPublicKey,
   toWeb3JsInstruction,
   toWeb3JsKeypair,
 } from "@metaplex-foundation/umi-web3js-adapters";
@@ -186,7 +187,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         metadata: {
           name: dispenser.name ?? "",
           uri: uploadResponse.result,
-          sellerFeeBasisPoints: 500,
+          sellerFeeBasisPoints: Number(percentAmount(parseFloat(dispenser.royalty)).basisPoints),
           collection: none(),
           creators: [
             {address: umi.identity.publicKey, verified: false, share: 100}
@@ -205,31 +206,32 @@ export const POST = async (req: Request, context: { params: Params }) => {
       await builders.sendAndConfirm(umi);
       console.log("merkleTree", merkleTree.publicKey);
     
-      const collectionMint = generateSigner(umi);
-      console.log("collectionMint", collectionMint);
-      await createNft(umi, {
-        mint: collectionMint,
-        name: dispenser.name ?? '',
-        uri: uploadResponse.result,
-        sellerFeeBasisPoints: percentAmount(5.5), // 5.5%
-        isCollection: true,
-      }).sendAndConfirm(umi);
+      // const collectionMint = generateSigner(umi);
+      // console.log("collectionMint", collectionMint);
+      // await createNft(umi, {
+      //   mint: collectionMint,
+      //   name: dispenser.name ?? '',
+      //   uri: uploadResponse.result,
+      //   sellerFeeBasisPoints: percentAmount(parseFloat(dispenser.royalty)),
+      //   tokenOwner: fromWeb3JsPublicKey(claimant),
+      //   isCollection: true,
+      // }).sendAndConfirm(umi);
 
-      console.log("collection mint public key", collectionMint.publicKey);
+      console.log("collection mint public key", dispenser.collectionMintPublicKeys);
       builder = await mintToCollectionV1(umi, {
         leafOwner: publicKey(claimant),
         merkleTree: merkleTree.publicKey,
-        collectionMint: collectionMint.publicKey,
+        collectionMint: publicKey(dispenser.collectionMintPublicKeys),
         metadata: {
           name: dispenser.name ?? "",
           uri: uploadResponse.result,
-          sellerFeeBasisPoints: 500,
+          sellerFeeBasisPoints: Number(percentAmount(parseFloat(dispenser.royalty)).basisPoints),
           collection: {
-            key: collectionMint.publicKey,
+            key: publicKey(dispenser.collectionMintPublicKeys),
             verified: false,
           },
           creators: [ 
-            {address: publicKey(claimant), verified: false, share: 100}
+            {address: umi.identity.publicKey, verified: false, share: 100}
           ],
         } as MetadataArgsArgs,
       });
