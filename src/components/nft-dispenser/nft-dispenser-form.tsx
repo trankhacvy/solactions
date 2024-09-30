@@ -265,7 +265,6 @@ export default function NewDispenserForm({ user }: { user: SelectUser }) {
 
       const res = await uploadObject("test-file.json", object);
 
-      console.log(res);
     } catch (error) {
       console.error(error);
     }

@@ -9,6 +9,7 @@ import {
   numeric,
   jsonb,
   integer,
+  boolean
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { user } from ".";
@@ -24,8 +25,12 @@ export const cnftDispenser = pgTable("c_nft_dispenser", {
   description: varchar("description", { length: 200 }),
   externalUrl: varchar("external_url"),
   royalty: numeric("royalty").notNull().default("0"),
-  merkleTreePublicKey: varchar("merkle_tree_public_key").notNull().default(""),
+  max_depth: numeric("max_depth").notNull().default("5"),
+  max_buffer_size: numeric("max_buffer_size").notNull().default("8"),
+  canopy_depth: numeric("canopy_depth").notNull().default("2"),
+  merkleTreePublicKey: varchar("merkle_tree_public_key"),
   collectionMintPublicKeys: varchar("collection_mint_public_keys"),
+  useCollection: boolean("useCollection").notNull().default(false),
   creators: jsonb("creators").$type<Omit<Creator, "verified">[]>().default([]),
   properties: jsonb("properties").$type<Property[]>().default([]),
   numOfNFT: integer("num_of_nft").notNull().default(1),
@@ -57,6 +62,9 @@ export const createCNFTDispenserSchema = createInsertSchema(cnftDispenser, {
     }),
   ),
   royalty: z.coerce.number(),
+  max_depth: z.coerce.number(),
+  max_buffer_size: z.coerce.number(),
+  canopy_depth: z.coerce.number(),
 }).omit({
   id: true,
   userId: true,

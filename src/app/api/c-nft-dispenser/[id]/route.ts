@@ -1,13 +1,11 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { none, percentAmount } from '@metaplex-foundation/umi';
-import { createTree, MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
+import { MetadataArgsArgs, mintToCollectionV1, mintV1, mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import {
   fromWeb3JsKeypair,
-  fromWeb3JsPublicKey,
   toWeb3JsInstruction,
-  toWeb3JsKeypair,
 } from "@metaplex-foundation/umi-web3js-adapters";
-import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import {
  
   getConnection,
@@ -24,12 +22,10 @@ import {
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { TipLink } from "@tiplink/api";
 import {
-  generateSigner,
   keypairIdentity,
   publicKey,
 } from "@metaplex-foundation/umi";
 import { uploadObject } from "@/app/actions/upload";
-// import bs58 from "bs58";
 
 type Params = {
   id: string;
@@ -51,8 +47,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
         },
       );
     }
-
-    // const expired = dayjs().isAfter(dayjs(link.expiredAt));
 
     const baseHref = new URL(
       `/api/c-nft-dispenser/${dispenser.id}`,
@@ -81,7 +75,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {
@@ -124,7 +117,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
     }
 
     // upload metadata
-
     const metadata = {
       name: dispenser.name,
       description: dispenser.description,
@@ -158,32 +150,37 @@ export const POST = async (req: Request, context: { params: Params }) => {
       });
     }
 
-    // const keypair = Keypair.fromSecretKey(
-    //   bs58.decode(
-    //     process.env.SOLANA_PRIVATE_KEY || ""
-    //   )
-    // );
-
-    console.log("tiplink keypair public key", tiplink.keypair.publicKey.toBase58());
-
     const connection = getConnection();
     const umi = createUmi(connection)
       .use(mplTokenMetadata())
       .use(mplBubblegum())
       .use(keypairIdentity(fromWeb3JsKeypair(tiplink.keypair)));
     let builder;
-    if(!dispenser.collectionMintPublicKeys){
-      const merkleTree = generateSigner(umi);
-      const builders = await createTree(umi, {
-        merkleTree,
-        maxDepth: 5,
-        maxBufferSize: 8,
+
+    if(dispenser.useCollection){
+
+      builder = await mintToCollectionV1(umi, {
+        leafOwner: publicKey(claimant),
+        merkleTree: publicKey(dispenser.merkleTreePublicKey!),
+        collectionMint: publicKey(dispenser.collectionMintPublicKeys!),
+        metadata: {
+          name: dispenser.name ?? "",
+          uri: uploadResponse.result,
+          sellerFeeBasisPoints: Number(percentAmount(parseFloat(dispenser.royalty)).basisPoints),
+          collection: {
+            key: publicKey(dispenser.collectionMintPublicKeys!),
+            verified: false,
+          },
+          creators: [ 
+            {address: umi.identity.publicKey, verified: false, share: 100}
+          ],
+        } as MetadataArgsArgs,
       });
-      await builders.sendAndConfirm(umi)
-      console.log("minting without collection");
+    } else {
+
       builder = await mintV1(umi, {
         leafOwner: publicKey(claimant),
-        merkleTree: merkleTree.publicKey,
+        merkleTree: publicKey(dispenser.merkleTreePublicKey!),
         metadata: {
           name: dispenser.name ?? "",
           uri: uploadResponse.result,
@@ -194,49 +191,8 @@ export const POST = async (req: Request, context: { params: Params }) => {
           ],
         },
       });
-    } else {
-      console.log("minting with collection");
-
-      const merkleTree = generateSigner(umi);
-      const builders = await createTree(umi, {
-        merkleTree,
-        maxDepth: 5,
-        maxBufferSize: 8,
-      });
-      await builders.sendAndConfirm(umi);
-      console.log("merkleTree", merkleTree.publicKey);
-    
-      // const collectionMint = generateSigner(umi);
-      // console.log("collectionMint", collectionMint);
-      // await createNft(umi, {
-      //   mint: collectionMint,
-      //   name: dispenser.name ?? '',
-      //   uri: uploadResponse.result,
-      //   sellerFeeBasisPoints: percentAmount(parseFloat(dispenser.royalty)),
-      //   tokenOwner: fromWeb3JsPublicKey(claimant),
-      //   isCollection: true,
-      // }).sendAndConfirm(umi);
-
-      console.log("collection mint public key", dispenser.collectionMintPublicKeys);
-      builder = await mintToCollectionV1(umi, {
-        leafOwner: publicKey(claimant),
-        merkleTree: merkleTree.publicKey,
-        collectionMint: publicKey(dispenser.collectionMintPublicKeys),
-        metadata: {
-          name: dispenser.name ?? "",
-          uri: uploadResponse.result,
-          sellerFeeBasisPoints: Number(percentAmount(parseFloat(dispenser.royalty)).basisPoints),
-          collection: {
-            key: publicKey(dispenser.collectionMintPublicKeys),
-            verified: false,
-          },
-          creators: [ 
-            {address: umi.identity.publicKey, verified: false, share: 100}
-          ],
-        } as MetadataArgsArgs,
-      });
     }
-    
+
     const ixs = await builder.getInstructions().map(toWeb3JsInstruction);
 
     const reference = Keypair.generate();
@@ -277,13 +233,10 @@ export const POST = async (req: Request, context: { params: Params }) => {
       signers: [tiplink.keypair],
     });
 
-    console.log(payload);
-
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {

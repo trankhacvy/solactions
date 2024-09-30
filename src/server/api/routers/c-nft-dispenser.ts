@@ -23,6 +23,9 @@ export const cnftDispenserRouter = createTRPCRouter({
           ...input,
           userId,
           royalty: String(input.royalty),
+          max_depth: String(input.max_depth),
+          max_buffer_size: String(input.max_buffer_size),
+          canopy_depth: String(input.canopy_depth),
         })
         .returning();
 
@@ -30,15 +33,18 @@ export const cnftDispenserRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input(schema.updateNFTDispenerSchema)
+    .input(schema.updateCNFTDispenserSchema)
     .mutation(async ({ ctx, input }) => {
-      const { id, royalty, ...rest } = input;
+      const { id, royalty, max_depth, max_buffer_size, canopy_depth, ...rest } = input;
 
       const [profile] = await ctx.db
         .update(schema.cnftDispenser)
         .set({
           ...rest,
           royalty: String(royalty),
+          max_depth: String(max_depth),
+          max_buffer_size: String(max_buffer_size),
+          canopy_depth: String(canopy_depth)
         })
         .where(eq(schema.cnftDispenser.id, id))
         .returning();

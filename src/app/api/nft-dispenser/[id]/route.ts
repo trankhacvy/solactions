@@ -1,18 +1,13 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { mplBubblegum } from "@metaplex-foundation/mpl-bubblegum";
 import {
   fromWeb3JsKeypair,
   fromWeb3JsPublicKey,
   toWeb3JsInstruction,
   toWeb3JsKeypair,
-  toWeb3JsTransaction,
 } from "@metaplex-foundation/umi-web3js-adapters";
 import { createNft } from "@metaplex-foundation/mpl-token-metadata";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { tiplinkImages } from "@/config/constants";
 import {
-  buildTransferSolTx,
-  buildTransferSplTx,
   getConnection,
 } from "@/lib/transactions";
 import { api } from "@/trpc/server";
@@ -26,7 +21,6 @@ import {
 
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { TipLink } from "@tiplink/api";
-import dayjs from "dayjs";
 import {
   generateSigner,
   keypairIdentity,
@@ -55,21 +49,12 @@ export const GET = async (req: Request, context: { params: Params }) => {
       );
     }
 
-    // const expired = dayjs().isAfter(dayjs(link.expiredAt));
-
     const baseHref = new URL(
       `/api/nft-dispenser/${dispenser.id}`,
       requestUrl.origin,
     ).toString();
-    console.log("nft", baseHref);
 
     let label = `Claim NFT`;
-
-    // if (link.claimed) {
-    //   label = "Claimed";
-    // } else if (expired) {
-    //   label = "Expired";
-    // }
 
     const payload: ActionGetResponse = {
       title: dispenser.name ?? "",
@@ -91,7 +76,6 @@ export const GET = async (req: Request, context: { params: Params }) => {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {
@@ -137,7 +121,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
     }
 
     // upload metadata
-
     const metadata = {
       name: dispenser.name,
       description: dispenser.description,
@@ -163,8 +146,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
       `${dispenser.userId}/dispense/${dispenser.id}`,
       metadata,
     );
-
-    console.log({ uploadResponse });
 
     if (!uploadResponse.success) {
       return new Response("Tip link not found", {
@@ -222,29 +203,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     console.dir(transaction, { depth: null });
 
-    // const ixs = toWeb3JsInstruction()
-
-    // let transaction: Transaction;
-
-    // if (link.token?.isNative) {
-    //   transaction = await buildTransferSolTx(
-    //     tiplink.keypair.publicKey,
-    //     claimant,
-    //     reference.publicKey,
-    //     Number(link.amount),
-    //     true,
-    //   );
-    // } else {
-    //   transaction = await buildTransferSplTx(
-    //     tiplink.keypair.publicKey,
-    //     claimant,
-    //     new PublicKey(link.token?.address!),
-    //     reference.publicKey,
-    //     Number(link.amount) * 10 ** link?.token?.decimals!,
-    //     true,
-    //   );
-    // }
-
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction: transaction,
@@ -253,17 +211,10 @@ export const POST = async (req: Request, context: { params: Params }) => {
       signers: [toWeb3JsKeypair(mint), tiplink.keypair],
     });
 
-    // api.tiplink.update({
-    //   id: link.id,
-    //   claimant: claimant.toBase58(),
-    //   reference: reference.publicKey.toBase58(),
-    // });
-
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log(err);
     let message = "An unknown error occurred";
     if (typeof err == "string") message = err;
     return new Response(message, {

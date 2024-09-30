@@ -14,9 +14,8 @@ import { Logo } from "@/components/ui/logo";
 import {
   HeartHandshakeIcon,
   HomeIcon,
-  ImageIcon,
   Link2Icon,
-  BookIcon
+  TicketPercent
 } from "lucide-react";
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
@@ -183,4 +182,9 @@ const navConfig = [
     path: Routes.ADMIN_C_NFT_DISPENSER,
     icon: <BookIcon />,
   },
+  {
+    title: "Dispenser",
+    path: Routes.ADMIN_DISPENSER,
+    icon: <TicketPercent />,
+  }
 ];
