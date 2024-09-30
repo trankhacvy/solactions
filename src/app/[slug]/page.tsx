@@ -1,4 +1,5 @@
 import { ProfileCard } from "@/components/profile/profile-card";
+import { env } from "@/env";
 import { AppConfig } from "@/config/constants";
 import { api } from "@/trpc/server";
 import { Stack } from "@mui/material";
@@ -24,7 +25,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${profile.name} | ${AppConfig.title}`,
     description: profile.bio,
     twitter: {
-      card: "summary_large_image",
+      card: "player",
+      players: [
+        {
+          playerUrl: `${env.NEXT_PUBLIC_FE_BASE_URL}/${slug}`,
+          streamUrl: `${env.NEXT_PUBLIC_FE_BASE_URL}/${slug}`,
+          width: 360,
+          height: 480,
+        },
+      ],
+      images: []
     },
   };
 }

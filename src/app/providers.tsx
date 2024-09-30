@@ -5,7 +5,7 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { useMemo } from "react";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
@@ -37,7 +37,10 @@ export default function Providers({
   session: Session | null;
 }) {
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter()],
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
