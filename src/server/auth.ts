@@ -115,7 +115,6 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     signIn: async ({ user, account, profile }) => {
-      console.log("sign in", user, account, profile);
 
       if (account?.provider === "twitter") {
         // @ts-ignore

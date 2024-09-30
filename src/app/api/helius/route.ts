@@ -93,5 +93,7 @@ async function findAndUpdateTransaction(reference: string, signature: string) {
     }
   } catch (error) {
     console.error(error);
+  } finally {
+    removeAddress(reference)
   }
 }
