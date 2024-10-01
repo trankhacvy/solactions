@@ -2,7 +2,7 @@
 import { TextField, Button, Box, RadioGroup, FormControlLabel, Radio, MenuItem, Select, Avatar } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { type Profile } from "./kol-stream-card";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formValues: Profile) => void, initialProfile: Profile }) {
     const { control, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<Profile>({
@@ -10,9 +10,13 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
     });
 
     const watchedValues = watch();
+    const previousValues = useRef(watchedValues);
 
     useEffect(() => {
-        onFormChange(watchedValues);
+        if (JSON.stringify(watchedValues) !== JSON.stringify(previousValues.current)) {
+            onFormChange(watchedValues);
+            previousValues.current = watchedValues;
+        }
     }, [watchedValues, onFormChange]);
 
     const onSubmit = async (data: Profile) => {
