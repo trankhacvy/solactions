@@ -89,6 +89,15 @@ async function findAndUpdateTransaction(reference: string, signature: string) {
             signature,
           });
         }
+      } else if ( type === "TALKWITHME") {
+        const tx = await api.talkwithmeTransactions.getByReference({ reference });
+        if (tx && tx.status !== "SUCCESS") {
+          await api.talkwithmeTransactions.update({
+            id: tx.id,
+            status: "SUCCESS",
+            signature,
+          });
+        }
       }
     }
   } catch (error) {
