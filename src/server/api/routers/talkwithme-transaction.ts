@@ -23,7 +23,7 @@ export const talkWithMeTransactionRouter = createTRPCRouter({
       });
 
       const [transaction] = await ctx.db
-        .insert(schema.donationTransaction)
+        .insert(schema.kolTransaction)
         .values({
           ...rest,
           id: generatePublicId(),

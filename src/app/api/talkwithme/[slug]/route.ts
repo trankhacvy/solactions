@@ -11,6 +11,7 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 import { Keypair, PublicKey } from "@solana/web3.js";
+import Email from "next-auth/providers/email";
 
 const DEFAULT_SOL_AMOUNT: number = 0.001;
 
@@ -80,8 +81,8 @@ export const POST = async (req: Request, context: { params: Params }) => {
   try {
     const requestUrl = new URL(req.url);
 
-    const { amount, token } = validatedQueryParams(requestUrl);
-
+    const { email} = validatedQueryParams(requestUrl);
+    console.log(email)
     const body: ActionPostRequest = await req.json();
 
     let profile: SelectKolProfileSchema | undefined;
@@ -131,21 +132,21 @@ export const POST = async (req: Request, context: { params: Params }) => {
 
     let transaction;
 
-    if (token.isNative) {
+    if (profile.acceptToken.isNative) {
       transaction = await buildTransferSolTx(
         account,
         receiver,
         reference.publicKey,
-        amount,
+        parseFloat(profile.price),
         false,
       );
     } else {
       transaction = await buildTransferSplTx(
         account,
         receiver,
-        new PublicKey(token.address),
+        new PublicKey(profile.acceptToken.address),
         reference.publicKey,
-        amount * 10 ** token.decimals,
+        amount * 10 ** profile.acceptToken.decimals,
         false,
       );
     }
@@ -155,18 +156,19 @@ export const POST = async (req: Request, context: { params: Params }) => {
         transaction,
         message: profile.thankMessage
           ? profile.thankMessage
-          : `Send ${amount} ${token.symbol} to ${receiver.toBase58()}.`,
+          : `Send ${profile.price} ${profile.acceptToken.symbol} to ${receiver.toBase58()}.`,
       },
     });
 
     // insert to db
-    api.donationTransaction.create({
+    api.talkwithmeTransactions.create({
       profileId: profile.id,
       sender: account.toBase58(),
       receiver: receiver.toBase58(),
-      amount: String(amount),
+      amount: String(profile.price),
+      email: email,
       reference: reference.publicKey.toBase58(),
-      currency: tokenList.find((t) => t.address === token.address),
+      currency: tokenList.find((t) => t.address === profile.acceptToken.address),
     });
     
     return Response.json(payload, {
@@ -184,31 +186,17 @@ export const POST = async (req: Request, context: { params: Params }) => {
 };
 
 function validatedQueryParams(requestUrl: URL) {
-  let amount: number = DEFAULT_SOL_AMOUNT;
+  let email: string;
 
   try {
-    if (requestUrl.searchParams.get("amount")) {
-      amount = parseFloat(requestUrl.searchParams.get("amount")!);
-    }
-
-    if (amount <= 0) throw "amount is too small";
-  } catch (err) {
-    throw "Invalid input query parameter: amount";
-  }
-
-  let token: Token | undefined;
-
-  try {
-    if (requestUrl.searchParams.get("token")) {
-      const address = requestUrl.searchParams.get("token");
-      token = tokenList.find((t) => t.address === address);
+    if (requestUrl.searchParams.get("email")) {
+      email = requestUrl.searchParams.get("email");
     }
   } catch (err) {
-    throw "Invalid input query parameter: amount";
+    throw "Invalid input query parameter: email";
   }
 
   return {
-    amount,
-    token: token || tokenList[0]!,
+    email,
   };
 }
