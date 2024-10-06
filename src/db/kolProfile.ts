@@ -41,6 +41,9 @@ export const kolProfile = pgTable("kol_profile", {
   slug: text("slug")
      .references(() => donationProfile.slug, {onDelete: "cascade"})
      .notNull(),
+  wallet: varchar("wallet")
+        .notNull()
+        .references(() => donationProfile.wallet, { onDelete: "cascade"}),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
@@ -54,7 +57,7 @@ export const kolProfileRelations = relations(
 
 export const createKolProfileSchema = createInsertSchema(
   kolProfile,
-).omit({ id: true, userId: true });
+).omit({ id: true, userId: true , wallet: true});
 
 export const updateKolProfileSchema = createInsertSchema(kolProfile)
   .pick({ id: true })

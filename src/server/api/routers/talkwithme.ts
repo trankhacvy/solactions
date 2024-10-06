@@ -19,12 +19,14 @@ export const talkwithmeRouter = createTRPCRouter({
       throw new Error(`Error`);
     }
     const userId = donationProfile.id;
+    const wallet = donationProfile.wallet;
     const [profile] = await ctx.db
       .insert(schema.kolProfile)
       .values({
         id: generatePublicId(),
         ...input,
         userId,
+        wallet,
       })
       .returning();
 
