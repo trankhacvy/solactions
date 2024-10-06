@@ -9,7 +9,27 @@ export default function ProfileLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Stack flex={1} minHeight="100%" bgcolor="grey.200">
+    <Stack
+      flex={1}
+      minHeight="100%"
+      bgcolor="grey.200"
+      sx={{
+        position: "relative",
+        "&:before": {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          // zIndex: -1,
+          content: '""',
+          width: "100%",
+          height: "100%",
+          opacity: 0.24,
+          backgroundImage: `url(/blur-background.webp)`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        },
+      }}
+    >
       <Header />
       <Stack
         px={{

@@ -5,7 +5,7 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { useMemo } from "react";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
@@ -24,6 +24,7 @@ import isToday from "dayjs/plugin/isToday";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { env } from "@/env";
+import { SnackbarHost } from "@/components/ui/snackbar";
 
 dayjs.extend(isToday);
 dayjs.extend(relativeTime);
@@ -36,7 +37,10 @@ export default function Providers({
   session: Session | null;
 }) {
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter()],
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -46,7 +50,10 @@ export default function Providers({
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <SessionProvider session={session}>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider>
+              {children}
+              <SnackbarHost />
+            </ThemeProvider>
           </SessionProvider>
         </WalletModalProvider>
       </WalletProvider>

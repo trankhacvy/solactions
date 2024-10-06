@@ -83,6 +83,25 @@ export async function createAndFundTiplink(
   };
 }
 
+export async function createSOLTiplink(payer: PublicKey, lamports: number) {
+  const tiplink = await TipLink.create();
+
+  const transaction = new Transaction();
+
+  transaction.add(
+    SystemProgram.transfer({
+      fromPubkey: payer,
+      toPubkey: tiplink.keypair.publicKey,
+      lamports,
+    }),
+  );
+
+  return {
+    transaction,
+    tiplink,
+  };
+}
+
 export function getTiplinkBlinkUrl(id: string) {
   return `${env.NEXT_PUBLIC_FE_BASE_URL}/tiplink/${id}`;
 }

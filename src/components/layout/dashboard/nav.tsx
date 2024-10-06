@@ -11,7 +11,12 @@ import { usePathname } from "next/navigation";
 import { NAV } from "@/config/header";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
-import { HeartHandshakeIcon, HomeIcon, Link2Icon } from "lucide-react";
+import {
+  HeartHandshakeIcon,
+  HomeIcon,
+  Link2Icon,
+  TicketPercent
+} from "lucide-react";
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -102,7 +107,11 @@ export default function Nav({
   );
 }
 
-function NavItem({ item }: { item: { title: string; path: string; icon: React.ReactNode } }) {
+function NavItem({
+  item,
+}: {
+  item: { title: string; path: string; icon: React.ReactNode };
+}) {
   const pathname = usePathname();
 
   const active = item.path === pathname;
@@ -163,4 +172,19 @@ const navConfig = [
   //   path: Routes.ADMIN_SETTINGS,
   //   icon: <SettingsIcon />,
   // },
+  // {
+  //   title: "NFT Dispenser",
+  //   path: Routes.ADMIN_NFT_DISPENSER,
+  //   icon: <ImageIcon />,
+  // },
+  // {
+  //   title: "cNFT Dispenser",
+  //   path: Routes.ADMIN_C_NFT_DISPENSER,
+  //   icon: <BookIcon />,
+  // },
+  {
+    title: "Dispenser",
+    path: Routes.ADMIN_DISPENSER,
+    icon: <TicketPercent />,
+  }
 ];
