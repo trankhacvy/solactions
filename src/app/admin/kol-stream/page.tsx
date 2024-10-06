@@ -1,7 +1,7 @@
 import { getServerAuthSession } from "../../../server/auth";
 import { api } from "../../../trpc/server";
 import { notFound } from "next/navigation";
-import KolStreamClient from "../../../components/admin/kol-stream-client";
+import { ProfileFormWrapper } from "../../../components/profileKol/form-wrapper";
 import React from "react";
 
 export default async function KolStream() {
@@ -13,5 +13,5 @@ export default async function KolStream() {
     return notFound();
   }
 
-  return <KolStreamClient session={session} profile={profile} />;
+  return <ProfileFormWrapper session={session} profile={profile} />;
 }
