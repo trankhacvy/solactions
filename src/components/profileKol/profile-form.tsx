@@ -11,8 +11,9 @@ import Stack from "@mui/material/Stack";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FormTokenSelect } from "@/components/ui/form-token-select";
-import { ProfileSchema } from "../../components/profileKol/form-wrapper";
+import { ProfileSchema } from "./form-wrapper";
 import { FormInput, FormNumberInput } from "@/components/ui/form-input";
+import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 
 import {
   Controller,
@@ -47,6 +48,8 @@ export function ProfileForm({
     control,
     name: "amounts",
   });
+  console.log(errors)
+  console.log("1")
   const wSlug = watch("slug");
   const selectedType = watch('type');
   return (
@@ -114,10 +117,10 @@ export function ProfileForm({
           name="type"
           control={control}
           render={({ field }) => (
-            <select {...field}>
-              <option value="TELEGRAM">Telegram</option>
-              <option value="CALENDLY">Calendly</option>
-            </select>
+              <RadioGroup {...field} row>
+                  <FormControlLabel value="TELEGRAM" control={<Radio />} label="Calendy" />
+                  <FormControlLabel value="CALENDLY" control={<Radio />} label="Telegram" />
+              </RadioGroup>
           )}
         />
          {selectedType === 'TELEGRAM' && (
@@ -144,6 +147,12 @@ export function ProfileForm({
                 label="Price"
                 error={!!errors.title}
                 helperText={errors.title?.message}
+            />
+             <FormInput
+              {...register("duration")}
+              fullWidth
+              placeholder=""
+              label="Duration"
             />
           <FormInput
             {...register("thankMessage")}
@@ -180,3 +189,4 @@ export function ProfileForm({
     </Stack>
   );
 }
+

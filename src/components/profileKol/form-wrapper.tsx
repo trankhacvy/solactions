@@ -28,6 +28,7 @@ const createProfileSchema = (isEdit: boolean, userId?: string) => z.object({
   type: z.enum(["TELEGRAM", "CALENDLY"]),
   calendyUrl: z.string(),
   telegram_username: z.string(),
+  duration: z.string(),
   price: z.string(),
   slug: z.string(),
   acceptToken: z.any().optional(),
@@ -52,6 +53,7 @@ export function ProfileFormWrapper({
       calendyUrl: isEdit ? profile.calendyUrl : "",
       telegram_username: isEdit ? profile.telegram_username : "",
       slug: isEdit ? profile.slug : user?.screen_name ?? "",
+      duration: isEdit ? profile.duration : "",
       price: isEdit ? profile.price : "", 
       acceptToken: isEdit ? profile.acceptToken : tokenList[0],
       thankMessage: isEdit
