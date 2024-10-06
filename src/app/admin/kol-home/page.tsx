@@ -31,7 +31,6 @@ export default async function AdminPage() {
         </Box>
         {/* <MoreMeetings /> */}
       </Stack>
-      {/* <PreviewKolCard profile={profile} /> */}
     </Stack>
   );
 }
