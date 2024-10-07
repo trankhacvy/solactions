@@ -2,7 +2,7 @@
 import { TextField, Button, Box, RadioGroup, FormControlLabel, Radio, MenuItem, Select, Avatar } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { type Profile } from "./kol-stream-card";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formValues: Profile) => void, initialProfile: Profile }) {
     const { control, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<Profile>({
@@ -10,9 +10,13 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
     });
 
     const watchedValues = watch();
+    const previousValues = useRef(watchedValues);
 
     useEffect(() => {
-        onFormChange(watchedValues);
+        if (JSON.stringify(watchedValues) !== JSON.stringify(previousValues.current)) {
+            onFormChange(watchedValues);
+            previousValues.current = watchedValues;
+        }
     }, [watchedValues, onFormChange]);
 
     const onSubmit = async (data: Profile) => {
@@ -26,17 +30,17 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
             });
 
             if (!response.ok) {
-                throw new Error('Không thể gửi dữ liệu. Vui lòng thử lại.');
+                throw new Error('Unable to send data. Please try again.');
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const result = await response.json();
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
             setValue('image', result.image);
-            // Xử l thành công
+            // Handle successful
         } catch (error) {
             console.error(error);
-            // Xử lỗi
+            // Handle error
         }
     };
 
@@ -54,38 +58,40 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                 <Controller
                     name="title"
                     control={control}
-                    rules={{ required: "Tiêu đề là bắt buộc" }}
+                    rules={{ required: "Title is required" }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             fullWidth
                             margin="normal"
                             variant="outlined"
-                            label="Tiêu đề"
+                            label="Title"
                             error={!!errors.title}
                             helperText={errors.title?.message}
                         />
                     )}
                 />
-
+                
                 <Controller
                     name="duration"
                     control={control}
-                    rules={{ required: "Thời lượng là bắt buộc" }}
+                    rules={{ required: "Duration is required" }}
                     render={({ field }) => (
-                        <Select
+                        <TextField
                             {...field}
+                            select
                             fullWidth
-                            margin="dense"
+                            margin="normal"
                             variant="outlined"
-                            displayEmpty
+                            label="Duration"
                             error={!!errors.duration}
+                            helperText={errors.duration?.message}
                         >
-                            <MenuItem value="45min">45 phút</MenuItem>
-                            <MenuItem value="1h">1 giờ</MenuItem>
-                            <MenuItem value="2h">2 giờ</MenuItem>
-                            <MenuItem value="custom">Tùy chỉnh</MenuItem>
-                        </Select>
+                            <MenuItem value="45min">45 minutes</MenuItem>
+                            <MenuItem value="1h">1 hour</MenuItem>
+                            <MenuItem value="2h">2 hours</MenuItem>
+                            <MenuItem value="custom">Custom</MenuItem>
+                        </TextField>
                     )}
                 />
 
@@ -93,14 +99,14 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                     <Controller
                         name="customDuration"
                         control={control}
-                        rules={{ required: "Thời lượng tùy chỉnh là bắt buộc" }}
+                        rules={{ required: "Custom duration is required" }}
                         render={({ field }) => (
                             <TextField
                                 {...field}
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
-                                label="Thời lượng tùy chỉnh"
+                                label="Custom Duration"
                                 error={!!errors.customDuration}
                                 helperText={errors.customDuration?.message}
                             />
@@ -111,14 +117,14 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                 <Controller
                     name="price"
                     control={control}
-                    rules={{ required: "Giá là bắt buộc" }}
+                    rules={{ required: "Price is required" }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             fullWidth
                             margin="normal"
                             variant="outlined"
-                            label="Giá"
+                            label="Price"
                             error={!!errors.price}
                             helperText={errors.price?.message}
                         />
@@ -128,7 +134,7 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                 <Controller
                     name="type"
                     control={control}
-                    rules={{ required: "Loại là bắt buộc" }}
+                    rules={{ required: "Type is required" }}
                     render={({ field }) => (
                         <RadioGroup {...field} row>
                             <FormControlLabel value="calendy" control={<Radio />} label="Calendy" />
@@ -141,14 +147,14 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                     <Controller
                         name="calendyUrl"
                         control={control}
-                        rules={{ required: "URL Calendy là bắt buộc" }}
+                        rules={{ required: "Calendy URL is required" }}
                         render={({ field }) => (
                             <TextField
                                 {...field}
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
-                                label="URL Calendy"
+                                label="Calendy URL"
                                 error={!!errors.calendyUrl}
                                 helperText={errors.calendyUrl?.message}
                             />
@@ -160,14 +166,14 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                     <Controller
                         name="telegramUsername"
                         control={control}
-                        rules={{ required: "Tên người dùng Telegram là bắt buộc" }}
+                        rules={{ required: "Telegram username is required" }}
                         render={({ field }) => (
                             <TextField
                                 {...field}
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
-                                label="Tên người dùng Telegram"
+                                label="Telegram Username"
                                 error={!!errors.telegramUsername}
                                 helperText={errors.telegramUsername?.message}
                             />
@@ -178,14 +184,14 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                 <Controller
                     name="description"
                     control={control}
-                    rules={{ required: "Mô tả là bắt buộc" }}
+                    rules={{ required: "Description is required" }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             fullWidth
                             margin="normal"
                             variant="outlined"
-                            label="Mô tả"
+                            label="Description"
                             multiline
                             rows={4}
                             error={!!errors.description}
@@ -202,7 +208,7 @@ function FormComponent({ onFormChange, initialProfile }: { onFormChange: (formVa
                     fullWidth
                     sx={{ mt: 2 }}
                 >
-                    {isSubmitting ? 'Đang tải...' : 'Tạo KOL Stream'}
+                    {isSubmitting ? 'Loading...' : 'Create KOL Stream'}
                 </Button>
             </form>
         </Box>
