@@ -20,6 +20,8 @@ import {
 import { Routes } from "@/config/routes";
 import { Button } from "@mui/material";
 import { signOut } from "next-auth/react";
+import { title } from "process";
+import path from "path";
 
 export default function Nav({
   openNav,
@@ -162,10 +164,15 @@ const navConfig = [
     path: Routes.ADMIN_TIPLINKS,
     icon: <Link2Icon />,
   },
+  // {
+  //   title: "KOL Stream",
+  //   path: Routes.ADMIN_KOL_STREAM,
+  //   icon: <HeartHandshakeIcon />,
+  // },
   {
-    title: "KOL Stream",
-    path: Routes.ADMIN_KOL_STREAM,
-    icon: <HeartHandshakeIcon />,
+    title: "KOL Home",
+    path: Routes.ADMIN_KOL_HOME,
+    icon: <HeartHandshakeIcon />
   },
   // {
   //   title: "Settings",

@@ -3,7 +3,7 @@ import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import { Box, Stack, Typography } from "@mui/material";
 import { YourLinkKol } from "@/components/admin/your-link-kol";
-// import { MoreMeetings } from "@/components/admin/more-meetings";
+import { MeetingsTable } from "@/components/admin/more-meetings";
 // import { PreviewKolCard } from "@/components/admin/preview-kol-card";
 
 export default async function AdminPage() {
@@ -29,7 +29,7 @@ export default async function AdminPage() {
           </Typography>
           <YourLinkKol profile={profile}/>
         </Box>
-        {/* <MoreMeetings /> */}
+        <MeetingsTable profile={profile}/>
       </Stack>
     </Stack>
   );
