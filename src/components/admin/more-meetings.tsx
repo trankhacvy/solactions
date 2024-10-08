@@ -5,14 +5,14 @@ import { CopyIcon, CheckIcon } from "lucide-react";
 import { useState } from "react";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { api } from "@/trpc/react";
-import { SelectDonationProfile } from "@/types";
+import { SelectKolProfileSchema } from "@/types";
 
-export function MeetingsTable({ profile }: { profile: SelectDonationProfile }) {
+export function MeetingsTable({ profile }: { profile: SelectKolProfileSchema }) {
   const [copying, setCopying] = useState(false);
   const [_, copy] = useCopyToClipboard();
 
-  console.log(1);
   console.log("profile", profile);
+  console.log("id", profile.id);
 
   const { data: meeting = [], isLoading: isLoadingMeetings } =
     api.talkwithmeTransactions.getByProfileId.useQuery(

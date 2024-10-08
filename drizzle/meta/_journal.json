@@ -1,1 +1,13 @@
-{"version":"7","dialect":"postgresql","entries":[{"idx":0,"version":"7","when":1721719756237,"tag":"0000_init-tables","breakpoints":true},{"idx":1,"version":"7","when":1721728980006,"tag":"0001_update-user-table","breakpoints":true},{"idx":2,"version":"7","when":1721754660612,"tag":"0002_add-image-to-tiplink","breakpoints":true},{"idx":3,"version":"7","when":1721899528309,"tag":"0003_add-NFT-dispenser-table","breakpoints":true},{"idx":4,"version":"7","when":1727680166735,"tag":"0004_exotic_phalanx","breakpoints":true}]}
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1728396976066,
+      "tag": "0000_blue_husk",
+      "breakpoints": true
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 
-import { SelectDonationProfile } from "@/types";
+import { SelectKolProfileSchema } from "@/types";
 import {
   CardHeader,
   Chip,
@@ -22,7 +22,7 @@ import { useState } from "react";
 import { getDonationLink , getTalkwithmeLink} from "@/utils/links";
 import { twitterLink } from "@/utils/twitter";
 
-export function YourLinkKol({ profile }: { profile: SelectDonationProfile }) {
+export function YourLinkKol({ profile }: { profile: SelectKolProfileSchema }) {
   const theme = useTheme();
 
   const [copying, setCopying] = useState(false);

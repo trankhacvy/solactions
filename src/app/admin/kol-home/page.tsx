@@ -8,7 +8,7 @@ import { MeetingsTable } from "@/components/admin/more-meetings";
 
 export default async function AdminPage() {
   const session = await getServerAuthSession();
-  const profile = await api.donation.me();
+  const profile = await api.talkwithme.me();
   if (!profile) {
     return notFound();
   }
