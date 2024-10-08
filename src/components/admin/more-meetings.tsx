@@ -42,6 +42,14 @@ export function MeetingsTable({ profile }: { profile: SelectKolProfileSchema }) 
       link: "https://example.com/meeting1",
       description: "Description for meeting 1",
     },
+    {
+      id: 2,
+      email: "coderhopham@gmail.com",
+      title: "Hi Iam Anh",
+      duration: "1 h",
+      link: "https://example.com/meeting1",
+      description: "Description for meeting 1",
+    },
   ];
 
   return (
