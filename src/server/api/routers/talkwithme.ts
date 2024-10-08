@@ -9,7 +9,7 @@ import {
 import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
 import { eq } from "drizzle-orm";
-
+import { user } from ".";
 export const talkwithmeRouter = createTRPCRouter({
   create: protectedProcedure
   .input(schema.createKolProfileSchema)
@@ -18,7 +18,7 @@ export const talkwithmeRouter = createTRPCRouter({
     if (!donationProfile) {
       throw new Error(`Error`);
     }
-    const userId = donationProfile.id;
+    const userId = ctx.session.user.id
     const wallet = donationProfile.wallet;
     const [profile] = await ctx.db
       .insert(schema.kolProfile)

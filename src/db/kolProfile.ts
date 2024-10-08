@@ -13,6 +13,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { donationProfile } from "./donations";
 import { relations } from "drizzle-orm";
 import { kolTransaction } from "./kol-fan-pay-transactions";
+import { user } from ".";
 
 export const TypeBooking = pgEnum("booking", [
   "TELEGRAM",
@@ -37,7 +38,7 @@ export const kolProfile = pgTable("kol_profile", {
     .notNull()
     .default(tokenList[0]!),
   userId: text("user_id")
-    .references(() => donationProfile.id, { onDelete: "cascade" })
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   slug: text("slug")
      .references(() => donationProfile.slug, {onDelete: "cascade"})
