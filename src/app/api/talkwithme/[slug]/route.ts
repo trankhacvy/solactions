@@ -2,7 +2,7 @@ import { tokenList } from "@/config/tokens";
 import { buildTransferSolTx, buildTransferSplTx } from "@/lib/transactions";
 import { appendAddress } from "@/lib/helius";
 import { api } from "@/trpc/server";
-import { SelectDonationProfile, SelectKolProfileSchema  , Token } from "@/types";
+import { SelectKolProfileSchema  } from "@/types";
 import {
   ActionPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -11,7 +11,8 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 import { Keypair, PublicKey } from "@solana/web3.js";
-
+import { Resend } from "resend"
+import { env } from "@/env";
 type Params = {
   slug: string;
 };
@@ -167,7 +168,14 @@ export const POST = async (req: Request, context: { params: Params }) => {
       reference: reference.publicKey.toBase58(),
       currency: tokenList.find((t) => t.address === profile.acceptToken.address),
     });
-    
+    const resend = new Resend(env.RE_SEND_API);
+
+    await resend.emails.send({
+      from: 'Kay <kay@kayx86.com>',
+      to: email,
+      subject: 'Confirm email',
+      html: profile.calendyUrl,
+    });
     return Response.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
