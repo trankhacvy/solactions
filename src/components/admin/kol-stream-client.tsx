@@ -1,10 +1,6 @@
 "use client";
-
-import { useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { KolStreamCard, type Profile } from "../../components/admin/kol-stream-card";
-import FormComponent from "../../components/admin/kol-form";
-import { KolCalendar } from "../../components/admin/kol-calendar";
+import { ProfileFormWrapper } from "../../components/profileKol/form-wrapper"
 import { type SelectDonationProfile } from "../../types";
 import React from "react";
 import { type Session } from "next-auth";
@@ -19,25 +15,6 @@ interface KolStreamClientProps {
 }
 
 export default function KolStreamClient({ session, profile }: KolStreamClientProps) {
-  const [formValues, setFormValues] = useState<Profile | null>(null);
-
-  const handleFormChange = (updatedFormValues: Profile) => {
-    setFormValues(updatedFormValues);
-  };
-
-  // Convert SelectDonationProfile to Profile
-  const initialProfile: Profile = {
-    title: "",
-    duration: "",
-    price: "",
-    type: "",
-    description: "",
-    customDuration: "",
-    calendyUrl: "",
-    telegramUsername: "",
-    image: profile.image ?? "",
-  };
-
   return (
     <Stack width="100%" flexDirection={{ xs: "column", md: "row" }} flex={1}>
       <Stack
@@ -54,10 +31,8 @@ export default function KolStreamClient({ session, profile }: KolStreamClientPro
           Call with KOL, {session?.user?.name ?? 'Guest'} 👋
         </Typography>
         </Box>
-        <FormComponent onFormChange={handleFormChange} initialProfile={initialProfile} />
-        <KolCalendar />
+        <ProfileFormWrapper/>
       </Stack>
-      <KolStreamCard profile={formValues ?? initialProfile} />
     </Stack>
   );
 }

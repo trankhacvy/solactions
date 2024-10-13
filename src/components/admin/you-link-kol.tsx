@@ -19,61 +19,75 @@ import { Routes } from "@/config/routes";
 import { CheckIcon, CopyIcon, TwitterIcon } from "lucide-react";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { useState } from "react";
-import { getDonationLink } from "@/utils/links";
+import { getDonationLink , getTalkwithmeLink} from "@/utils/links";
 import { twitterLink } from "@/utils/twitter";
 
-export function YourLink({ profile }: { profile: SelectDonationProfile }) {
+export function YourLinkKol({ profile }: { profile: SelectDonationProfile }) {
   const theme = useTheme();
 
   const [copying, setCopying] = useState(false);
   const [_, copy] = useCopyToClipboard();
 
+  const handleCopyLink = async () => {
+    setCopying(true);
+    await copy(getTalkwithmeLink(profile.slug));
+    setTimeout(() => {
+      setCopying(false);
+    }, 1500);
+  };
+
   return (
     <Card sx={{ maxWidth: 480, mx: "auto" }}>
-      <CardHeader title="Your donation action" />
+      <CardHeader title="Your booking link" />
       <CardContent>
         <Chip
           color="primary"
           label={
             <Stack flexDirection="row" alignItems="center" gap={2}>
               <MLink sx={{ color: "white" }} underline="none">
-                {getDonationLink(profile.slug)}
+                {getTalkwithmeLink(profile.slug)}
               </MLink>
               <IconButton
                 sx={{ color: "white" }}
                 size="small"
                 aria-label="Copy"
-                onClick={async () => {
-                  setCopying(true);
-                  await copy(getDonationLink(profile.slug));
-                  setTimeout(() => {
-                    setCopying(false);
-                  }, 1500);
-                }}
+                onClick={handleCopyLink}
               >
                 {copying ? <CheckIcon /> : <CopyIcon />}
               </IconButton>
+              
             </Stack>
           }
           size="medium"
-          sx={{ width: "100%", fontSize: theme.typography.h5, py: 4 }}
+          sx={{ width: "100%", fontSize: theme.typography.h6, py: 3 }}
         />
+        
       </CardContent>
 
-      <CardActions sx={{ justifyContent: "flex-end" }}>
-        <Link href={Routes.ADMIN_EDIT}>
-          <Button variant="outlined">Edit</Button>
-        </Link>
-        <a
-          href={twitterLink(getDonationLink(profile.slug), {
-            title: "Donate me on ",
-            hashtags: ["solactions", "actions", "blinks", "opos"],
-          })}
-          target="_blank"
-          rel="noopener"
+      <CardActions sx={{ justifyContent: "flex-end", gap: 22}}>
+        <IconButton
+          sx={{ color: "primary.main" }}
+          aria-label="Copy Link"
+          onClick={handleCopyLink}
         >
-          <Button endIcon={<TwitterIcon />}>Share on</Button>
-        </a>
+          {copying ? <CheckIcon /> : <CopyIcon />}
+        </IconButton>
+        <Stack spacing={2} direction="row">
+          <Link href={Routes.ADMIN_KOL_STREAM}>
+            <Button variant="outlined">Edit</Button>
+          </Link>
+          
+          <a
+            href={twitterLink(getTalkwithmeLink(profile.slug), {
+              title: "Meeting with me on ",
+              hashtags: ["solactions", "actions", "blinks", "opos"],
+            })}
+            target="_blank"
+            rel="noopener"
+          >
+            <Button endIcon={<TwitterIcon />}>Share on</Button>
+          </a>
+        </Stack>
       </CardActions>
     </Card>
   );

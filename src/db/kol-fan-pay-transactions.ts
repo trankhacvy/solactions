@@ -21,6 +21,7 @@ export const kolTransaction = pgTable("kol_transaction", {
     .notNull(),
   sender: varchar("sender").notNull(),
   receiver: varchar("receiver").notNull(),
+  email: varchar("email").notNull(),
   amount: numeric("amount").notNull(),
   currency: jsonb("currency").$type<Token>().default(tokenList[0]!),
 
@@ -28,7 +29,7 @@ export const kolTransaction = pgTable("kol_transaction", {
   status: TransactionStatus("status").default("PROCESSING"),
   reference: varchar("reference").unique().notNull(),
   signature: varchar("signature").unique(),
-
+  
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
