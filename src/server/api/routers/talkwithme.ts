@@ -9,7 +9,6 @@ import {
 import * as schema from "@/db";
 import { generatePublicId } from "@/utils/nano-id";
 import { eq } from "drizzle-orm";
-import { user } from ".";
 export const talkwithmeRouter = createTRPCRouter({
   create: protectedProcedure
   .input(schema.createKolProfileSchema)

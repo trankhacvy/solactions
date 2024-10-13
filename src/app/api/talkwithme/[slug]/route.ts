@@ -80,7 +80,6 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const requestUrl = new URL(req.url);
 
     const { email} = validatedQueryParams(requestUrl);
-    console.log(email)
     const body: ActionPostRequest = await req.json();
 
     let profile: SelectKolProfileSchema | undefined;
@@ -144,7 +143,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
         receiver,
         new PublicKey(profile.acceptToken.address),
         reference.publicKey,
-        amount * 10 ** profile.acceptToken.decimals,
+        parseFloat(profile.price) * 10 ** profile.acceptToken.decimals,
         false,
       );
     }
@@ -171,7 +170,7 @@ export const POST = async (req: Request, context: { params: Params }) => {
     const resend = new Resend(env.RE_SEND_API);
 
     await resend.emails.send({
-      from: 'Kay <kay@kayx86.com>',
+      from: 'Solaction <kay@kayx86.com>',
       to: email,
       subject: 'Confirm email',
       html: profile.calendyUrl,
@@ -194,14 +193,15 @@ function validatedQueryParams(requestUrl: URL) {
   let email: string;
 
   try {
-    if (requestUrl.searchParams.get("email")) {
-      email = requestUrl.searchParams.get("email");
+    const emailParam = requestUrl.searchParams.get("email");
+    if (emailParam) {
+      email = emailParam;
+    } else {
+      throw new Error("Email query parameter is missing");
     }
   } catch (err) {
-    throw "Invalid input query parameter: email";
+    throw new Error("Invalid input query parameter: email");
   }
-
-  return {
-    email,
-  };
+  
+  return { email };
 }

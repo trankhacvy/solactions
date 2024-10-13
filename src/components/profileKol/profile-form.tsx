@@ -48,8 +48,6 @@ export function ProfileForm({
     control,
     name: "amounts",
   });
-  console.log(errors)
-  console.log("1")
   const wSlug = watch("slug");
   const selectedType = watch('type');
   return (
@@ -118,8 +116,8 @@ export function ProfileForm({
           control={control}
           render={({ field }) => (
               <RadioGroup {...field} row>
-                  <FormControlLabel value="TELEGRAM" control={<Radio />} label="Calendy" />
-                  <FormControlLabel value="CALENDLY" control={<Radio />} label="Telegram" />
+                  <FormControlLabel value="TELEGRAM" control={<Radio />} label="Telegram" />
+                  <FormControlLabel value="CALENDLY" control={<Radio />} label="Calendy" />
               </RadioGroup>
           )}
         />
