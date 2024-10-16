@@ -32,6 +32,7 @@ export const env = createEnv({
     // twitter
     TWITTER_CLIENT_ID: z.string(),
     TWITTER_CLIENT_SECRET: z.string(),
+    RE_SEND_API: z.string(),
   },
 
   /**
@@ -67,6 +68,7 @@ export const env = createEnv({
     // twitter
     TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID,
     TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
+    RE_SEND_API: process.env.RE_SEND_API,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
